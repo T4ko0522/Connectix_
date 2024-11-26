@@ -1,0 +1,52 @@
+{
+    "name": "my-frontend-app",
+    "version": "1.0.0",
+    "description": "A React app with Chakra UI and TypeScript",
+    "main": "index.tsx",
+    "scripts": {
+      "start": "react-scripts start",
+      "build": "react-scripts build",
+      "test": "react-scripts test",
+      "eject": "react-scripts eject"
+    },
+    "dependencies": {
+      "@chakra-ui/react": "^2.10.2",
+      "@emotion/react": "^11.11.1",
+      "@emotion/styled": "^11.11.0",
+      "framer-motion": "^10.16.1",
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0",
+      "react-scripts": "^5.0.1",
+      "web-vitals": "^3.3.0"
+    },
+    "devDependencies": {
+      "typescript": "^4.9.5",
+      "@types/react": "^18.2.14",
+      "@types/react-dom": "^18.2.7",
+      "@babel/plugin-proposal-private-property-in-object": "^7.21.0"
+    },
+    "eslintConfig": {
+      "extends": [
+        "react-app",
+        "react-app/jest"
+      ]
+    },
+    "browserslist": {
+      "production": [
+        ">0.2%",
+        "not dead",
+        "not op_mini all"
+      ],
+      "development": [
+        "last 1 chrome version",
+        "last 1 firefox version",
+        "last 1 safari version"
+      ]
+    },
+    "overrides": {
+      "nth-check": "^2.0.1",
+      "css-select": "^4.0.0",
+      "svgo": "^2.8.0"
+    }
+  }
+  
