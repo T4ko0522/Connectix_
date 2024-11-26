@@ -1,18 +1,18 @@
-FROM node:20 AS builder
+# ベースイメージの指定
+FROM node:20
 
+# 作業ディレクトリの設定
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
 
-# 実行ステージ
-FROM node:20-alpine
+# 依存関係をインストール
+COPY package.json ./
+RUN npm install
 
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY package*.json ./
-RUN npm ci --only=production
+# ソースコードをコンテナ内にコピー
+COPY . ./
 
-EXPOSE 3232
+# ポートを環境変数で指定
+ENV PORT=3232
+
+# アプリケーション起動
 CMD ["npm", "start"]
