@@ -1,14 +1,14 @@
-# version: '3.8'
+version: '3.8'
 services:
   db:
     image: mysql:9.1
     environment:
-      MYSQL_ROOT_PASSWORD: 55n3ioesdgREGH46hjo
+      MYSQL_ROOT_PASSWORD: example_password
       MYSQL_DATABASE: mydatabase
       MYSQL_USER: Admin
-      MYSQL_PASSWORD: 55n3ioesdgREGH46hjo
+      MYSQL_PASSWORD: example_password
     ports:
-      - "3121:3122"
+      - "3121:3306"
     volumes:
       - db-data:/var/lib/mysql
     networks:
@@ -17,13 +17,12 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
     ports:
       - "3522:3522"
     environment:
       - DATABASE_HOST=db
       - DATABASE_USER=Admin
-      - DATABASE_PASSWORD=55n3ioesdgREGH46hjo
+      - DATABASE_PASSWORD=example_password
       - DATABASE_NAME=mydatabase
     volumes:
       - ./backend:/usr/src/app
@@ -31,25 +30,22 @@ services:
       - app-network
     depends_on:
       - db
-    tty: true
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
     ports:
       - "3232:3232"
     volumes:
       - ./frontend:/app
-      - /app/node_modules
     networks:
       - app-network
     depends_on:
       - backend
-    tty: true
 
 networks:
   app-network:
+    driver: bridge
 
 volumes:
   db-data:
