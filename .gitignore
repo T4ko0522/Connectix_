@@ -15,7 +15,7 @@ backend/dist
 
 #Docker関連
 docker-compose.yaml
-.dockerignore
+# .dockerignore
 # ./backend/Dockerfile
 # ./frontend/Dockerfile
 
