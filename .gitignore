@@ -14,7 +14,7 @@ frontend/node_modules
 backend/dist
 
 #Docker関連
-docker-compose.yml
+# docker-compose.yml
 # .dockerignore
 # ./backend/Dockerfile
 # ./frontend/Dockerfile
