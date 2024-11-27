@@ -5,6 +5,7 @@
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+.env
 
 # Node.js関連
 backend/node_modules
@@ -14,8 +15,8 @@ frontend/node_modules
 backend/dist
 
 #Docker関連
-docker-compose.yml
-.dockerignore
+# docker-compose.yml
+# .dockerignore
 # ./backend/Dockerfile
 # ./frontend/Dockerfile
 
