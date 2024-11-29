@@ -15,4 +15,4 @@ COPY . ./
 ENV PORT=3232
 
 # アプリケーション起動
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
