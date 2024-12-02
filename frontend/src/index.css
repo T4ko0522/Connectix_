@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'EduAUVICWANTArrows';
+  src: ('/app/public/assets/fonts/EduAUVICWANTArrows-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400; /* ウェイトを指定 */
+  font-style: normal; /* スタイルを指定 */
+}
