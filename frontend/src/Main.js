@@ -5,13 +5,13 @@ import ReactDOM from 'react-dom/client';
 import Header from "./components/Header";
 import Contents from "./components/Contents";
 
-const Home = () => {
+const Main = () => {
   return (
     <div>
       <Header />
-        <Contents />
+        {/* <Contents /> */}
     </div>
   );
 };
 
-export default Home;
+export default Main;
