@@ -41,7 +41,7 @@ function Header() {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box sx={{ display: 'flex', alignItems: 'center', ml: 20 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', ml: 15 }}>
             <img 
               src="/assets/image/logo192.png" 
               alt="LOGO"

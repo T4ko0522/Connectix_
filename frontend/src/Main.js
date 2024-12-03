@@ -11,7 +11,7 @@ const Main = () => {
     <div>
       <Header />
         {/* <Contents /> */}
-        <Footer />
+        {/* <Footer /> */}
     </div>
   );
 };
