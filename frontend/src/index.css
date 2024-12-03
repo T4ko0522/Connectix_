@@ -13,8 +13,22 @@ code {
 }
 
 @font-face {
+  font-family: 'NotoSerifJP';
+  src: url('../public/assets/fonts/NotoSerifJP-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400; /* ウェイトを指定 */
+  font-style: normal; /* スタイルを指定 */
+}
+
+@font-face {
   font-family: 'EduAUVICWANTArrows';
-  src: ('/app/public/assets/fonts/EduAUVICWANTArrows-VariableFont_wght.ttf') format('truetype');
+  src: url('../public/assets/fonts/EduAUVICWANTArrows-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400; /* ウェイトを指定 */
+  font-style: normal; /* スタイルを指定 */
+}
+
+@font-face {
+  font-family: 'NotoSansJP';
+  src: url('../public/assets/fonts/NotoSansJP-VariableFont_wght.ttf') format('truetype');
   font-weight: 400; /* ウェイトを指定 */
   font-style: normal; /* スタイルを指定 */
 }
