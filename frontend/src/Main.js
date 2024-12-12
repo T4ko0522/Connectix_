@@ -1,17 +1,19 @@
-import './App.css';
-import { Fragment } from "react";
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { Route, Routes } from 'react-router-dom';
 import Header from "./components/Header";
-import Contents from "./components/Contents";
-import Fotter from "./components/Footer";
+import Footer from "./components/Footer";
+import SignIn from './Sign_in';
+import SignUp from './Sign_up';
 
 const Main = () => {
   return (
     <div>
       <Header />
-        {/* <Contents /> */}
-        {/* <Footer /> */}
+      <Routes>
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+      </Routes>
+      {/* <Footer /> */}
     </div>
   );
 };

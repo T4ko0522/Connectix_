@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom'; // 追加: React Router の useNavigate フックをインポート
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,11 +14,14 @@ import MenuItem from '@mui/material/MenuItem';
 
 const pages = ['機能', 'アップデート', 'お問い合わせ'];
 const settings = ['プロフィール', 'アカウント', '詳細設定', 'ログアウト'];
-const account = ['Sign Up','Sign In']
+const account = ['Sign Up', 'Sign In'];
 
 function Header() {
+  const navigate = useNavigate(); // 追加: ナビゲート用のフックを初期化
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -42,8 +46,8 @@ function Header() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ display: 'flex', alignItems: 'center', ml: 15 }}>
-            <img 
-              src="/assets/image/logo192.png" 
+            <img
+              src="/assets/image/logo192.png"
               alt="LOGO"
               style={{ height: '40px', marginRight: '16px', display: 'block' }}
             />
@@ -86,7 +90,13 @@ function Header() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center', fontFamily: 'NotoSansJP, Arial, sans-serif', fontSize: '16px' }}>
+                  <Typography
+                    sx={{
+                      textAlign: 'center',
+                      fontFamily: 'NotoSansJP, Arial, sans-serif',
+                      fontSize: '16px',
+                    }}
+                  >
                     {page}
                   </Typography>
                 </MenuItem>
@@ -98,9 +108,9 @@ function Header() {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ 
-                  my: 2, 
-                  color: 'white', 
+                sx={{
+                  my: 2,
+                  color: 'white',
                   display: 'block',
                   fontFamily: 'NotoSansJP, Arial, sans-serif',
                   fontSize: '16px',
@@ -114,7 +124,9 @@ function Header() {
             {account.map((action) => (
               <Button
                 key={action}
-                onClick={() => console.log(`${action} clicked`)}
+                onClick={() =>
+                  navigate(action === 'Sign In' ? '/sign-in' : '/sign-up') // 変更: リダイレクト処理を追加
+                }
                 sx={{
                   color: 'white',
                   fontFamily: 'NotoSansJP, Arial, sans-serif',
