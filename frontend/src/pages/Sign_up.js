@@ -13,9 +13,10 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import AppTheme from '../shared-theme/AppTheme';
-// import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
-import ColorModeSelect from '../shared-theme/ColorModeSelect';
+import GoogleIcon from '@mui/icons-material/Google';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import AppTheme from '/app/src/shared/AppTheme.js'
+import ColorModeSelect from '/app/src/shared/ColorModeSelect';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -124,7 +125,11 @@ export default function SignUp(props) {
       <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
-          <SitemarkIcon />
+          <img
+            src="./assets/image/logo192.png"
+            alt="Sitemark Icon"
+            style={{ width: '100px', height: '100px', margin: '0 auto' }} // スタイルは適宜調整してください
+          />
           <Typography
             component="h1"
             variant="h4"
@@ -210,10 +215,10 @@ export default function SignUp(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('Sign up with Facebook')}
-              startIcon={<FacebookIcon />}
+              onClick={() => alert('Sign up with Twitter')}
+              startIcon={<TwitterIcon />}
             >
-              Sign up with Facebook
+              Sign up with Twitter
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Already have an account?{' '}
