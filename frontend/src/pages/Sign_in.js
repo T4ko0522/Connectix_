@@ -39,8 +39,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
-  minHeight: '100vh', // 修正: 高さを100vhに変更してスクロールを可能にする
-  height: 'auto', // 修正: 自動調整に変更
+  minHeight: '100vh',
+  height: 'auto',
   padding: theme.spacing(2),
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
@@ -105,7 +105,7 @@ export default function SignIn(props) {
 
     if (!password.value || password.value.length < 8) {
       setPasswordError(true);
-      setPasswordErrorMessage('パスワードは8文字以上にしてください。');
+      setPasswordErrorMessage('パスワードは8文字以上に設定してください。');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -123,8 +123,8 @@ export default function SignIn(props) {
         <Card variant="outlined">
         <img
           src="./assets/image/logo192.png"
-          alt="Sitemark Icon"
-          style={{ width: '100px', height: '100px', margin: '0 auto' }} // スタイルは適宜調整してください
+          alt="ロゴ"
+          style={{ width: '100px', height: '100px', margin: '0 auto' }}
         />
           <Typography
             component="h1"
@@ -206,7 +206,7 @@ export default function SignIn(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('Googleでサインイン')}
+              onClick={() => alert('未実装')}
               startIcon={<GoogleIcon />}
             >
               Googleでサインイン
@@ -214,7 +214,7 @@ export default function SignIn(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('Twitterでサインイン')}
+              onClick={() => alert('未実装')}
               startIcon={<TwitterIcon />}
             >
               Twitterでサインイン

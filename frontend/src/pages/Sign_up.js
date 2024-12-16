@@ -1,10 +1,8 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import Link from '@mui/material/Link';
@@ -38,8 +36,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
     }));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
-  height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-  minHeight: '100%',
+  height: 'auto',
+  minHeight: '100vh',
   padding: theme.spacing(2),
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
@@ -77,16 +75,16 @@ export default function SignUp(props) {
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage('有効なメールアドレスを入力してください。');
       isValid = false;
     } else {
       setEmailError(false);
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password.value || password.value.length < 8) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage('パスワードは8文字以上に設定してください。');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -95,7 +93,7 @@ export default function SignUp(props) {
 
     if (!name.value || name.value.length < 1) {
       setNameError(true);
-      setNameErrorMessage('Name is required.');
+      setNameErrorMessage('ユーザー名を入力してください。');
       isValid = false;
     } else {
       setNameError(false);
@@ -127,15 +125,15 @@ export default function SignUp(props) {
         <Card variant="outlined">
           <img
             src="./assets/image/logo192.png"
-            alt="Sitemark Icon"
-            style={{ width: '100px', height: '100px', margin: '0 auto' }} // スタイルは適宜調整してください
+            alt="ロゴ"
+            style={{ width: '100px', height: '100px', margin: '0 auto' }} 
           />
           <Typography
             component="h1"
             variant="h4"
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
-            Sign up
+            サインアップ
           </Typography>
           <Box
             component="form"
@@ -143,26 +141,26 @@ export default function SignUp(props) {
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
             <FormControl>
-              <FormLabel htmlFor="name">Full name</FormLabel>
+              <FormLabel htmlFor="name">ユーザー名</FormLabel>
               <TextField
                 autoComplete="name"
                 name="name"
                 required
                 fullWidth
                 id="name"
-                placeholder="Jon Snow"
+                placeholder="ユーザー名を入力してください。"
                 error={nameError}
                 helperText={nameErrorMessage}
                 color={nameError ? 'error' : 'primary'}
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
+              <FormLabel htmlFor="メールアドレス">Email</FormLabel>
               <TextField
                 required
                 fullWidth
                 id="email"
-                placeholder="your@email.com"
+                placeholder="メールアドレスを入力してください。"
                 name="email"
                 autoComplete="email"
                 variant="outlined"
@@ -172,12 +170,12 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
+              <FormLabel htmlFor="パスワード">Password</FormLabel>
               <TextField
                 required
                 fullWidth
                 name="password"
-                placeholder="••••••"
+                placeholder="パスワードを入力してください。"
                 type="password"
                 id="password"
                 autoComplete="new-password"
@@ -187,17 +185,13 @@ export default function SignUp(props) {
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="I want to receive updates via email."
-            />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               onClick={validateInputs}
             >
-              Sign up
+              サインアップ
             </Button>
           </Box>
           <Divider>
@@ -207,27 +201,27 @@ export default function SignUp(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('Sign up with Google')}
+              onClick={() => alert('まだ未実装です')}
               startIcon={<GoogleIcon />}
             >
-              Sign up with Google
+              Googleでサインアップ
             </Button>
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('Sign up with Twitter')}
+              onClick={() => alert('まだ未実装です')}
               startIcon={<TwitterIcon />}
             >
-              Sign up with Twitter
+              Twitterでサインアップ
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
-              Already have an account?{' '}
+              既にアカウントをお持ちの場合は{' '}
               <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+                href="/sign-in"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
-                Sign in
+                こちらから。
               </Link>
             </Typography>
           </Box>
