@@ -1,10 +1,27 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
+import React from 'react';
+import { Box, Typography } from '@mui/material';
 
+const Footer = () => {
+  return (
+    <Box
+      component="footer"
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        bgcolor: 'primary.main',
+        color: 'white',
+        height: '60px',
+        position: 'fixed',
+        bottom: 0,
+        width: '100%',
+      }}
+    >
+      <Typography variant="body2">
+        2024 Copyright © Connectix
+      </Typography>
+    </Box>
+  );
+};
+
+export default Footer;

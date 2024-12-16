@@ -39,8 +39,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
-  height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-  minHeight: '100%',
+  minHeight: '100vh', // 修正: 高さを100vhに変更してスクロールを可能にする
+  height: 'auto', // 修正: 自動調整に変更
   padding: theme.spacing(2),
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
@@ -96,16 +96,16 @@ export default function SignIn(props) {
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage('有効なメールアドレスを入力してください。');
       isValid = false;
     } else {
       setEmailError(false);
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password.value || password.value.length < 8) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage('パスワードは8文字以上にしてください。');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -131,7 +131,7 @@ export default function SignIn(props) {
             variant="h4"
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
-            Sign in
+            サインイン
           </Typography>
           <Box
             component="form"
@@ -152,7 +152,7 @@ export default function SignIn(props) {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="your@email.com"
+                placeholder="メールアドレスを入力してください。"
                 autoComplete="email"
                 autoFocus
                 required
@@ -167,7 +167,7 @@ export default function SignIn(props) {
                 error={passwordError}
                 helperText={passwordErrorMessage}
                 name="password"
-                placeholder="••••••"
+                placeholder="パスワードを入力してください。"
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -180,7 +180,7 @@ export default function SignIn(props) {
             </FormControl>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              label="サインイン状態を維持"
             />
             <ForgotPassword open={open} handleClose={handleClose} />
             <Button
@@ -189,7 +189,7 @@ export default function SignIn(props) {
               variant="contained"
               onClick={validateInputs}
             >
-              Sign in
+              サインイン
             </Button>
             <Link
               component="button"
@@ -198,7 +198,7 @@ export default function SignIn(props) {
               variant="body2"
               sx={{ alignSelf: 'center' }}
             >
-              Forgot your password?
+              パスワードを忘れましたか？
             </Link>
           </Box>
           <Divider>or</Divider>
@@ -206,28 +206,27 @@ export default function SignIn(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('Sign in with Google')}
-              start
-              ={<GoogleIcon />}
+              onClick={() => alert('Googleでサインイン')}
+              startIcon={<GoogleIcon />}
             >
-              Sign in with Google
+              Googleでサインイン
             </Button>
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('Sign in with Twitter')}
+              onClick={() => alert('Twitterでサインイン')}
               startIcon={<TwitterIcon />}
             >
-              Sign in with Twitter
+              Twitterでサインイン
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
-              Don&apos;t have an account?{' '}
+              アカウントをお持ちでない場合は{' '}
               <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+                href="/sign-up"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
-                Sign up
+                Connectixに登録する
               </Link>
             </Typography>
           </Box>
