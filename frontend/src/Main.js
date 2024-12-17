@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import SignIn from './pages/Sign_in';
 import SignUp from './pages/Sign_up';
+import './App.css';
 
 const Main = () => {
   const location = useLocation();
@@ -13,7 +14,12 @@ const Main = () => {
   const showHeaderFooter = !noHeaderFooterRoutes.includes(location.pathname);
 
   return (
-    <div>
+    <div
+      style={{
+        background: '#1e202c', // 背景色を変更
+        minHeight: '100vh', // コンテンツが少ない場合でも背景色がページ全体に適用されるように
+      }}
+    >
       {showHeaderFooter && <Header />}
       <Routes>
         <Route path="/sign-in" element={<SignIn />} />

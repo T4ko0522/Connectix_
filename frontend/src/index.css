@@ -32,3 +32,16 @@ code {
   font-weight: 400; /* ウェイトを指定 */
   font-style: normal; /* スタイルを指定 */
 }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  height: 100%; /* 全体を覆うために高さも指定 */
+}
+
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Reactアプリケーションのルート要素も高さを設定 */
+}

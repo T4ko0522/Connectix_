@@ -9,7 +9,7 @@ const Footer = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        bgcolor: 'primary.main',
+        backgroundImage: 'linear-gradient(to right, #60519b, #31323e)', // グラデーション背景
         color: 'white',
         height: '60px',
         position: 'fixed',
