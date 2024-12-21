@@ -143,7 +143,7 @@ export default function SignIn(props) {
             }}
           >
             <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
+              <FormLabel htmlFor="email">メールアドレス</FormLabel>
               <TextField
                 error={emailError}
                 helperText={emailErrorMessage}
@@ -160,7 +160,7 @@ export default function SignIn(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
+              <FormLabel htmlFor="password">パスワード</FormLabel>
               <TextField
                 error={passwordError}
                 helperText={passwordErrorMessage}

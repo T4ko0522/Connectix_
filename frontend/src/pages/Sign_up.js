@@ -153,7 +153,7 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="メールアドレス">Email</FormLabel>
+              <FormLabel htmlFor="メールアドレス">メール  アドレス</FormLabel>
               <TextField
                 required
                 fullWidth
@@ -168,7 +168,7 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="パスワード">Password</FormLabel>
+              <FormLabel htmlFor="パスワード">パスワード</FormLabel>
               <TextField
                 required
                 fullWidth
