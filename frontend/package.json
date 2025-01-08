@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "1.0.0",
   "private": "true",
-  "description": "React.js,Material-ui Frontend Project",
+  "description": "React.js for Material-UI Connectix Frontend Project",
   "main": "src/index.js",
   "scripts": {
     "start": "react-scripts start",
@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/T4ko0522/Connectix.git"
   },
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
