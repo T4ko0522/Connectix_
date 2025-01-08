@@ -37,5 +37,5 @@ connection.connect((err) => {
 // モジュールのエクスポート
 export default connection;
 
-// 環境変数のデバッグ用ログ
-console.log("環境変数:", process.env);
+// // 環境変数のデバッグ用ログ
+// console.log("環境変数:", process.env);
