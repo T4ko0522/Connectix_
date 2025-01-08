@@ -8,7 +8,6 @@ import db from "./config/db.js"; // db接続
 import authRoutes from "./routes/auth.js"; // 認証
 
 // TODO 未実装
-// import authRoutes from "./routes/auth.js"; // 認証
 // import profileRoutes from "./routes/profile.js"; // プロフィール
 // import linkRoutes from "./routes/links.js"; // リンク管理
 
@@ -40,8 +39,8 @@ app.listen(PORT, () => {
   console.log(`🚀 サーバーが起動しました: http://localhost:${PORT}`);
 });
 
-// db接続確認
-db.connect((err) => {
+// データベース接続確認（修正済み）
+db.getConnection((err, connection) => {
   if (err) {
     logger.error("データベース接続エラー:", err);
     console.error("データベース接続エラー:", err);
@@ -49,9 +48,10 @@ db.connect((err) => {
   }
   logger.info("✅ データベースに接続しました");
   console.log("✅ データベースに接続しました");
+  connection.release(); // 接続を解放
 });
 
-// ルート（debug）
+// debug
 app.get("/", (req, res) => {
   res.send("クローンサーバーが動作中");
 });
