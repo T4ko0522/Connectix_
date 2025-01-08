@@ -2,6 +2,8 @@
 services:
   db:
     image: mysql:9.1
+    env_file:
+      - ./backend/config/.env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -13,7 +15,6 @@ services:
       - db-data:/var/lib/mysql
     networks:
       - app-network
-
   backend:
     build:
       context: ./backend
