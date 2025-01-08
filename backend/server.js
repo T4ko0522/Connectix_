@@ -5,6 +5,7 @@ import path from "path";
 import log4js from "log4js";
 import { fileURLToPath } from "url";
 import db from "./config/db.js"; // db接続
+import authRoutes from "./routes/auth.js"; // 認証
 
 // TODO 未実装
 // import authRoutes from "./routes/auth.js"; // 認証
@@ -27,8 +28,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// // APIルートの登録
-// app.use("/api/auth", authRoutes);
+// APIルートの登録
+app.use("/api/auth", authRoutes);
 // app.use("/api/profile", profileRoutes);
 // app.use("/api/links", linkRoutes);
 
