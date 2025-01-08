@@ -4,14 +4,14 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// ESモジュールでは __dirname が使えないため、代わりに `fileURLToPath` を使用
+// ESモジュールでは __dirname が使えないため、代わりにfileURLToPathを使用
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// `.env` ファイルの読み込み
+// .envファイルの読み込み
 dotenv.config({ path: path.resolve(__dirname, '../config/.env') });
 
-// `log4js` の設定ファイルを読み込み
+// log4jsの設定ファイルを読み込み
 log4js.configure(path.resolve(__dirname, '../log4js-config.json'));
 
 // ロガーの取得
