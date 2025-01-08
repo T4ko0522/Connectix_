@@ -65,6 +65,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//  デバッグ
+// console.log(JWT_SECRET)
 
-console.log(JWT_SECRET)
 export default router;
