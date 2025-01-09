@@ -5,6 +5,7 @@ import path from "path";
 import log4js from "log4js";
 import { fileURLToPath } from "url";
 import pool from "./config/db.js"; // db接続
+import db from "./config/db.js"; // db接続
 import authRoutes from "./routes/auth.js"; // 認証
 
 // TODO 未実装
