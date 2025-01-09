@@ -11,7 +11,7 @@ const saltRounds = 8; // パスワードの強度
 const JWT_SECRET = process.env.JWT_SECRET || "JWT_Secret"; // JWTキー
 
 // Sign Up
-router.post("/register", async (req, res) => {
+router.post("/sign_up", async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
@@ -39,7 +39,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Sign In
-router.post("/login", async (req, res) => {
+router.post("/sign_in", async (req, res) => {
   const { email, password } = req.body;
 
   try {
