@@ -66,7 +66,7 @@ export default function SignIn(props) {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
-  const [error, setError] = React.useState(''); // 🟢 追加: API エラーメッセージの状態
+  const [error, setError] = React.useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -106,12 +106,11 @@ export default function SignIn(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateInputs()) return;
-    setError(""); // 🟢 追加: エラーメッセージをリセット
+    setError("");
 
     const data = new FormData(event.currentTarget);
 
     try {
-      // 🟢 API にリクエストを送信
       const response = await fetch("http://localhost:7293/api/auth/sign_in", {
         method: "POST",
         headers: {
@@ -128,12 +127,11 @@ export default function SignIn(props) {
         throw new Error(result.message || "ログインに失敗しました");
       }
 
-      // ✅ JWT を `localStorage` に保存
       localStorage.setItem("token", result.token);
       alert("ログイン成功！");
-      window.location.href = "/dashboard"; // ダッシュボードにリダイレクト
+      window.location.href = "/";
     } catch (error) {
-      setError(error.message); // ❌ API エラーを表示
+      setError(error.message);
     }
   };
 
