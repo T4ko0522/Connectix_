@@ -16,7 +16,7 @@ import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import GoogleIcon from '@mui/icons-material/Google';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import AppTheme from '/app/src/shared/AppTheme.js'
+import AppTheme from '/app/src/shared/AppTheme.js';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -66,6 +66,7 @@ export default function SignIn(props) {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const [error, setError] = React.useState(''); // 🟢 追加: API エラーメッセージの状態
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -73,18 +74,6 @@ export default function SignIn(props) {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleSubmit = (event) => {
-    if (emailError || passwordError) {
-      event.preventDefault();
-      return;
-    }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
   };
 
   const validateInputs = () => {
@@ -114,16 +103,50 @@ export default function SignIn(props) {
     return isValid;
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!validateInputs()) return;
+    setError(""); // 🟢 追加: エラーメッセージをリセット
+
+    const data = new FormData(event.currentTarget);
+
+    try {
+      // 🟢 API にリクエストを送信
+      const response = await fetch("http://localhost:7293/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.get("email"),
+          password: data.get("password"),
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "ログインに失敗しました");
+      }
+
+      // ✅ JWT を `localStorage` に保存
+      localStorage.setItem("token", result.token);
+      alert("ログイン成功！");
+      window.location.href = "/dashboard"; // ダッシュボードにリダイレクト
+    } catch (error) {
+      setError(error.message); // ❌ API エラーを表示
+    }
+  };
+
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
-        <img
-          src="./assets/image/logo192.png"
-          alt="ロゴ"
-          style={{ width: '100px', height: '100px', margin: '0 auto' }}
-        />
+          <img
+            src="./assets/image/logo192.png"
+            alt="ロゴ"
+            style={{ width: '100px', height: '100px', margin: '0 auto' }}
+          />
           <Typography
             component="h1"
             variant="h4"
@@ -131,6 +154,7 @@ export default function SignIn(props) {
           >
             サインイン
           </Typography>
+          {error && <Typography color="error">{error}</Typography>} {/* 🟢 追加: API エラーメッセージ表示 */}
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -208,18 +232,18 @@ export default function SignIn(props) {
               startIcon={<GoogleIcon />}
             >
               Googleでサインイン
-            </Button>
-            <Button
+          </Button>
+          <Button
               fullWidth
               variant="outlined"
               onClick={() => alert('未実装')}
               startIcon={<TwitterIcon />}
             >
-              Twitterでサインイン
-            </Button>
-            <Typography sx={{ textAlign: 'center' }}>
-              アカウントをお持ちでない場合は{' '}
-              <Link
+            Twitterでサインイン
+          </Button>
+          <Typography sx={{ textAlign: 'center' }}>
+            アカウントをお持ちでない場合は{' '}
+            <Link
                 href="/sign-up"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
