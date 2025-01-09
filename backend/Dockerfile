@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 
 # 依存関係をインストール
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 # アプリケーションのソースコードをコピー
 COPY . .
@@ -14,5 +14,5 @@ COPY . .
 # ポートを公開
 EXPOSE 3522
 
-# アプリケーションを起動
-CMD ["npm", "start"]
+# # アプリケーションを起動
+# CMD ["npm", "start"]
