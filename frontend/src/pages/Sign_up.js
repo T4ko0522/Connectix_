@@ -13,26 +13,26 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import AppTheme from '/app/src/shared/AppTheme.js'
+import AppTheme from '/app/src/shared/AppTheme.js';
 
 const Card = styled(MuiCard)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    alignSelf: 'center',
-    width: '100%',
-    padding: theme.spacing(4),
-    gap: theme.spacing(2),
-    margin: 'auto',
-    boxShadow:
+  display: 'flex',
+  flexDirection: 'column',
+  alignSelf: 'center',
+  width: '100%',
+  padding: theme.spacing(4),
+  gap: theme.spacing(2),
+  margin: 'auto',
+  boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-    [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.up('sm')]: {
     width: '450px',
-    },
-    ...theme.applyStyles('dark', {
+  },
+  ...theme.applyStyles('dark', {
     boxShadow:
-        'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-    }),
-    }));
+      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+  }),
+}));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
   height: 'auto',
@@ -64,6 +64,7 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+  const [error, setError] = React.useState('');
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -71,7 +72,6 @@ export default function SignUp(props) {
     const name = document.getElementById('name');
 
     let isValid = true;
-
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
       setEmailErrorMessage('有効なメールアドレスを入力してください。');
@@ -102,18 +102,33 @@ export default function SignUp(props) {
     return isValid;
   };
 
-  const handleSubmit = (event) => {
-    if (nameError || emailError || passwordError) {
-      event.preventDefault();
-      return;
-    }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!validateInputs()) return;
+    setError('');
+
     const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      const response = await fetch('http://localhost:7293/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.get('name'),
+          email: data.get('email'),
+          password: data.get('password'),
+        }),
+      });
+      
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || '登録に失敗しました');
+      }
+      localStorage.setItem('token', result.token);
+      alert('登録成功！');
+      window.location.href = '/dashboard';
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   return (
@@ -121,7 +136,7 @@ export default function SignUp(props) {
       <CssBaseline enableColorScheme />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
-          <img
+        <img
             src="./assets/image/logo192.png"
             alt="ロゴ"
             style={{ width: '100px', height: '100px', margin: '0 auto' }} 
@@ -139,7 +154,7 @@ export default function SignUp(props) {
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
             <FormControl>
-              <FormLabel htmlFor="name">ユーザー名</FormLabel>
+            <FormLabel htmlFor="name">ユーザー名</FormLabel>
               <TextField
                 autoComplete="name"
                 name="name"
@@ -153,7 +168,7 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="メールアドレス">メール  アドレス</FormLabel>
+            <FormLabel htmlFor="メールアドレス">メール  アドレス</FormLabel>
               <TextField
                 required
                 fullWidth
@@ -168,7 +183,7 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="パスワード">パスワード</FormLabel>
+            <FormLabel htmlFor="パスワード">パスワード</FormLabel>
               <TextField
                 required
                 fullWidth
@@ -184,7 +199,7 @@ export default function SignUp(props) {
               />
             </FormControl>
             <Button
-              type="submit"
+            type="submit"
               fullWidth
               variant="contained"
               onClick={validateInputs}
