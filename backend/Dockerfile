@@ -4,12 +4,12 @@ FROM node:20
 # 作業ディレクトリを設定
 WORKDIR /usr/src/app
 
-# 依存関係をインストール
-COPY package*.json ./
-RUN npm install
-
 # アプリケーションのソースコードをコピー
 COPY . .
+
+# 依存関係をインストール
+COPY package.json ./
+RUN npm install
 
 # ポートを公開
 EXPOSE 3522
