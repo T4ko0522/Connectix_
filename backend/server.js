@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import path from "path";
 import log4js from "log4js";
 import { fileURLToPath } from "url";
-import db from "./config/db.js"; // db接続
+import pool from "./config/db.js"; // db接続
 import authRoutes from "./routes/auth.js"; // 認証
 
 // TODO 未実装
@@ -15,6 +15,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
+
+console.log("🔍 DATABASE_HOST:", process.env.DATABASE_HOST);
 
 // log4jsの設定
 log4js.configure(path.resolve(__dirname, "./log4js-config.json"));
@@ -40,7 +42,7 @@ app.listen(PORT, () => {
 });
 
 // データベース接続確認（修正済み）
-db.getConnection((err, connection) => {
+db.query("SELECT 1", (err, results) => {
   if (err) {
     logger.error("データベース接続エラー:", err);
     console.error("データベース接続エラー:", err);
@@ -48,7 +50,6 @@ db.getConnection((err, connection) => {
   }
   logger.info("✅ データベースに接続しました");
   console.log("✅ データベースに接続しました");
-  connection.release(); // 接続を解放
 });
 
 // debug
