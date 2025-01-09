@@ -112,7 +112,7 @@ export default function SignIn(props) {
 
     try {
       // 🟢 API にリクエストを送信
-      const response = await fetch("http://localhost:7293/api/auth/login", {
+      const response = await fetch("http://localhost:7293/api/auth/sign_in", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
