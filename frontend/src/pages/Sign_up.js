@@ -125,7 +125,7 @@ export default function SignUp(props) {
       }
       localStorage.setItem('token', result.token);
       alert('登録成功！');
-      window.location.href = 'ホーム';
+      window.location.href = '/';
     } catch (error) {
       setError(error.message);
     }
