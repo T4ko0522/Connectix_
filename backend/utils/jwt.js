@@ -13,7 +13,7 @@ export function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     if (!authHeader) return res.status(401).json({ message: "認証エラー: トークンがありません" });
 
-    const token = authHeader.split(' ')[1]; // "Bearer token" の `token` 部分を取得
+    const token = authHeader.split(' ')[1]; 
     if (!token) return res.status(401).json({ message: "認証エラー: トークンの形式が不正" });
 
     jwt.verify(token, secretKey, (err, user) => {
