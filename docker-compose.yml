@@ -2,15 +2,16 @@
 services:
   db:
     image: mysql:9.1
+    container_name: connectix_db
     env_file:
-      - ./backend/config/.env
+      - ./.env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3121:3122"
+      - "3306:3306"
     volumes:
       - db-data:/var/lib/mysql
     networks:
@@ -21,6 +22,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3522:3522"
+    container_name: connectix_backend
+    env_file:
+      - backend/config/.env
     environment:
       - DATABASE_HOST=${DATABASE_HOST}
       - DATABASE_USER=${DATABASE_USER}
@@ -40,6 +44,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3232:3232"
+    container_name: connectix_frontend
     volumes:
       - ./frontend:/app
       - /app/node_modules
