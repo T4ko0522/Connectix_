@@ -1,12 +1,12 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { inputsCustomizations } from '/app/src/shared/customizations/inputs';
-import { dataDisplayCustomizations } from '/app/src/shared/customizations/dataDisplay';
-import { feedbackCustomizations } from '/app/src/shared/customizations/feedback';
-import { navigationCustomizations } from '/app/src/shared/customizations/navigation';
-import { surfacesCustomizations } from '/app/src/shared/customizations/surfaces';
-import { colorSchemes, typography, shadows, shape } from '/app/src/shared/customizations/themePrimitives';
+import { inputsCustomizations } from './customizations/inputs';
+import { dataDisplayCustomizations } from './customizations/dataDisplay';
+import { feedbackCustomizations } from './customizations/feedback';
+import { navigationCustomizations } from './customizations/navigation';
+import { surfacesCustomizations } from './customizations/surfaces';
+import { colorSchemes, typography, shadows, shape } from './customizations/themePrimitives';
 
 function AppTheme(props) {
   const { children, disableCustomTheme, themeComponents } = props;

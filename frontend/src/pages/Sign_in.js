@@ -1,5 +1,5 @@
 import * as React from 'react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -17,7 +17,7 @@ import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import GoogleIcon from '@mui/icons-material/Google';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import AppTheme from '/app/src/shared/AppTheme.js';
+import AppTheme from '../shared/AppTheme.js';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
