@@ -1,4 +1,5 @@
 import * as React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -67,6 +68,13 @@ export default function SignIn(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [error, setError] = useState('');
   const [open, setOpen] = useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
 
   const validateInputs = () => {
     const email = document.getElementById('email').value;
