@@ -46,6 +46,8 @@ services:
     ports:
       - "3232:3232"
     container_name: connectix_frontend
+    environment:
+      - CHOKIDAR_USEPOLLING=true  
     volumes:
       - ./frontend:/app
       - /app/node_modules
