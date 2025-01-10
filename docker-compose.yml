@@ -2,7 +2,7 @@
 services:
   db:
     image: mysql:9.1
-    container_name: connectix_db
+    container_name: mysql91_host
     env_file:
       - ./.env
     environment:
@@ -10,10 +10,13 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: 'Asia/Tokyo'
+    command: --mysql-native-password=ON
     ports:
       - "3306:3306"
     volumes:
       - db-data:/var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - app-network
   backend:
@@ -56,6 +59,6 @@ services:
 
 networks:
   app-network:
-
+ 
 volumes:
   db-data:
