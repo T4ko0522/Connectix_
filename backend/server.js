@@ -51,6 +51,7 @@ db.query("SELECT 1", (err, results) => {
   }
   logger.info("✅ データベースに接続しました");
   console.log("✅ データベースに接続しました");
+  connection.release();
 });
 
 // debug
