@@ -11,12 +11,10 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: 'Asia/Tokyo'
-    command: --default-authentication-plugin=caching_sha2_password
     ports:
       - "3306:3306"
     volumes:
       - db-data:/var/lib/mysql
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - app-network
   backend:
