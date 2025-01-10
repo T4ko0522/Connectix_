@@ -3,4 +3,4 @@ WORKDIR /usr/src/app
 COPY . .
 COPY package.json ./
 RUN npm install
-EXPOSE 3232
+ENV PORT=3232
