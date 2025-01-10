@@ -1,4 +1,5 @@
 import * as React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -64,7 +65,6 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState('');
-  const [error, setError] = useState('');
 
   // SHA-256用にアップデート
   const validateInputs = () => {
