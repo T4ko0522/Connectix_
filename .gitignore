@@ -11,11 +11,10 @@ Desktop.ini
 backend/node_modules
 frontend/node_modules
 
+
 #Docker関連
-# docker-compose.yml
 # .dockerignore
-# ./backend/Dockerfile
-# ./frontend/Dockerfile
+docker-entrypoint-initdb.d/001_setup.sql
 
 TODO.md
 *.log
