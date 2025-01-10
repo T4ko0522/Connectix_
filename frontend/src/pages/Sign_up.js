@@ -35,8 +35,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
-  height: 'auto',
   minHeight: '100vh',
+  height: 'auto',
   padding: theme.spacing(2),
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
@@ -58,21 +58,23 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props) {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [nameError, setNameError] = React.useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = React.useState('');
-  const [error, setError] = React.useState('');
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+  const [nameError, setNameError] = useState(false);
+  const [nameErrorMessage, setNameErrorMessage] = useState('');
+  const [error, setError] = useState('');
 
+  // SHA-256用にアップデート
   const validateInputs = () => {
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-    const name = document.getElementById('name');
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const name = document.getElementById('name').value;
 
     let isValid = true;
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError(true);
       setEmailErrorMessage('有効なメールアドレスを入力してください。');
       isValid = false;
@@ -81,16 +83,16 @@ export default function SignUp(props) {
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value.length < 8) {
+    if (!password || password.length < 12 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
       setPasswordError(true);
-      setPasswordErrorMessage('パスワードは8文字以上に設定してください。');
+      setPasswordErrorMessage('パスワードは12文字以上、大文字と数字を含めてください。');
       isValid = false;
     } else {
       setPasswordError(false);
       setPasswordErrorMessage('');
     }
 
-    if (!name.value || name.value.length < 1) {
+    if (!name || name.length < 1) {
       setNameError(true);
       setNameErrorMessage('ユーザー名を入力してください。');
       isValid = false;
@@ -102,6 +104,7 @@ export default function SignUp(props) {
     return isValid;
   };
 
+  // サインアップ処理
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateInputs()) return;
@@ -109,23 +112,26 @@ export default function SignUp(props) {
 
     const data = new FormData(event.currentTarget);
     try {
-      const response = await fetch('http://localhost:7293/api/auth/sign_up', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://localhost:7293/api/auth/sign_up", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: data.get('name'),
-          email: data.get('email'),
-          password: data.get('password'),
+          name: data.get("name"),
+          email: data.get("email"),
+          password: data.get("password")
         }),
       });
-      
+
       const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.message || '登録に失敗しました');
+        throw new Error(result.message || "サインアップに失敗しました");
       }
-      localStorage.setItem('token', result.token);
-      alert('登録成功！');
-      window.location.href = '/';
+
+      // JWT を保存（ログイン後のリダイレクト）
+      localStorage.setItem("token", result.token);
+      alert("サインアップ成功！アカウントが作成されました。");
+      window.location.href = "/";
+
     } catch (error) {
       setError(error.message);
     }

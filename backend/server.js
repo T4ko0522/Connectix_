@@ -5,7 +5,6 @@ import path from "path";
 import log4js from "log4js";
 import { fileURLToPath } from "url";
 import pool from "./config/db.js"; // db接続
-import db from "./config/db.js"; // db接続
 import authRoutes from "./routes/auth.js"; // 認証
 
 // TODO 未実装
@@ -23,14 +22,12 @@ console.log("🔍 DATABASE_HOST:", process.env.DATABASE_HOST);
 log4js.configure(path.resolve(__dirname, "./log4js-config.json"));
 const logger = log4js.getLogger();
 
-// Expressアプリケーション
 const app = express();
 
-// ミドルウェア設定
 app.use(express.json());
 app.use(cors());
 
-// APIルートの登録
+// APIの登録
 app.use("/api/auth", authRoutes);
 // app.use("/api/profile", profileRoutes);
 // app.use("/api/links", linkRoutes);
@@ -42,17 +39,18 @@ app.listen(PORT, () => {
   console.log(`🚀 サーバーが起動しました: http://localhost:${PORT}`);
 });
 
-// データベース接続確認（修正済み）
-db.query("SELECT 1", (err, results) => {
-  if (err) {
-    logger.error("データベース接続エラー:", err);
-    console.error("データベース接続エラー:", err);
-    return;
-  }
-  logger.info("✅ データベースに接続しました");
-  console.log("✅ データベースに接続しました");
-  connection.release();
-});
+// データベース接続確認
+(async () => {
+    try {
+        const connection = await pool.getConnection();
+        console.log("✅ データベースに接続しました");
+        logger.info("✅ データベースに接続しました");
+        connection.release();
+    } catch (err) {
+        logger.error("データベース接続エラー:", err);
+        console.error("データベース接続エラー:", err);
+    }
+})();
 
 // debug
 app.get("/", (req, res) => {

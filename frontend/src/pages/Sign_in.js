@@ -61,28 +61,19 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn(props) {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [open, setOpen] = React.useState(false);
-  const [error, setError] = React.useState('');
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+  const [error, setError] = useState('');
+  const [open, setOpen] = useState(false);
 
   const validateInputs = () => {
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
     let isValid = true;
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError(true);
       setEmailErrorMessage('有効なメールアドレスを入力してください。');
       isValid = false;
@@ -91,9 +82,9 @@ export default function SignIn(props) {
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value.length < 8) {
+    if (!password || password.length < 12) {
       setPasswordError(true);
-      setPasswordErrorMessage('パスワードは8文字以上に設定してください。');
+      setPasswordErrorMessage('パスワードは12文字以上に設定してください。');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -106,20 +97,14 @@ export default function SignIn(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateInputs()) return;
-    setError("");
+    setError('');
 
     const data = new FormData(event.currentTarget);
-
     try {
       const response = await fetch("http://localhost:7293/api/auth/sign_in", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: data.get("email"),
-          password: data.get("password"),
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.get("email"), password: data.get("password") }),
       });
 
       const result = await response.json();
@@ -127,6 +112,7 @@ export default function SignIn(props) {
         throw new Error(result.message || "ログインに失敗しました");
       }
 
+      // JWT を適切に処理
       localStorage.setItem("token", result.token);
       alert("ログイン成功！");
       window.location.href = "/";
