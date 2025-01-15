@@ -1,14 +1,18 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "private": "true",
+  "private": true,
   "description": "Node.js for Express Connectix backend Project",
+  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/T4ko0522/Connectix.git"
   },
   "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": ">=20.18.0"
+  },
   "scripts": {
     "start": "node server.js"
   },
@@ -19,7 +23,6 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "log4js": "^6.9.1",
-    "mysql": "^2.18.1",
     "mysql2": "^3.12.0",
     "node": "^23.6.0",
     "node-bin-setup": "^1.1.3"
