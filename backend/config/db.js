@@ -48,7 +48,7 @@ const pool = mysql.createPool({
           logger.error("❌ データベース接続エラー: 取得した接続が null または undefined です");
           return;
       }
-
+      
       console.log("✅ データベースに接続しました");
   } catch (err) {
       logger.error("❌ データベース接続エラー:", err);
