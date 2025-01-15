@@ -41,15 +41,22 @@ app.listen(PORT, () => {
 
 // データベース接続確認
 (async () => {
-    try {
-        const connection = await pool.getConnection();
-        console.log("✅ データベースに接続しました");
-        logger.info("✅ データベースに接続しました");
-        connection.release();
-    } catch (err) {
-        logger.error("データベース接続エラー:", err);
-        console.error("データベース接続エラー:", err);
-    }
+  try {
+      console.log("🔍 データベース接続を確認中...");
+      const connection = await pool.getConnection();
+
+      if (!connection) {
+          throw new Error("データベース接続に失敗しました。接続オブジェクトが取得できません。");
+      }
+
+      console.log("✅ データベースに接続しました");
+      logger.info("✅ データベースに接続しました");
+      connection.release();
+  } catch (err) {
+      logger.error("データベース接続エラー:", err);
+      console.error("❌ データベース接続エラー:", err.code, err.message);
+      console.error("🔍 エラースタック:", err.stack);
+  }
 })();
 
 // debug
