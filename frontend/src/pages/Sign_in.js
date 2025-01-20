@@ -109,7 +109,7 @@ export default function SignIn(props) {
 
     const data = new FormData(event.currentTarget);
     try {
-      const response = await fetch("http://localhost:7293/api/auth/sign_in", {
+      const response = await fetch("http://localhost:3522/sign_in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: data.get("email"), password: data.get("password") }),

@@ -65,6 +65,7 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState('');
+  // const [error,setError] = useState('');
   const [setError] = useState('');
 
   // SHA-256用にアップデート
@@ -109,11 +110,11 @@ export default function SignUp(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateInputs()) return;
-    setError('');
+    setError;
 
     const data = new FormData(event.currentTarget);
     try {
-      const response = await fetch("http://localhost:7293/api/auth/sign_up", {
+      const response = await fetch("http://localhost:3522/sign_up", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -134,7 +135,7 @@ export default function SignUp(props) {
       window.location.href = "/";
 
     } catch (error) {
-      setError(error.message);
+      console.log(error.message);
     }
   };
 
@@ -209,7 +210,7 @@ export default function SignUp(props) {
             type="submit"
               fullWidth
               variant="contained"
-              onClick={validateInputs}
+              // onClick={validateInputs}
             >
               サインアップ
             </Button>
@@ -221,7 +222,7 @@ export default function SignUp(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('まだ未実装です')}
+              onClick={() => alert('未実装です')}
               startIcon={<GoogleIcon />}
             >
               Googleでサインアップ
@@ -229,7 +230,7 @@ export default function SignUp(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('まだ未実装です')}
+              onClick={() => alert('未実装です')}
               startIcon={<TwitterIcon />}
             >
               Twitterでサインアップ
