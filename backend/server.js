@@ -33,7 +33,7 @@ app.use("/api/auth", authRoutes);
 // app.use("/api/links", linkRoutes);
 
 // サーバー起動
-const PORT = process.env.PORT || 7293;
+const PORT = process.env.PORT || 3522;
 app.listen(PORT, () => {
   logger.info(`🚀 サーバーが起動しました: http://localhost:${PORT}`);
   console.log(`🚀 サーバーが起動しました: http://localhost:${PORT}`);
