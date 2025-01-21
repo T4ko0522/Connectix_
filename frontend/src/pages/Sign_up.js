@@ -126,7 +126,12 @@ export default function SignUp(props) {
 
       const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.message || "サインアップに失敗しました");
+        if (result.message === "このメールアドレスは既に登録されています。") {
+          alert("このメールアドレスは既に登録されています。");
+        } else {
+          throw new Error(result.message || "サインアップに失敗しました");
+        }
+        return;
       }
 
       // JWT を保存（ログイン後のリダイレクト）
