@@ -8,7 +8,7 @@ dotenv.config({ path: '../config/.env' });
 
 const router = express.Router();
 const saltRounds = 12; // 強度を上げる（SHA-256用に調整）
-const JWT_SECRET = process.env.JWT_SECRET || "JWT_Secret"; // JWTキー
+const JWT_SECRET = process.env.JWT_Secret || "JWT_Secret"; // JWTキー
 
 // Sign Up
 router.post("/sign_up", async (req, res) => {
@@ -43,8 +43,11 @@ router.post("/sign_in", async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    console.log("🔍 リクエスト内容:", req.body);
+
     // ユーザーをデータベースから取得
     const [userResult] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    console.log("🔍 データベース結果:", userResult);
 
     // ユーザーが存在しない場合
     if (userResult.length === 0) {
@@ -55,6 +58,8 @@ router.post("/sign_in", async (req, res) => {
 
     // パスワードを検証（bcrypt + SHA-256）
     const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log("🔍 パスワード一致:", isPasswordValid);
+
     if (!isPasswordValid) {
       return res.status(401).json({ message: "メールアドレスまたはパスワードが間違っています。" });
     }
@@ -62,15 +67,15 @@ router.post("/sign_in", async (req, res) => {
     // JWT トークンを発行
     const token = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" } // トークンの有効期限を1時間に設定
+      JWT_SECRET,
+      { expiresIn: "1h" }
     );
+    console.log("🔍 JWT トークン:", token);
 
     // ログイン成功
     res.status(200).json({ message: "ログイン成功", token });
-
   } catch (error) {
-    console.error("ログインエラー:", error);
+    console.error("ログインエラー:", error); // 詳細ログを出力
     res.status(500).json({ message: "サーバーエラー" });
   }
 });
