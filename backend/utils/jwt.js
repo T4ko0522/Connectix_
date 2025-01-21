@@ -1,12 +1,14 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, "../config/.env") });
 
 const secretKey = process.env.JWT_Secret;
-
-// debug
-console.log("🔍 JWT_SECRET:", process.env.JWT_SECRET);
 
 export function generateToken(payload) {
     return jwt.sign(payload, secretKey, { expiresIn: '1h' });
