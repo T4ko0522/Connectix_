@@ -4,5 +4,5 @@ CREATE TABLE Analytics (
     clicked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ip_address VARCHAR(45),
     user_agent TEXT,
-    FOREIGN KEY (link_id) REFERENCES Links(id) ON DELETE CASCADE
+    FOREIGN KEY (link_id) REFERENCES Userinfo(id) ON DELETE CASCADE
 );
