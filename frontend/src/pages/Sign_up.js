@@ -134,7 +134,7 @@ export default function SignUp(props) {
         return;
       }
 
-      // JWT を保存（ログイン後のリダイレクト）
+      // JWT を保存（サインイン後のリダイレクト）
       localStorage.setItem("token", result.token);
       alert("サインアップ成功！アカウントが作成されました。");
       window.location.href = "/";

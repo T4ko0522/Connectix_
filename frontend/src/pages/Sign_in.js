@@ -117,12 +117,12 @@ export default function SignIn(props) {
 
       const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.message || "ログインに失敗しました");
+        throw new Error(result.message || "サインインに失敗しました");
       }
 
       // JWT を適切に処理
       localStorage.setItem("token", result.token);
-      alert("ログイン成功！");
+      alert("サインインしました。");
       window.location.href = "/";
     } catch (error) {
       setError(error.message);

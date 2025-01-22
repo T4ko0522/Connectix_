@@ -72,8 +72,8 @@ router.post("/sign_in", async (req, res) => {
     );
     console.log("🔍 JWT トークン:", token);
 
-    // ログイン成功
-    res.status(200).json({ message: "ログイン成功", token });
+    // サインイン成功
+    res.status(200).json({ message: "サインイン成功", token });
   } catch (error) {
     console.error("ログインエラー:", error); // 詳細ログを出力
     res.status(500).json({ message: "サーバーエラー" });
