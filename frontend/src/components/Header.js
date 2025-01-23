@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom'; // 追加: React Router の useNavigate フックをインポート
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,166 +11,188 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 const pages = ['機能', 'アップデート', 'お問い合わせ'];
-const settings = ['プロフィール', 'アカウント', '詳細設定', 'ログアウト'];
-const account = ['Sign Up', 'Sign In'];
 
 function Header() {
-  const navigate = useNavigate(); // 追加: ナビゲート用のフックを初期化
+  const navigate = useNavigate();
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const settings = ['プロフィール', 'アカウント', '詳細設定', 'サインアウト'];
 
-  // const handleOpenNavMenu = (event) => {
-  //   setAnchorElNav(event.currentTarget);
-  // };
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    setShowAlert(true); // アラートを表示
+    setTimeout(() => {
+      setShowAlert(false); // アラートを非表示
+      navigate('/');
+    }, 3000); // 3秒後に非表示
+  };
+
+  const handleProtectedOption = (setting) => {
+    if (!isLoggedIn) {
+      navigate('/sign-in');
+    } else {
+      console.log(`${setting} を選択しました`);
+    }
+  };
+
   return (
-    <AppBar
-      position="static"
-      sx={{
-        backgroundImage: 'linear-gradient(to right, #60519b, #31323e)',
-        color: 'white',
-      }}
-    >
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Box sx={{ display: 'flex', alignItems: 'center', ml: 15 }}>
-            <img
-              src="/assets/image/logo192.png"
-              alt="LOGO"
-              style={{ height: '40px', marginRight: '16px', display: 'block' }}
-            />
-          </Box>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 8,
-              ml: 0,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'NotoSansJP, Arial, sans-serif',
-              fontSize: '24px',
-              fontWeight: 700,
-              letterSpacing: '.1rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            Connectix
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+    <>
+      {showAlert && (
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 16,
+            right: 16,
+            zIndex: 1201,
+            width: '300px',
+          }}
+        >
+          <Alert severity="success">
+            <AlertTitle>Success</AlertTitle>
+            ログアウトしました。
+          </Alert>
+        </Box>
+      )}
+      <AppBar
+        position="static"
+        sx={{
+          backgroundImage: 'linear-gradient(to right, #60519b, #31323e)',
+          color: 'white',
+        }}
+      >
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <Box sx={{ display: 'flex', alignItems: 'center', ml: 15 }}>
+              <img
+                src="/assets/image/logo192.png"
+                alt="LOGO"
+                style={{
+                  height: '80px',
+                  width: 'auto',
+                  marginRight: '16px',
+                  display: 'block',
+                }}
+              />
+            </Box>
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="/"
+              sx={{
+                mr: 8,
+                ml: 0,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'NotoSansJP, Arial, sans-serif',
+                fontSize: '24px',
+                fontWeight: 700,
+                letterSpacing: '.1rem',
+                color: 'inherit',
+                textDecoration: 'none',
               }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' } }}
             >
+              Connectix
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography
+                <Button
+                  key={page}
+                  sx={{
+                    my: 2,
+                    color: 'white',
+                    display: 'block',
+                    fontFamily: 'NotoSansJP, Arial, sans-serif',
+                    fontSize: '16px',
+                  }}
+                >
+                  {page}
+                </Button>
+              ))}
+            </Box>
+            <Box sx={{ flexGrow: 0 }}>
+              {!isLoggedIn && (
+                ['Sign Up', 'Sign In'].map((action) => (
+                  <Button
+                    key={action}
+                    onClick={() =>
+                      navigate(action === 'Sign In' ? '/sign-in' : '/sign-up')
+                    }
                     sx={{
-                      textAlign: 'center',
+                      color: 'white',
                       fontFamily: 'NotoSansJP, Arial, sans-serif',
-                      fontSize: '16px',
+                      fontSize: '14px',
+                      textTransform: 'none',
+                      mx: 1,
                     }}
                   >
-                    {page}
-                  </Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{
-                  my: 2,
-                  color: 'white',
-                  display: 'block',
-                  fontFamily: 'NotoSansJP, Arial, sans-serif',
-                  fontSize: '16px',
+                    {action}
+                  </Button>
+                ))
+              )}
+              {isLoggedIn && (
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <AccountCircleIcon style={{ fontSize: 45, color: 'white' }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
                 }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
-            {account.map((action) => (
-              <Button
-                key={action}
-                onClick={() =>
-                  navigate(action === 'Sign In' ? '/sign-in' : '/sign-up') // 変更: リダイレクト処理を追加
-                }
-                sx={{
-                  color: 'white',
-                  fontFamily: 'NotoSansJP, Arial, sans-serif',
-                  fontSize: '14px',
-                  textTransform: 'none',
-                  mx: 1,
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
                 }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
               >
-                {action}
-              </Button>
-            ))}
-          </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <AccountCircleIcon style={{ fontSize: 45, color: 'white' }} />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+                {settings.map((setting) => (
+                  <MenuItem
+                    key={setting}
+                    onClick={() => {
+                      if (setting === 'サインアウト') {
+                        handleLogout();
+                      } else {
+                        handleProtectedOption(setting);
+                      }
+                      handleCloseUserMenu();
+                    }}
+                  >
+                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </>
   );
 }
 
