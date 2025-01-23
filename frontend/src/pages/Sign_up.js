@@ -69,7 +69,6 @@ export default function SignUp(props) {
   const [showAlert, setShowAlert] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState('success');
   const [alertMessage, setAlertMessage] = useState('');
-
   const validateInputs = () => {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value; // passwordを検証に利用
@@ -140,7 +139,7 @@ export default function SignUp(props) {
       setAlertSeverity('success');
       setAlertMessage("サインアップが成功しました！");
       setShowAlert(true);
-      setTimeout(() => window.location.href = "/", 20000);
+      setTimeout(() => window.location.href = "/", 3000);
 
     } catch (error) {
       setAlertSeverity('error');
