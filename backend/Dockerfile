@@ -1,6 +1,6 @@
 FROM node:20
 WORKDIR /usr/src/app
-COPY . .
-COPY package.json ./
+COPY package*.json ./
 RUN npm install
+COPY . .
 EXPOSE 3522

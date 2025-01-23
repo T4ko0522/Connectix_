@@ -1,6 +1,7 @@
 FROM node:20
 WORKDIR /usr/src/app
-COPY . .
-COPY package.json ./
+COPY package*.json ./
 RUN npm install
+COPY . .
 ENV PORT=3232
+CMD ["npm", "start"]
