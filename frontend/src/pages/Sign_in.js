@@ -16,8 +16,7 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import GoogleIcon from '@mui/icons-material/Google';
-import TwitterIcon from '@mui/icons-material/Twitter';
-// import Alert from '@mui/material/Alert';
+import AppleIcon from '@mui/icons-material/Apple';
 import AppTheme from '../shared/AppTheme.js';
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -229,9 +228,9 @@ export default function SignIn(props) {
               fullWidth
               variant="outlined"
               onClick={() => alert('まだ未実装です。いずれ実装します。')}
-              startIcon={<TwitterIcon />}
+              startIcon={<AppleIcon />}
             >
-            Twitterでサインイン
+            Appleでサインイン
           </Button>
           <Typography sx={{ textAlign: 'center' }}>
             アカウントをお持ちでない場合は{' '}
