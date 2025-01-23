@@ -71,41 +71,41 @@ export default function SignUp(props) {
   const [alertMessage, setAlertMessage] = useState('');
 
   const validateInputs = () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value; // passwordを検証に利用
+  const name = document.getElementById('name').value;
 
-    let isValid = true;
+  let isValid = true;
 
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setEmailError(true);
-      setEmailErrorMessage('有効なメールアドレスを入力してください。');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
-    }
+  if (!email || !/^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z]{2})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email)) {
+    setEmailError(true);
+    setEmailErrorMessage('有効なメールアドレスを入力してください。');
+    isValid = false;
+  } else {
+    setEmailError(false);
+    setEmailErrorMessage('');
+  }
 
-    if (!password || password.length < 12 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
-      setPasswordError(true);
-      setPasswordErrorMessage('パスワードは12文字以上、大文字と数字を含めてください。');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
-    }
+  if (!password || password.length < 12 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+    setPasswordError(true);
+    setPasswordErrorMessage('パスワードは12文字以上、大文字と数字を含めてください。');
+    isValid = false;
+  } else {
+    setPasswordError(false);
+    setPasswordErrorMessage('');
+  }
 
-    if (!name || name.length < 1) {
-      setNameError(true);
-      setNameErrorMessage('ユーザー名を入力してください。');
-      isValid = false;
-    } else {
-      setNameError(false);
-      setNameErrorMessage('');
-    }
+  if (!name || name.length < 1) {
+    setNameError(true);
+    setNameErrorMessage('ユーザー名を入力してください。');
+    isValid = false;
+  } else {
+    setNameError(false);
+    setNameErrorMessage('');
+  }
 
-    return isValid;
-  };
+  return isValid;
+};
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -140,7 +140,7 @@ export default function SignUp(props) {
       setAlertSeverity('success');
       setAlertMessage("サインアップが成功しました！");
       setShowAlert(true);
-      // setTimeout(() => window.location.href = "/", 20000);
+      setTimeout(() => window.location.href = "/", 20000);
 
     } catch (error) {
       setAlertSeverity('error');
