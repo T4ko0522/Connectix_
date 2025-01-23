@@ -16,7 +16,7 @@ router.post("/sign_up", async (req, res) => {
 
   try {
     // メールが既に登録されているか確認
-    const [existingUser] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    const [existingUser] = await db.query("SELECT * FROM Users WHERE email = ?", [email]);
     if (existingUser.length > 0) {
       return res.status(400).json({ message: "このメールアドレスは既に登録されています。" });
     }
@@ -25,11 +25,10 @@ router.post("/sign_up", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // データベースに保存
-    await db.query("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", [
-      name,
-      email,
-      hashedPassword,
-    ]);
+    await db.query(
+      "INSERT INTO Users (username, email, password_hash) VALUES (?, ?, ?)", // 修正:カラム名をpassword_hashに変更
+      [name, email, hashedPassword]
+    );
 
     res.status(201).json({ message: "ユーザー登録が完了しました。" });
   } catch (error) {
@@ -46,7 +45,7 @@ router.post("/sign_in", async (req, res) => {
     console.log("🔍 リクエスト内容:", req.body);
 
     // ユーザーをデータベースから取得
-    const [userResult] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    const [userResult] = await db.query("SELECT * FROM Users WHERE email = ?", [email]); // 修正:テーブル名を大文字に変更
     console.log("🔍 データベース結果:", userResult);
 
     // ユーザーが存在しない場合
@@ -57,7 +56,7 @@ router.post("/sign_in", async (req, res) => {
     const user = userResult[0];
 
     // パスワードを検証（bcrypt + SHA-256）
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     console.log("🔍 パスワード一致:", isPasswordValid);
 
     if (!isPasswordValid) {
