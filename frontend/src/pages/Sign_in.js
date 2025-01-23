@@ -17,6 +17,7 @@ import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import GoogleIcon from '@mui/icons-material/Google';
 import TwitterIcon from '@mui/icons-material/Twitter';
+// import Alert from '@mui/material/Alert';
 import AppTheme from '../shared/AppTheme.js';
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -122,7 +123,6 @@ export default function SignIn(props) {
 
       // JWT を適切に処理
       localStorage.setItem("token", result.token);
-      alert("サインインしました。");
       window.location.href = "/";
     } catch (error) {
       setError(error.message);
@@ -135,7 +135,7 @@ export default function SignIn(props) {
       <SignInContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <img
-            src="./assets/image/logo192.png"
+            src="./assets/image/logo512.png"
             alt="ロゴ"
             style={{ width: '100px', height: '100px', margin: '0 auto' }}
           />
@@ -220,7 +220,7 @@ export default function SignIn(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('未実装')}
+              onClick={() => alert('まだ未実装です。いずれ実装します。')}
               startIcon={<GoogleIcon />}
             >
               Googleでサインイン
@@ -228,7 +228,7 @@ export default function SignIn(props) {
           <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('未実装')}
+              onClick={() => alert('まだ未実装です。いずれ実装します。')}
               startIcon={<TwitterIcon />}
             >
             Twitterでサインイン

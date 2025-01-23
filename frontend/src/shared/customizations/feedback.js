@@ -11,10 +11,10 @@ export const feedbackCustomizations = {
         color: (theme.vars || theme).palette.text.primary,
         border: `1px solid ${alpha(orange[300], 0.5)}`,
         '& .MuiAlert-icon': {
-          color: orange[500],
+          // color: orange[500],
         },
         ...theme.applyStyles('dark', {
-          backgroundColor: `${alpha(orange[900], 0.5)}`,
+          // backgroundColor: `${alpha(orange[900], 0.5)}`,
           border: `1px solid ${alpha(orange[800], 0.5)}`,
         }),
       }),

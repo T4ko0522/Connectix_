@@ -11,8 +11,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
+import AnimatedAlert from '../shared/AnimatedAlert.js';
 
 const pages = ['機能', 'アップデート', 'お問い合わせ'];
 
@@ -40,9 +39,9 @@ function Header() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-    setShowAlert(true); // アラートを表示
+    setShowAlert(true);
     setTimeout(() => {
-      setShowAlert(false); // アラートを非表示
+      setShowAlert(false);
       navigate('/');
     }, 3000); // 3秒後に非表示
   };
@@ -57,22 +56,12 @@ function Header() {
 
   return (
     <>
-      {showAlert && (
-        <Box
-          sx={{
-            position: 'fixed',
-            bottom: 16,
-            right: 16,
-            zIndex: 1201,
-            width: '300px',
-          }}
-        >
-          <Alert severity="success">
-            <AlertTitle>Success</AlertTitle>
-            ログアウトしました。
-          </Alert>
-        </Box>
-      )}
+      <AnimatedAlert
+        show={showAlert}
+        severity="success"
+        title="Success"
+        message="ログアウトしました。"
+      />
       <AppBar
         position="static"
         sx={{

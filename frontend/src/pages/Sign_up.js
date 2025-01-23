@@ -15,6 +15,7 @@ import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import AppTheme from '../shared/AppTheme.js';
+import AnimatedAlert from '../shared/AnimatedAlert'; // AnimatedAlertをインポート
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -65,10 +66,10 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState('');
-  // const [error,setError] = useState('');
-  const [setError] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertSeverity, setAlertSeverity] = useState('success');
+  const [alertMessage, setAlertMessage] = useState('');
 
-  // SHA-256用にアップデート
   const validateInputs = () => {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -106,11 +107,9 @@ export default function SignUp(props) {
     return isValid;
   };
 
-  // サインアップ処理
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateInputs()) return;
-    setError;
 
     const data = new FormData(event.currentTarget);
     try {
@@ -127,20 +126,26 @@ export default function SignUp(props) {
       const result = await response.json();
       if (!response.ok) {
         if (result.message === "このメールアドレスは既に登録されています。") {
-          alert("このメールアドレスは既に登録されています。");
+          setEmailError(true);
+          setEmailErrorMessage(result.message);
         } else {
-          throw new Error(result.message || "サインアップに失敗しました");
+          setAlertSeverity('error');
+          setAlertMessage(result.message || "サインアップに失敗しました");
+          setShowAlert(true);
         }
         return;
       }
 
-      // JWT を保存（サインイン後のリダイレクト）
       localStorage.setItem("token", result.token);
-      alert("サインアップ成功！アカウントが作成されました。");
-      window.location.href = "/";
+      setAlertSeverity('success');
+      setAlertMessage("サインアップが成功しました！");
+      setShowAlert(true);
+      // setTimeout(() => window.location.href = "/", 20000);
 
     } catch (error) {
-      console.log(error.message);
+      setAlertSeverity('error');
+      setAlertMessage("エラーが発生しました: " + error.message);
+      setShowAlert(true);
     }
   };
 
@@ -149,8 +154,14 @@ export default function SignUp(props) {
       <CssBaseline enableColorScheme />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
-        <img
-            src="./assets/image/logo192.png"
+          <AnimatedAlert
+            show={showAlert}
+            severity={alertSeverity}
+            title={alertSeverity === 'success' ? 'Success' : 'Error'}
+            message={alertMessage}
+          />
+          <img
+            src="./assets/image/logo512.png"
             alt="ロゴ"
             style={{ width: '100px', height: '100px', margin: '0 auto' }} 
           />
@@ -167,7 +178,7 @@ export default function SignUp(props) {
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
             <FormControl>
-            <FormLabel htmlFor="name">ユーザー名</FormLabel>
+              <FormLabel htmlFor="name">ユーザー名</FormLabel>
               <TextField
                 autoComplete="name"
                 name="name"
@@ -181,7 +192,7 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControl>
-            <FormLabel htmlFor="メールアドレス">メール  アドレス</FormLabel>
+              <FormLabel htmlFor="メールアドレス">メールアドレス</FormLabel>
               <TextField
                 required
                 fullWidth
@@ -196,7 +207,7 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControl>
-            <FormLabel htmlFor="パスワード">パスワード</FormLabel>
+              <FormLabel htmlFor="パスワード">パスワード</FormLabel>
               <TextField
                 required
                 fullWidth
@@ -212,10 +223,9 @@ export default function SignUp(props) {
               />
             </FormControl>
             <Button
-            type="submit"
+              type="submit"
               fullWidth
               variant="contained"
-              // onClick={validateInputs}
             >
               サインアップ
             </Button>
@@ -227,7 +237,7 @@ export default function SignUp(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('未実装です')}
+              onClick={() => alert('まだ未実装です。いずれ実装します。')}
               startIcon={<GoogleIcon />}
             >
               Googleでサインアップ
@@ -235,7 +245,7 @@ export default function SignUp(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('未実装です')}
+              onClick={() => alert('まだ未実装です。いずれ実装します。')}
               startIcon={<TwitterIcon />}
             >
               Twitterでサインアップ
