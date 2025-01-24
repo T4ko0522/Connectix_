@@ -28,3 +28,5 @@ docker exec <container-id> /bin/sh 解説：普通のexec
 ### MySQL
 mysql -uroot -p 解説：ログイン
 SHOW DATABASES; 解説：データベース一覧表示 DATABASE'S'なのでそこに注意
+SELECT * FROM <table-name>;
+DELETE FROM <table-name> WHERE id =<id>;
