@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,7 +14,6 @@ import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
 import AppTheme from '../shared/AppTheme.js';
-import AnimatedAlert from '../shared/AnimatedAlert';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -66,45 +64,43 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState('');
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertSeverity, setAlertSeverity] = useState('success');
-  const [alertMessage, setAlertMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState(''); // サインアップ成功メッセージ
   const validateInputs = () => {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value; // passwordを検証に利用
-  const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const name = document.getElementById('name').value;
 
-  let isValid = true;
+    let isValid = true;
 
-  if (!email || !/^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z]{2})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email)) {
-    setEmailError(true);
-    setEmailErrorMessage('有効なメールアドレスを入力してください。');
-    isValid = false;
-  } else {
-    setEmailError(false);
-    setEmailErrorMessage('');
-  }
+    if (!email || !/^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z]{2})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email)) {
+      setEmailError(true);
+      setEmailErrorMessage('有効なメールアドレスを入力してください。');
+      isValid = false;
+    } else {
+      setEmailError(false);
+      setEmailErrorMessage('');
+    }
 
-  if (!password || password.length < 12 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
-    setPasswordError(true);
-    setPasswordErrorMessage('パスワードは12文字以上、大文字と数字を含めてください。');
-    isValid = false;
-  } else {
-    setPasswordError(false);
-    setPasswordErrorMessage('');
-  }
+    if (!password || password.length < 12 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+      setPasswordError(true);
+      setPasswordErrorMessage('パスワードは12文字以上、大文字と数字を含めてください。');
+      isValid = false;
+    } else {
+      setPasswordError(false);
+      setPasswordErrorMessage('');
+    }
 
-  if (!name || name.length < 1) {
-    setNameError(true);
-    setNameErrorMessage('ユーザー名を入力してください。');
-    isValid = false;
-  } else {
-    setNameError(false);
-    setNameErrorMessage('');
-  }
+    if (!name || name.length < 1) {
+      setNameError(true);
+      setNameErrorMessage('ユーザー名を入力してください。');
+      isValid = false;
+    } else {
+      setNameError(false);
+      setNameErrorMessage('');
+    }
 
-  return isValid;
-};
+    return isValid;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -123,28 +119,22 @@ export default function SignUp(props) {
       });
 
       const result = await response.json();
+
       if (!response.ok) {
         if (result.message === "このメールアドレスは既に登録されています。") {
           setEmailError(true);
           setEmailErrorMessage(result.message);
-        } else {
-          setAlertSeverity('error');
-          setAlertMessage(result.message || "サインアップに失敗しました");
-          setShowAlert(true);
+        } else if (result.message === "このユーザー名は既に使用されています。") {
+          setNameError(true);
+          setNameErrorMessage(result.message);
         }
         return;
       }
-
-      localStorage.setItem("token", result.token);
-      setAlertSeverity('success');
-      setAlertMessage("サインアップが成功しました！");
-      setShowAlert(true);
-      setTimeout(() => window.location.href = "/", 3000);
-
-    } catch (error) {
-      setAlertSeverity('error');
-      setAlertMessage("エラーが発生しました: " + error.message);
-      setShowAlert(true);
+        setSuccessMessage("サインアップが成功しました！");
+        localStorage.setItem("token", result.token);
+        window.location.href = "/";
+      } catch (error) {
+        console.error("サーバーエラー:", error.message);
     }
   };
 
@@ -153,12 +143,6 @@ export default function SignUp(props) {
       <CssBaseline enableColorScheme />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
-          <AnimatedAlert
-            show={showAlert}
-            severity={alertSeverity}
-            title={alertSeverity === 'success' ? 'Success' : 'Error'}
-            message={alertMessage}
-          />
           <img
             src="./assets/image/logo512.png"
             alt="ロゴ"
@@ -168,7 +152,12 @@ export default function SignUp(props) {
             component="h1"
             variant="h4"
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-          >
+          >          
+          {successMessage && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              {successMessage}
+            </Alert>
+          )}
             サインアップ
           </Typography>
           <Box
@@ -187,7 +176,6 @@ export default function SignUp(props) {
                 placeholder="ユーザー名を入力してください。"
                 error={nameError}
                 helperText={nameErrorMessage}
-                color={nameError ? 'error' : 'primary'}
               />
             </FormControl>
             <FormControl>
@@ -202,7 +190,6 @@ export default function SignUp(props) {
                 variant="outlined"
                 error={emailError}
                 helperText={emailErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
             <FormControl>
@@ -218,7 +205,6 @@ export default function SignUp(props) {
                 variant="outlined"
                 error={passwordError}
                 helperText={passwordErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
             <Button

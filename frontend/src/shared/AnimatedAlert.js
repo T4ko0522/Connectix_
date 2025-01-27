@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AnimatedAlert = ({ show, severity, title, message }) => {
@@ -13,7 +13,6 @@ const AnimatedAlert = ({ show, severity, title, message }) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined,
       };
 
       switch (severity) {
@@ -34,11 +33,7 @@ const AnimatedAlert = ({ show, severity, title, message }) => {
       }
     }
   }, [show, severity, title, message]);
-  return (
-    <>
-      <ToastContainer />
-    </>
-  );
+  return null; // ToastContainerはルートコンポーネントでレンダリング
 };
 
 AnimatedAlert.propTypes = {

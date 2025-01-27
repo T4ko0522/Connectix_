@@ -21,17 +21,23 @@ router.post("/sign_up", async (req, res) => {
       return res.status(400).json({ message: "このメールアドレスは既に登録されています。" });
     }
 
-    // パスワードのハッシュ化（強度を向上）
+    // パスワードのハッシュ化
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // データベースに保存
     await db.query(
-      "INSERT INTO Users (username, email, password_hash) VALUES (?, ?, ?)", // 修正:カラム名をpassword_hashに変更
+      "INSERT INTO Users (username, email, password_hash) VALUES (?, ?, ?)", // カラム名をpassword_hashに変更
       [name, email, hashedPassword]
     );
 
     res.status(201).json({ message: "ユーザー登録が完了しました。" });
   } catch (error) {
+    // 重複エラーをハンドリング
+    if (error.code === 'ER_DUP_ENTRY' && error.sqlMessage.includes('Users.username')) {
+      console.error("ユーザー名重複エラー:", error);
+      return res.status(400).json({ message: "このユーザー名は既に使用されています。" });
+    }
+
     console.error("ユーザー登録エラー:", error);
     res.status(500).json({ message: "サーバーエラー" });
   }

@@ -81,7 +81,7 @@ export default function SignIn(props) {
     const password = document.getElementById('password').value;
 
     let isValid = true;
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    if (!email || !/^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z]{2})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email)) {
       setEmailError(true);
       setEmailErrorMessage('有効なメールアドレスを入力してください。');
       isValid = false;
