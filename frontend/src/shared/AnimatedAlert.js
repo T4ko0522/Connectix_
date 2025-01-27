@@ -1,43 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AnimatedAlert = ({ show, severity, title, message }) => {
-  // severityに応じた文字色と背景色を設定
-  const colors = {
-    success: { text: '#2e7d32', background: '#c8e6c9' }, // 成功時: 緑
-    info: { text: '#1565c0', background: '#bbdefb' },    // 情報時: 青
-    warning: { text: '#f57c00', background: '#ffe0b2' }, // 警告時: 黄
-    error: { text: '#c62828', background: '#ffcdd2' },   // エラー時: 赤
-  };
+  useEffect(() => {
+    if (show) {
+      const options = {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      };
 
+      switch (severity) {
+        case 'success':
+          toast.success(`${title}: ${message}`, options);
+          break;
+        case 'info':
+          toast.info(`${title}: ${message}`, options);
+          break;
+        case 'warning':
+          toast.warn(`${title}: ${message}`, options);
+          break;
+        case 'error':
+          toast.error(`${title}: ${message}`, options);
+          break;
+        default:
+          toast(`${title}: ${message}`, options);
+      }
+    }
+  }, [show, severity, title, message]);
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        bottom: 16,
-        right: 16,
-        zIndex: 1201,
-        transition: 'transform 0.5s ease-in-out, opacity 0.5s ease-in-out',
-        transform: show ? 'translateX(0)' : 'translateX(100%)',
-        opacity: show ? 1 : 0,
-        width: '300px',
-      }}
-    >
-      <Alert
-        severity={severity}
-        sx={{
-          backgroundColor: colors[severity]?.background || '#ffffff',
-          color: colors[severity]?.text || '#000000',
-          borderColor: colors[severity]?.text || '#000000',
-        }}
-      >
-        <AlertTitle>{title}</AlertTitle>
-        {message}
-      </Alert>
-    </Box>
+    <>
+      <ToastContainer />
+    </>
   );
 };
 
