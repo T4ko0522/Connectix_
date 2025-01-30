@@ -59,7 +59,6 @@ app.listen(PORT, () => {
   }
 })();
 
-// debug
 app.get("/", (req, res) => {
-  res.send("クローンサーバーが動作中");
+  res.send("API is running...");
 });
