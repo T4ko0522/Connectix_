@@ -4,5 +4,4 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 ENV PORT=3232
-# う～ん、なぜかホットリロードできないのでコメントアウト
 # CMD ["npm", "start"]
