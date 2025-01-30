@@ -1,28 +1,22 @@
 # version: '3.8'
 services:
   db:
-    # default-authentication-plugin=mysql_native_passwordがMySQL 9.1で無効化されているため、8.0を使用。
-    # image: mysql:9.1
-    image: mysql:8.0
+    image: postgres:latest
     restart: always
-    command: --default-authentication-plugin=mysql_native_password
-    container_name: mysql80_host
+    container_name: supabase_postgres
     env_file:
       - ./.env
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      TZ: 'Asia/Tokyo'
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - db-data:/var/lib/mysql
+      - db-data:/var/lib/postgresql/data
     networks:
       - app-network
 
-#みやすいように改行してますが、特に意味はないです。
   backend:
     build:
       context: ./backend
@@ -33,10 +27,10 @@ services:
     env_file:
       - backend/config/.env
     environment:
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_NAME=${MYSQL_NAME}
+      - POSTGRES_URL=${POSTGRES_URL}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
     volumes:
       - ./backend:/usr/src/app
     networks:
@@ -45,7 +39,6 @@ services:
       - db
     tty: true
 
-#みやすいように改行してますが、特に意味はないです。
   frontend:
     build:
       context: ./frontend
@@ -53,9 +46,6 @@ services:
     ports:
       - "3232:3232"
     container_name: connectix_frontend
-    # environment:
-    #   - CHOKIDAR_USEPOLLING=true  
-    # command: sh -c 'npm start winstart'
     volumes:
       - ./frontend:/usr/src/app:cached
       - react_node_modules:/app/node_modules
