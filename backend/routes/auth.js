@@ -16,7 +16,7 @@ router.post("/sign_up", async (req, res) => {
 
   try {
     // メールが既に登録されているか確認
-    const [existingUser] = await db.query("SELECT * FROM Users WHERE email = ?", [email]);
+    const { rows: existingUser } = await db.query("SELECT * FROM Users WHERE email = $1", [email]);
     if (existingUser.length > 0) {
       return res.status(400).json({ message: "このメールアドレスは既に登録されています。" });
     }
@@ -26,7 +26,7 @@ router.post("/sign_up", async (req, res) => {
 
     // データベースに保存
     await db.query(
-      "INSERT INTO Users (username, email, password_hash) VALUES (?, ?, ?)", // カラム名をpassword_hashに変更
+      "INSERT INTO Users (username, email, password_hash) VALUES ($1, $2, $3)",
       [name, email, hashedPassword]
     );
 

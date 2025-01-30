@@ -1,69 +1,48 @@
-// caching_sha2_passwordに対応させるためにmysql2を使用 大幅アップデート
-// impoty mysql from 'mysql' から import mysql from 'mysql2' に変更
-// caching_sha2_passwordに対応させるためにmysql2にしたが、うまくいかなかったので、従来のmysql_native_passwordを使うことに。。。ここ最近の努力が無駄になった。。。めんたるおれりゅ～＾＾；
-// import mysql from 'mysql2';
-import mysql from 'mysql2/promise';
-import log4js from 'log4js';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import pkg from "pg";
+import log4js from "log4js";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
+const { Pool } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, '../config/.env') });
+dotenv.config({ path: path.resolve(__dirname, "../config/.env") });
 
-log4js.configure(path.resolve(__dirname, '../log4js-config.json'));
+log4js.configure(path.resolve(__dirname, "../log4js-config.json"));
 const logger = log4js.getLogger();
 
-// デバッグ
-console.log("🔍 MYSQL_HOST:", process.env.MYSQL_HOST);
-console.log("🔍 MYSQL_PORT:", process.env.MYSQL_PORT);
-console.log("🔍 MYSQL_USER:", process.env.MYSQL_USER);
-console.log("🔍 MYSQL_NAME:", process.env.MYSQL_NAME);
+// ✅ NODE_TLS_REJECT_UNAUTHORIZED を 0 に設定（自己署名証明書を許可）
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-const pool = mysql.createPool({
-  host: process.env.MYSQL_HOST || "127.0.0.1",
-  port: Number(process.env.MYSQL_PORT) || 3306,
-  user: process.env.MYSQL_USER || "root",
-  password: process.env.MYSQL_PASSWORD || "password",
-  database: process.env.MYSQL_NAME || "mydatabase",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  ssl: {
-    minVersion: "TLSv1.2",
-    rejectUnauthorized: false // 証明書なしで接続許可
-  }
+const pool = new Pool({
+    connectionString: process.env.POSTGRES_URL,
+    ssl: { rejectUnauthorized: false }, // ✅ SSL の自己署名証明書を許可
 });
 
 // データベース接続テスト
 (async () => {
   console.log("🔍 データベース接続を試行...");
-  let connection;
+  let client;
   try {
-      connection = await pool.getConnection();
+    client = await pool.connect(); // ✅ PostgreSQL の正しい接続方法
 
-      if (!connection) {
-          console.error("❌ データベース接続エラー: 取得した接続が null または undefined です");
-          logger.error("❌ データベース接続エラー: 取得した接続が null または undefined です");
-          return;
-      }
+    if (!client) {
+        console.error("❌ データベース接続エラー: 取得した接続が null または undefined です");
+        logger.error("❌ データベース接続エラー: 取得した接続が null または undefined です");
+        return;
+    }
       
-      console.log("✅ データベースに接続しました");
+    console.log("✅ データベースに接続しました");
   } catch (err) {
       logger.error("❌ データベース接続エラー:", err);
       console.error("❌ データベース接続エラー:", err.message);
-      if (err.code) {
-          console.error("🔍 エラーコード:", err.code);
-      }
-      if (err.fatal) {
-          console.error("⚠ 致命的なエラー: MySQL がクラッシュした可能性があります");
-      }
+      console.error("🔍 エラーコード:", err.code);
       console.error("🔍 エラースタック:", err.stack);
   } finally {
-      if (connection) {
-          connection.release();
+      if (client) {
+          client.release(); // ✅ PostgreSQL では release() を使う
           console.log("🔓 データベース接続を解放しました");
       }
   }

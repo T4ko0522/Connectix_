@@ -16,7 +16,7 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
 
-console.log("🔍 MYSQL_HOST:", process.env.MYSQL_HOST);
+console.log("🔍 POSTGRES_URL:", process.env.POSTGRES_URL);
 
 // log4jsの設定
 log4js.configure(path.resolve(__dirname, "./log4js-config.json"));
@@ -41,21 +41,26 @@ app.listen(PORT, () => {
 
 // データベース接続確認
 (async () => {
+  let client;
   try {
       console.log("🔍 データベース接続を確認中...");
-      const connection = await pool.getConnection();
+      client = await pool.connect(); // ✅ PostgreSQL の正しい接続方法
 
-      if (!connection) {
+      if (!client) {
           throw new Error("データベース接続に失敗しました。接続オブジェクトが取得できません。");
       }
 
       console.log("✅ データベースに接続しました");
       logger.info("✅ データベースに接続しました");
-      connection.release();
   } catch (err) {
       logger.error("データベース接続エラー:", err);
       console.error("❌ データベース接続エラー:", err.code, err.message);
       console.error("🔍 エラースタック:", err.stack);
+  } finally {
+      if (client) {
+          client.release(); // ✅ 正しい変数名を使用
+          console.log("🔓 データベース接続を解放しました");
+      }
   }
 })();
 
