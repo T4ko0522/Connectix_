@@ -16,7 +16,7 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
 
-console.log("🔍 DATABASE_HOST:", process.env.DATABASE_HOST);
+console.log("🔍 MYSQL_HOST:", process.env.MYSQL_HOST);
 
 // log4jsの設定
 log4js.configure(path.resolve(__dirname, "./log4js-config.json"));

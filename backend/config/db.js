@@ -15,18 +15,19 @@ dotenv.config({ path: path.resolve(__dirname, '../config/.env') });
 
 log4js.configure(path.resolve(__dirname, '../log4js-config.json'));
 const logger = log4js.getLogger();
+
 // デバッグ
-console.log("🔍 DATABASE_HOST:", process.env.DATABASE_HOST);
-console.log("🔍 DATABASE_PORT:", process.env.DATABASE_PORT);
-console.log("🔍 DATABASE_USER:", process.env.DATABASE_USER);
-console.log("🔍 DATABASE_NAME:", process.env.DATABASE_NAME);
+console.log("🔍 MYSQL_HOST:", process.env.MYSQL_HOST);
+console.log("🔍 MYSQL_PORT:", process.env.MYSQL_PORT);
+console.log("🔍 MYSQL_USER:", process.env.MYSQL_USER);
+console.log("🔍 MYSQL_NAME:", process.env.MYSQL_NAME);
 
 const pool = mysql.createPool({
-  host: process.env.DATABASE_HOST || "127.0.0.1",
-  port: Number(process.env.DATABASE_PORT) || 3306,
-  user: process.env.DATABASE_USER || "root",
-  password: process.env.DATABASE_PASSWORD || "password",
-  database: process.env.DATABASE_NAME || "mydatabase",
+  host: process.env.MYSQL_HOST || "127.0.0.1",
+  port: Number(process.env.MYSQL_PORT) || 3306,
+  user: process.env.MYSQL_USER || "root",
+  password: process.env.MYSQL_PASSWORD || "password",
+  database: process.env.MYSQL_NAME || "mydatabase",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
