@@ -118,7 +118,7 @@ export default function SignUp(props) {
 
     const data = new FormData(event.currentTarget);
     try {
-      const response = await fetch('https://connectix-server.vercel.app/api/auth/sign_up', {
+      const response = await fetch('http://localhost:3522/api/auth/sign_up', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -164,7 +164,6 @@ export default function SignUp(props) {
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
             サインアップ
-            (17日まで無効化)
           </Typography>
           <Box
             component="form"
@@ -216,11 +215,9 @@ export default function SignUp(props) {
             <Button
               type="submit"
               fullWidth
-              disabled
               variant="contained"
             >
               サインアップ
-              (17日まで無効化)
             </Button>
           </Box>
           <Divider>

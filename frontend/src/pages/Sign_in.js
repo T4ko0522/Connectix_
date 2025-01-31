@@ -114,7 +114,7 @@ export default function SignIn(props) {
 
     const data = new FormData(event.currentTarget);
     try {
-      const response = await fetch('https://connectix-server.vercel.app/api/auth/sign_in', {
+      const response = await fetch('http://localhost:3522/api/auth/sign_in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -151,7 +151,6 @@ export default function SignIn(props) {
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
             サインイン
-            (17日まで無効化)
           </Typography>
           {error && <Typography color="error">{error}</Typography>} {/* 🟢 追加: API エラーメッセージ表示 */}
           <Box
@@ -207,18 +206,15 @@ export default function SignIn(props) {
               type="submit"
               fullWidth
               variant="contained"
-              disabled // 17日まで無効化
               onClick={validateInputs}
             >
               サインイン
-              (17日まで無効化)
             </Button>
             <Link
               component="button"
               type="button"
               onClick={handleClickOpen}
               variant="body2"
-              disabled // 17日まで無効化
               sx={{ alignSelf: 'center' }}
             >
               パスワードを忘れましたか？
@@ -247,7 +243,6 @@ export default function SignIn(props) {
             <Link
                 href="/sign-up"
                 variant="body2"
-                disabled // 17日まで無効化
                 sx={{ alignSelf: 'center' }}
               >
                 Connectixに登録する
