@@ -151,6 +151,7 @@ export default function SignIn(props) {
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
             サインイン
+            (17日まで無効化)
           </Typography>
           {error && <Typography color="error">{error}</Typography>} {/* 🟢 追加: API エラーメッセージ表示 */}
           <Box
@@ -206,15 +207,18 @@ export default function SignIn(props) {
               type="submit"
               fullWidth
               variant="contained"
+              disabled // 17日まで無効化
               onClick={validateInputs}
             >
               サインイン
+              (17日まで無効化)
             </Button>
             <Link
               component="button"
               type="button"
               onClick={handleClickOpen}
               variant="body2"
+              disabled // 17日まで無効化
               sx={{ alignSelf: 'center' }}
             >
               パスワードを忘れましたか？
@@ -241,8 +245,9 @@ export default function SignIn(props) {
           <Typography sx={{ textAlign: 'center' }}>
             アカウントをお持ちでない場合は{' '}
             <Link
-                href="/sign-up"
+                // href="/sign-up" // 17日まで無効化
                 variant="body2"
+                disabled // 17日まで無効化
                 sx={{ alignSelf: 'center' }}
               >
                 Connectixに登録する

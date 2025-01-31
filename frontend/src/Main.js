@@ -1,6 +1,5 @@
-// Main.js
 import React, { useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import SignIn from './pages/Sign_in';
@@ -35,6 +34,7 @@ const Main = () => {
     }, 3000);
   };
 
+  // サインイン・サインアップ画面ではヘッダーとフッターを出さない
   const noHeaderFooterRoutes = ['/sign-in', '/sign-up'];
   const showHeaderFooter = !noHeaderFooterRoutes.includes(location.pathname);
 
@@ -66,6 +66,12 @@ const Main = () => {
         <Route
           path="/sign-up"
           element={<SignUp triggerAlert={triggerAlert} />}
+        />
+
+        {/* 上記以外はすべて sign-in にリダイレクト */}
+        <Route
+          path="*"
+          element={<Navigate to="/sign-in" replace />}
         />
       </Routes>
       {showHeaderFooter && <Footer />}
