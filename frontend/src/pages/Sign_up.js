@@ -215,9 +215,11 @@ export default function SignUp(props) {
             <Button
               type="submit"
               fullWidth
+              disabled
               variant="contained"
             >
               サインアップ
+              (17日まで無効化)
             </Button>
           </Box>
           <Divider>
