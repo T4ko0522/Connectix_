@@ -7,8 +7,8 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '../config/.env' });
 
 const router = express.Router();
-const saltRounds = 12; // 強度を上げる（SHA-256用に調整）
-const JWT_SECRET = process.env.JWT_Secret || "JWT_Secret"; // JWTキー
+const saltRounds = 12;
+const JWT_Secret = process.env.JWT_Secret || "JWT_Secret"; // JWTキー
 
 // Sign Up
 router.post("/sign_up", async (req, res) => {
@@ -16,7 +16,10 @@ router.post("/sign_up", async (req, res) => {
 
   try {
     // メールが既に登録されているか確認
-    const { rows: existingUser } = await db.query("SELECT * FROM Users WHERE email = $1", [email]);
+    const { rows: existingUser } = await db.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
     if (existingUser.length > 0) {
       return res.status(400).json({ message: "このメールアドレスは既に登録されています。" });
     }
@@ -26,14 +29,14 @@ router.post("/sign_up", async (req, res) => {
 
     // データベースに保存
     await db.query(
-      "INSERT INTO Users (username, email, password_hash) VALUES ($1, $2, $3)",
+      "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)",
       [name, email, hashedPassword]
     );
 
     res.status(201).json({ message: "ユーザー登録が完了しました。" });
   } catch (error) {
-    // 重複エラーをハンドリング
-    if (error.code === 'ER_DUP_ENTRY' && error.sqlMessage.includes('Users.username')) {
+    // 重複エラーをハンドリング（※PostgreSQL用に修正が必要な場合あり）
+    if (error.code === 'ER_DUP_ENTRY' && error.sqlMessage?.includes('Users.username')) {
       console.error("ユーザー名重複エラー:", error);
       return res.status(400).json({ message: "このユーザー名は既に使用されています。" });
     }
@@ -50,8 +53,11 @@ router.post("/sign_in", async (req, res) => {
   try {
     console.log("🔍 リクエスト内容:", req.body);
 
-    // ユーザーをデータベースから取得
-    const [userResult] = await db.query("SELECT * FROM Users WHERE email = ?", [email]); // 修正:テーブル名を大文字に変更
+    // ユーザーをデータベースから取得 (PostgreSQL 形式)
+    const { rows: userResult } = await db.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
     console.log("🔍 データベース結果:", userResult);
 
     // ユーザーが存在しない場合
@@ -61,7 +67,7 @@ router.post("/sign_in", async (req, res) => {
 
     const user = userResult[0];
 
-    // パスワードを検証（bcrypt + SHA-256）
+    // パスワードを検証（bcrypt）
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     console.log("🔍 パスワード一致:", isPasswordValid);
 
@@ -72,7 +78,7 @@ router.post("/sign_in", async (req, res) => {
     // JWT トークンを発行
     const token = jwt.sign(
       { id: user.id, email: user.email },
-      JWT_SECRET,
+      JWT_Secret,
       { expiresIn: "1h" }
     );
     console.log("🔍 JWT トークン:", token);
