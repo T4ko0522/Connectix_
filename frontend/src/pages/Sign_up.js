@@ -164,6 +164,7 @@ export default function SignUp(props) {
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
             サインアップ
+            (17日まで無効化)
           </Typography>
           <Box
             component="form"
