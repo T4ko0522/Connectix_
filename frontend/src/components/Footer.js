@@ -17,8 +17,21 @@ const Footer = () => {
         width: '100%',
       }}
     >
-      <Typography variant="body2">
-        2024 Copyright © Connectix
+      <Typography
+        variant="h3"
+        sx={{
+          mr: 8,
+          ml: 0,
+          display: { xs: 'none', md: 'flex' },
+          fontFamily: 'NotoSansJP, Arial, sans-serif',
+          fontSize: '15px',
+          fontWeight: 700,
+          letterSpacing: '.1rem',
+          color: 'inherit',
+          textDecoration: 'none',
+        }}
+      >
+        Copyright (C) 2025 Connectix. All Rights Reserved.
       </Typography>
     </Box>
   );
