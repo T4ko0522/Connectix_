@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,6 +15,7 @@ import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
 import AppTheme from '../shared/AppTheme.js';
+import { useNavigate } from 'react-router-dom';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -58,13 +60,17 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props) {
+  // Main.js から受け取る triggerAlert
+  const { triggerAlert } = props;
+  const navigate = useNavigate();
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState(''); // サインアップ成功メッセージ
+
+  // バリデーション
   const validateInputs = () => {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -72,7 +78,10 @@ export default function SignUp(props) {
 
     let isValid = true;
 
-    if (!email || !/^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z]{2})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email)) {
+    if (
+      !email ||
+      !/^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z]{2})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email)
+    ) {
       setEmailError(true);
       setEmailErrorMessage('有効なメールアドレスを入力してください。');
       isValid = false;
@@ -102,19 +111,20 @@ export default function SignUp(props) {
     return isValid;
   };
 
+  // フォーム送信
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateInputs()) return;
 
     const data = new FormData(event.currentTarget);
     try {
-      const response = await fetch("http://localhost:3522/api/auth/sign_up", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('https://connectix-server.vercel.app/api/auth/sign_up', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: data.get("name"),
-          email: data.get("email"),
-          password: data.get("password")
+          name: data.get('name'),
+          email: data.get('email'),
+          password: data.get('password'),
         }),
       });
 
@@ -130,11 +140,11 @@ export default function SignUp(props) {
         }
         return;
       }
-        setSuccessMessage("サインアップが成功しました！");
-        localStorage.setItem("token", result.token);
-        window.location.href = "/";
-      } catch (error) {
-        console.error("サーバーエラー:", error.message);
+      triggerAlert('success', '成功', 'サインアップが完了しました！');
+      localStorage.setItem('token', result.token);
+      navigate('/');
+    } catch (error) {
+      console.error('サーバーエラー:', error.message);
     }
   };
 
@@ -146,18 +156,13 @@ export default function SignUp(props) {
           <img
             src="./assets/image/logo512.png"
             alt="ロゴ"
-            style={{ width: '100px', height: '100px', margin: '0 auto' }} 
+            style={{ width: '100px', height: '100px', margin: '0 auto' }}
           />
           <Typography
             component="h1"
             variant="h4"
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-          >          
-          {successMessage && (
-            <Alert severity="success" sx={{ mb: 2 }}>
-              {successMessage}
-            </Alert>
-          )}
+          >
             サインアップ
           </Typography>
           <Box
@@ -251,3 +256,7 @@ export default function SignUp(props) {
     </AppTheme>
   );
 }
+
+SignUp.propTypes = {
+  triggerAlert: PropTypes.func.isRequired,
+};

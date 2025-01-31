@@ -1,10 +1,13 @@
+// Main.js
 import React, { useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import SignIn from './pages/Sign_in';
 import SignUp from './pages/Sign_up';
-import AnimatedAlert from './shared/AnimatedAlert'; // AnimatedAlert をインポート
+import AnimatedAlert from './shared/AnimatedAlert'; 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 const Main = () => {
@@ -26,10 +29,10 @@ const Main = () => {
       title,
       message,
     });
-
+    // 3秒後に自動で閉じたい場合は、ここで状態を戻す
     setTimeout(() => {
       setAlert((prev) => ({ ...prev, show: false }));
-    }, 3000); // 3秒後に非表示
+    }, 3000);
   };
 
   const noHeaderFooterRoutes = ['/sign-in', '/sign-up'];
@@ -38,11 +41,17 @@ const Main = () => {
   return (
     <div
       style={{
-        background: '#1e202c', // 背景色を変更
-        minHeight: '100vh', // コンテンツが少ない場合でも背景色がページ全体に適用されるように
+        background: '#1e202c',
+        minHeight: '100vh',
+        position: 'relative',
       }}
     >
       {showHeaderFooter && <Header />}
+      <ToastContainer
+        position="bottom-right"
+        style={{ zIndex: 9999 }}
+      />
+      {/* これが toast を制御するコンポーネント */}
       <AnimatedAlert
         show={alert.show}
         severity={alert.severity}

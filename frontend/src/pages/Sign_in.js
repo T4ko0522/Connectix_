@@ -1,5 +1,6 @@
-import * as React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';  // ← 追加
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -62,26 +63,29 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn(props) {
+  // Main.js から受け取る triggerAlert
+  const { triggerAlert } = props;
+  const navigate = useNavigate();
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [error, setError] = useState('');
   const [open, setOpen] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
 
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
+  // 入力バリデーション
   const validateInputs = () => {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
     let isValid = true;
-    if (!email || !/^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z]{2})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email)) {
+    if (
+      !email ||
+      !/^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z]{2})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email)
+    ) {
       setEmailError(true);
       setEmailErrorMessage('有効なメールアドレスを入力してください。');
       isValid = false;
@@ -102,6 +106,7 @@ export default function SignIn(props) {
     return isValid;
   };
 
+  // フォーム送信
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateInputs()) return;
@@ -109,22 +114,24 @@ export default function SignIn(props) {
 
     const data = new FormData(event.currentTarget);
     try {
-      const response = await fetch("http://localhost:3522/api/auth/sign_in", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.get("email"), password: data.get("password") }),
+      const response = await fetch('https://connectix-server.vercel.app/api/auth/sign_in', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: data.get('email'),
+          password: data.get('password'),
+        }),
       });
 
       const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.message || "サインインに失敗しました");
+        throw new Error(result.message || 'サインインに失敗しました');
       }
-
-      // JWT を適切に処理
-      localStorage.setItem("token", result.token);
-      window.location.href = "/";
-    } catch (error) {
-      setError(error.message);
+      localStorage.setItem('token', result.token);
+      triggerAlert('success', '成功', 'サインインが完了しました！');
+      navigate('/');
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -184,7 +191,6 @@ export default function SignIn(props) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                autoFocus
                 required
                 fullWidth
                 variant="outlined"
@@ -248,3 +254,7 @@ export default function SignIn(props) {
     </AppTheme>
   );
 }
+
+SignIn.propTypes = {
+  triggerAlert: PropTypes.func.isRequired,
+};
