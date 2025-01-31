@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import SignIn from './pages/Sign_in';
-import SignUp from './pages/Sign_up';
-import AnimatedAlert from './shared/AnimatedAlert'; 
+import { Route, Routes, useLocation, } from 'react-router-dom';
+import Header from './components/Header.jsx';
+import Footer from './components/Footer.jsx';
+import SignIn from './pages/Sign_in.jsx';
+import SignUp from './pages/Sign_up.jsx';
+import AnimatedAlert from './shared/AnimatedAlert.jsx'; 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -34,7 +34,6 @@ const Main = () => {
     }, 3000);
   };
 
-  // サインイン・サインアップ画面ではヘッダーとフッターを出さない
   const noHeaderFooterRoutes = ['/sign-in', '/sign-up'];
   const showHeaderFooter = !noHeaderFooterRoutes.includes(location.pathname);
 
@@ -59,20 +58,8 @@ const Main = () => {
         message={alert.message}
       />
       <Routes>
-        <Route
-          path="/sign-in"
-          element={<SignIn triggerAlert={triggerAlert} />}
-        />
-        <Route
-          path="/sign-up"
-          element={<SignUp triggerAlert={triggerAlert} />}
-        />
-
-        {/* 上記以外はすべて sign-in にリダイレクト */}
-        <Route
-          path="*"
-          element={<Navigate to="/sign-in" replace />}
-        />
+        <Route path="/sign-in" element={<SignIn triggerAlert={triggerAlert} />} />
+        <Route path="/sign-up" element={<SignUp triggerAlert={triggerAlert} />} />
       </Routes>
       {showHeaderFooter && <Footer />}
     </div>
