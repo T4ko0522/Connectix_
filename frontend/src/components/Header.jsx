@@ -18,14 +18,25 @@ const pages = ['機能', 'アップデート', 'お問い合わせ'];
 function Header() {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('jwt_token')); // ✅ 修正
   const [showAlert, setShowAlert] = useState(false);
 
   const settings = ['プロフィール', 'アカウント', '詳細設定', 'サインアウト'];
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
+    const checkAuth = () => {
+      const token = localStorage.getItem('jwt_token'); // ✅ 'token' ではなく 'jwt_token' をチェック
+      setIsLoggedIn(!!token);
+    };
+
+    checkAuth(); // 初回実行
+
+    // ✅ localStorage の変更を監視
+    window.addEventListener('storage', checkAuth);
+
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+    };
   }, []);
 
   const handleOpenUserMenu = (event) => {
@@ -37,7 +48,7 @@ function Header() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('jwt_token'); // ✅ 'token' ではなく 'jwt_token' を削除
     setIsLoggedIn(false);
     setShowAlert(true);
     setTimeout(() => {
