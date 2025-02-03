@@ -16,13 +16,7 @@ import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
 import AppTheme from '../shared/AppTheme.jsx';
-import { createClient } from '@supabase/supabase-js';
-// import { Auth } from '@supabase/auth-ui-react';
-
-const supabase = createClient(
-  'https://dqpxxswwezftomhngyfz.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxcHh4c3d3ZXpmdG9taG5neWZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyMTMyMjIsImV4cCI6MjA1Mzc4OTIyMn0._GOM3vuithAeRy0kS29mg-KBlezAq0IOql5bEMXlttU'
-);
+import { handleGoogleSignIn } from '../components/Auth.jsx';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -75,25 +69,7 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState('');
-  const [err, setError] = useState('');
-  const handleGoogleSignIn = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
-
-      if (error) {
-        throw error;
-      }
-    }
-    catch (error) {
-      setError('Google認証に失敗しました');
-      console.error('Google認証エラー:', err.message);
-    }
-  };
+  // const [err, setError] = useState('');
 
   const validateInputs = () => {
     const email = document.getElementById('email').value;
@@ -142,6 +118,8 @@ export default function SignUp(props) {
 
     const data = new FormData(event.currentTarget);
     try {
+      // TODO 実装時
+      // const response = await fetch ('https://connectix-server.vercel.app/api/auth/sign_up'), {
       const response = await fetch('http://localhost:3522/api/auth/sign_up', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

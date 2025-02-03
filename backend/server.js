@@ -34,35 +34,23 @@ app.use("/api/auth", authRoutes);
 
 // サーバー起動
 const PORT = process.env.PORT || 3522;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   logger.info(`🚀 サーバーが起動しました: http://localhost:${PORT}`);
   console.log(`🚀 サーバーが起動しました: http://localhost:${PORT}`);
-});
 
-// データベース接続確認
-(async () => {
-  let client;
+  // ✅ データベース接続を確認
   try {
-      console.log("🔍 データベース接続を確認中...");
-      client = await pool.connect(); // ✅ PostgreSQL の正しい接続方法
-
-      if (!client) {
-          throw new Error("データベース接続に失敗しました。接続オブジェクトが取得できません。");
-      }
-
+    console.log("🔍 データベース接続を確認中...");
+    const result = await pool.query("SELECT 1"); // ✅ `pool.connect()` ではなく `query()` を使用
+    if (result) {
       console.log("✅ データベースに接続しました");
       logger.info("✅ データベースに接続しました");
+    }
   } catch (err) {
-      logger.error("データベース接続エラー:", err);
-      console.error("❌ データベース接続エラー:", err.code, err.message);
-      console.error("🔍 エラースタック:", err.stack);
-  } finally {
-      if (client) {
-          client.release(); // ✅ 正しい変数名を使用
-          console.log("🔓 データベース接続を解放しました");
-      }
+    logger.error("❌ データベース接続エラー:", err.message);
+    console.error("❌ データベース接続エラー:", err.message);
   }
-})();
+});
 
 app.get("/", (req, res) => {
   res.send("API is running...");
