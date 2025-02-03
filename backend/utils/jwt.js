@@ -18,8 +18,12 @@ export function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     if (!authHeader) return res.status(401).json({ message: "認証エラー: トークンがありません" });
 
-    const token = authHeader.split(' ')[1]; 
-    if (!token) return res.status(401).json({ message: "認証エラー: トークンの形式が不正" });
+    const tokenParts = authHeader.split(' ');
+    if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+        return res.status(401).json({ message: "認証エラー: トークンの形式が不正" });
+    }
+
+    const token = tokenParts[1];
 
     jwt.verify(token, secretKey, (err, user) => {
         if (err) return res.status(403).json({ message: "認証エラー: 無効なトークン" });

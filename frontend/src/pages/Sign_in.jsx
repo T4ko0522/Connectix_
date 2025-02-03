@@ -152,11 +152,15 @@ export default function SignIn(props) {
       if (!response.ok) {
         throw new Error(result.message || 'サインインに失敗しました');
       }
-      localStorage.setItem('token', result.token);
-      triggerAlert('success', '成功', 'サインインが完了しました！');
-      navigate('/');
-    } catch (err) {
-      setError(err.message);
+      triggerAlert('success', '成功', 'サインアップが完了しました！');
+      if (result.token) {
+        localStorage.setItem('jwt_token', result.token); // ✅ "jwt_token" に統一
+        navigate('/');
+      } else {
+        console.error("JWT の取得に失敗しました:", result);
+      }
+    } catch (error) {
+      console.error('サーバーエラー:', error.message);
     }
   };
 

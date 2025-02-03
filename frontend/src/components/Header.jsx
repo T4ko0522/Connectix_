@@ -25,9 +25,9 @@ function Header() {
 
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem('jwt_token'); // ✅ 'token' ではなく 'jwt_token' をチェック
+      const token = localStorage.getItem("jwt_token"); // ✅ 'jwt_token' に統一
       setIsLoggedIn(!!token);
-    };
+    };    
 
     checkAuth(); // 初回実行
 

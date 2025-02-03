@@ -143,8 +143,12 @@ export default function SignUp(props) {
         return;
       }
       triggerAlert('success', '成功', 'サインアップが完了しました！');
-      localStorage.setItem('token', result.token);
-      navigate('/');
+      if (result.token) {
+        localStorage.setItem('jwt_token', result.token); // ✅ "jwt_token" に統一
+        navigate('/');
+      } else {
+        console.error("JWT の取得に失敗しました:", result);
+      }
     } catch (error) {
       console.error('サーバーエラー:', error.message);
     }
