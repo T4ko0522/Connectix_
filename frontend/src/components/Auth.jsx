@@ -17,10 +17,12 @@ export const handleGoogleSignIn = async () => {
 
       if (token) {
         try {
+          // ✅ localStorage に JWT を保存
+          localStorage.setItem("auth_token", token);
+
           // バックエンドに送信してJWTを取得
-          // TODO 実装時
-          // const response = await fetch("https://connectix-server.vercel.app/auth/google-auth", {
-          const response = await fetch("http://localhost:3522/auth/google-auth", {
+          const response = await fetch("https://connectix-server.vercel.app/auth/google-auth", {
+          // const response = await fetch("http://localhost:3522/auth/google-auth", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ token }),
@@ -29,8 +31,8 @@ export const handleGoogleSignIn = async () => {
           const result = await response.json();
 
           if (result.jwt) {
-            // JWTをlocalStorageに保存
-            localStorage.setItem("auth_token", result.jwt);
+            // ✅ バックエンドから取得した JWT を `localStorage` に保存
+            localStorage.setItem("jwt_token", result.jwt);
           }
         } catch (err) {
           console.error("JWT取得エラー:", err);
