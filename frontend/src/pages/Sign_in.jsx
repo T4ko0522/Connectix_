@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';  // ← 追加
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -15,10 +15,16 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import ForgotPassword from './ForgotPassword';
+import ForgotPassword from './ForgotPassword.jsx';
 import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
-import AppTheme from '../shared/AppTheme.js';
+import AppTheme from '../shared/AppTheme.jsx';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  'https://dqpxxswwezftomhngyfz.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxcHh4c3d3ZXpmdG9taG5neWZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyMTMyMjIsImV4cCI6MjA1Mzc4OTIyMn0._GOM3vuithAeRy0kS29mg-KBlezAq0IOql5bEMXlttU'
+);
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -63,15 +69,32 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn(props) {
-  // Main.js から受け取る triggerAlert
   const { triggerAlert } = props;
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-  const [error, setError] = useState('');
+  const [err, setError] = useState('');
   const [open, setOpen] = useState(false);
+  const handleGoogleSignUp = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+
+      if (error) {
+        throw err;
+      }
+    }
+    catch (error) {
+      setError('Google認証に失敗しました');
+      console.error('Google認証エラー:', error.message);
+    }
+  };
 
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -114,7 +137,9 @@ export default function SignIn(props) {
 
     const data = new FormData(event.currentTarget);
     try {
-      const response = await fetch('https://connectix-server.vercel.app/api/auth/sign_in', {
+      // TODO 実装時
+      // const response = await fetch('https://connectix-server.vercel.app/api/auth/sign_in', {
+      const response = await fetch('http://localhost:3522/api/auth/sign_in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -151,9 +176,8 @@ export default function SignIn(props) {
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
             サインイン
-            (17日まで無効化)
           </Typography>
-          {error && <Typography color="error">{error}</Typography>} {/* 🟢 追加: API エラーメッセージ表示 */}
+          {err && <Typography color="error">{err}</Typography>}
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -207,18 +231,15 @@ export default function SignIn(props) {
               type="submit"
               fullWidth
               variant="contained"
-              disabled // 17日まで無効化
               onClick={validateInputs}
             >
               サインイン
-              (17日まで無効化)
             </Button>
             <Link
               component="button"
               type="button"
               onClick={handleClickOpen}
               variant="body2"
-              disabled // 17日まで無効化
               sx={{ alignSelf: 'center' }}
             >
               パスワードを忘れましたか？
@@ -229,7 +250,7 @@ export default function SignIn(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('まだ未実装です。いずれ実装します。')}
+              onClick={handleGoogleSignUp}
               startIcon={<GoogleIcon />}
             >
               Googleでサインイン
@@ -247,7 +268,6 @@ export default function SignIn(props) {
             <Link
                 href="/sign-up"
                 variant="body2"
-                disabled // 17日まで無効化
                 sx={{ alignSelf: 'center' }}
               >
                 Connectixに登録する

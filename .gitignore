@@ -8,9 +8,8 @@ Desktop.ini
 .env
 
 # Node.js関連
-backend/node_modules
-frontend/node_modules
-
+node_modules
+package-lock.json
 
 #Docker関連
 # .dockerignore

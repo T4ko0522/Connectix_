@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,8 +15,8 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
-import AppTheme from '../shared/AppTheme.js';
-import { useNavigate } from 'react-router-dom';
+import AppTheme from '../shared/AppTheme.jsx';
+import { handleGoogleSignIn } from '../components/Auth.jsx';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -60,7 +61,6 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props) {
-  // Main.js から受け取る triggerAlert
   const { triggerAlert } = props;
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState(false);
@@ -69,8 +69,8 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState('');
+  // const [err, setError] = useState('');
 
-  // バリデーション
   const validateInputs = () => {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -118,7 +118,9 @@ export default function SignUp(props) {
 
     const data = new FormData(event.currentTarget);
     try {
-      const response = await fetch('https://connectix-server.vercel.app/api/auth/sign_up', {
+      // TODO 実装時
+      // const response = await fetch ('https://connectix-server.vercel.app/api/auth/sign_up'), {
+      const response = await fetch('http://localhost:3522/api/auth/sign_up', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -164,7 +166,6 @@ export default function SignUp(props) {
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
             サインアップ
-            (17日まで無効化)
           </Typography>
           <Box
             component="form"
@@ -216,11 +217,9 @@ export default function SignUp(props) {
             <Button
               type="submit"
               fullWidth
-              disabled
               variant="contained"
             >
               サインアップ
-              (17日まで無効化)
             </Button>
           </Box>
           <Divider>
@@ -230,7 +229,7 @@ export default function SignUp(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('まだ未実装です。いずれ実装します。')}
+              onClick={handleGoogleSignIn}
               startIcon={<GoogleIcon />}
             >
               Googleでサインアップ

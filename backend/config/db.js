@@ -8,17 +8,24 @@ const { Pool } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, "../config/.env") });
+dotenv.config({ path: path.resolve(__dirname, "./.env") });
 
 log4js.configure(path.resolve(__dirname, "../log4js-config.json"));
 const logger = log4js.getLogger();
 
-// ✅ NODE_TLS_REJECT_UNAUTHORIZED を 0 に設定（自己署名証明書を許可）
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
+// ✅ PostgreSQL 接続設定（エラーハンドリング追加）
 const pool = new Pool({
-    connectionString: process.env.POSTGRES_URL,
-    ssl: { rejectUnauthorized: false }, // ✅ SSL の自己署名証明書を許可
+    connectionString: process.env.POSTGRES_URL.replace("sslmode=require", "sslmode=no-verify"),
+    ssl: { rejectUnauthorized: false },
 });
+
+// ✅ 接続テスト（接続を即座に開放しない）
+pool.query("SELECT NOW()")
+    .then((res) => {
+        logger.info("✅ データベース接続成功:", res.rows[0]);
+    })
+    .catch((err) => {
+        logger.error("❌ データベース接続エラー:", err);
+    });
 
 export default pool;

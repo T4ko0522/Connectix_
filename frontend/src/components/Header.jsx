@@ -11,7 +11,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AnimatedAlert from '../shared/AnimatedAlert.js';
+import AnimatedAlert from '../shared/AnimatedAlert.jsx';
 
 const pages = ['機能', 'アップデート', 'お問い合わせ'];
 

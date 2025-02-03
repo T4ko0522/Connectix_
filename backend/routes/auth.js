@@ -8,7 +8,9 @@ dotenv.config({ path: '../config/.env' });
 
 const router = express.Router();
 const saltRounds = 12;
-const JWT_Secret = process.env.JWT_Secret || "JWT_Secret"; // JWTキー
+const JWT_Secret = process.env.JWT_Secret || "JWT_Secret";
+const SUPABASE_URL = process.env.SUPABASE_URL || "SUPABASE_URL";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY  || "SUPABASE_ANON_KEY";
 
 // Sign Up
 router.post("/sign_up", async (req, res) => {
@@ -88,6 +90,60 @@ router.post("/sign_in", async (req, res) => {
   } catch (error) {
     console.error("ログインエラー:", error); // 詳細ログを出力
     res.status(500).json({ message: "サーバーエラー" });
+  }
+});
+
+// Google Auth
+router.post("/google-auth", async (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ message: "トークンが提供されていません。" });
+  }
+
+  try {
+    // SupabaseのAPIを使用してユーザー情報を取得
+    const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apiKey: SUPABASE_ANON_KEY, // APIキーを追加
+      },
+    });
+
+    const user = await userResponse.json();
+
+    if (!user || !user.email) {
+      return res.status(401).json({ message: "無効なユーザー情報" });
+    }
+
+    // データベースにユーザーが存在するか確認
+    const { rows: existingUser } = await db.query(
+      "SELECT * FROM users WHERE email = $1",
+      [user.email]
+    );
+
+    let userId;
+    if (existingUser.length > 0) {
+      // 既存のユーザーがいる場合
+      userId = existingUser[0].id;
+    } else {
+      // 新規ユーザーをデータベースに登録
+      const newUser = await db.query(
+        "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
+        [user.email.split("@")[0], user.email, "GOOGLE_AUTH"]
+      );
+      userId = newUser.rows[0].id;
+    }
+
+    // JWT を発行
+    const jwtToken = jwt.sign({ id: userId, email: user.email }, JWT_Secret, {
+      expiresIn: "1h",
+    });
+
+    res.json({ jwt: jwtToken });
+  } catch (error) {
+    console.error("Google認証エラー:", error);
+    res.status(500).json({ message: "Google 認証に失敗しました。" });
   }
 });
 
