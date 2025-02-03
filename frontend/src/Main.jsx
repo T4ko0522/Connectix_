@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, useLocation, } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'; // ✅ `useNavigate` をインポート
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import SignIn from './pages/Sign_in.jsx';
@@ -10,8 +10,19 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
+const AuthCallback = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    handleAuthCallback().then(() => navigate("/")); // ✅ 認証後にトップページへリダイレクト
+  }, []);
+
+  return null; // ✅ 画面に何も表示しない
+};
+
 const Main = () => {
   const location = useLocation();
+
   useEffect(() => {
     if (window.location.hash.includes("access_token")) {
       handleAuthCallback(); // ✅ Google認証後の処理を実行
@@ -34,7 +45,7 @@ const Main = () => {
       title,
       message,
     });
-    // 3秒後に自動で閉じたい場合は、ここで状態を戻す
+    // 3秒後に自動で閉じる
     setTimeout(() => {
       setAlert((prev) => ({ ...prev, show: false }));
     }, 3000);
@@ -52,11 +63,7 @@ const Main = () => {
       }}
     >
       {showHeaderFooter && <Header />}
-      <ToastContainer
-        position="bottom-right"
-        style={{ zIndex: 9999 }}
-      />
-      {/* これが toast を制御するコンポーネント */}
+      <ToastContainer position="bottom-right" style={{ zIndex: 9999 }} />
       <AnimatedAlert
         show={alert.show}
         severity={alert.severity}
@@ -64,6 +71,7 @@ const Main = () => {
         message={alert.message}
       />
       <Routes>
+        <Route path="/auth/callback" element={<AuthCallback />} />
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/sign-in" element={<SignIn triggerAlert={triggerAlert} />} />
         <Route path="/sign-up" element={<SignUp triggerAlert={triggerAlert} />} />

@@ -16,25 +16,28 @@ export const handleGoogleSignIn = async () => {
 
 // ✅ Google認証後のURLからトークンを取得して処理する関数
 export const handleAuthCallback = async () => {
-  const hashParams = new URLSearchParams(window.location.hash.substring(1)); // "#access_token=..." をパース
+  const hashParams = new URLSearchParams(window.location.hash.substring(1));
   const accessToken = hashParams.get("access_token");
 
   if (accessToken) {
-    localStorage.setItem("supabase_token", accessToken); // ✅ Supabaseのトークンを保存
+    localStorage.setItem("supabase_token", accessToken);
 
     try {
-      // 🔵 バックエンドにJWTをリクエスト
-      const response = await fetch("https://connectix-server.vercel.app/auth/google-auth", {
+      const response = await fetch("https://connectix-server.vercel.app/api/auth/google-auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: accessToken }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTPエラー: ${response.status}`);
+      }
+
       const result = await response.json();
 
       if (result.jwt) {
-        localStorage.setItem("jwt_token", result.jwt); // ✅ JWTをlocalStorageに保存
-        window.location.replace("/"); // ✅ ホーム画面にリダイレクト
+        localStorage.setItem("jwt_token", result.jwt);
+        window.location.replace("/");
       } else {
         console.error("JWTの取得に失敗:", result);
       }
