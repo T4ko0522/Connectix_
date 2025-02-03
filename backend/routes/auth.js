@@ -99,7 +99,7 @@ router.post("/sign_in", async (req, res) => {
 });
 
 // Google Auth
-router.post("/google-auth", async (req, res) => {
+router.post("/api/auth/google_auth", async (req, res) => {
   const { token } = req.body;
 
   if (!token) {
