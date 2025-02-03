@@ -14,10 +14,12 @@ const AuthCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    handleAuthCallback().then(() => navigate("/")); // ✅ 認証後にトップページへリダイレクト
+    if (window.location.hash.includes("access_token")) {
+      handleAuthCallback().then(() => navigate("/")); // ✅ 認証後にトップページへリダイレクト
+    }
   }, []);
 
-  return null; // ✅ 画面に何も表示しない
+  return <p>Google 認証処理中...</p>;
 };
 
 const Main = () => {

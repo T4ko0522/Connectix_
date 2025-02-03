@@ -19,30 +19,33 @@ export const handleAuthCallback = async () => {
   const hashParams = new URLSearchParams(window.location.hash.substring(1));
   const accessToken = hashParams.get("access_token");
 
-  if (accessToken) {
-    localStorage.setItem("supabase_token", accessToken);
+  if (!accessToken) {
+    console.error("Google Auth 失敗: access_token が見つかりません");
+    return;
+  }
 
-    try {
-      const response = await fetch("https://connectix-server.vercel.app/api/auth/google-auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: accessToken }),
-      });
+  localStorage.setItem("supabase_token", accessToken); // ✅ Supabase のトークンを保存
 
-      if (!response.ok) {
-        throw new Error(`HTTPエラー: ${response.status}`);
-      }
+  try {
+    const response = await fetch("https://connectix-server.vercel.app/api/auth/google_auth", { // ✅ 修正
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: accessToken }),
+    });
 
-      const result = await response.json();
-
-      if (result.jwt) {
-        localStorage.setItem("jwt_token", result.jwt);
-        window.location.replace("/");
-      } else {
-        console.error("JWTの取得に失敗:", result);
-      }
-    } catch (err) {
-      console.error("Google Auth コールバックエラー:", err);
+    if (!response.ok) {
+      throw new Error(`HTTPエラー: ${response.status}`);
     }
+
+    const result = await response.json();
+
+    if (result.jwt) {
+      localStorage.setItem("jwt_token", result.jwt);
+      window.location.replace("/"); // ✅ ホーム画面にリダイレクト
+    } else {
+      console.error("JWTの取得に失敗:", result);
+    }
+  } catch (err) {
+    console.error("Google Auth コールバックエラー:", err);
   }
 };
