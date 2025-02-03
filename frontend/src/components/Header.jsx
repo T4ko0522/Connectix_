@@ -24,8 +24,9 @@ function Header() {
   const settings = ['プロフィール', 'アカウント', '詳細設定', 'サインアウト'];
 
   useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem("jwt_token"); // ✅ 'jwt_token' に統一
+    const checkAuth = (event) => {
+      if (event && event.key !== 'jwt_token') return; // ✅ `jwt_token` の変更のみ監視
+      const token = localStorage.getItem('jwt_token');
       setIsLoggedIn(!!token);
     };    
 

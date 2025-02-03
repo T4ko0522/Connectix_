@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes, useLocation, } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import SignIn from './pages/Sign_in.jsx';
 import SignUp from './pages/Sign_up.jsx';
+import { handleAuthCallback } from "./components/Auth"; // ✅ 追加
 import AnimatedAlert from './shared/AnimatedAlert.jsx'; 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,6 +12,11 @@ import './App.css';
 
 const Main = () => {
   const location = useLocation();
+  useEffect(() => {
+    if (window.location.hash.includes("access_token")) {
+      handleAuthCallback(); // ✅ Google認証後の処理を実行
+    }
+  }, []);
 
   // アラートの状態を管理
   const [alert, setAlert] = useState({
@@ -58,6 +64,7 @@ const Main = () => {
         message={alert.message}
       />
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<SignIn triggerAlert={triggerAlert} />} />
         <Route path="/sign-up" element={<SignUp triggerAlert={triggerAlert} />} />
       </Routes>

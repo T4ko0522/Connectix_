@@ -27,15 +27,20 @@ router.post("/sign_up", async (req, res) => {
     }
 
     // パスワードのハッシュ化
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     // データベースに保存
-    await db.query(
-      "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)",
+    const newUser = await db.query(
+      "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
       [name, email, hashedPassword]
     );
 
-    res.status(201).json({ message: "ユーザー登録が完了しました。" });
+    const userId = newUser.rows[0].id;
+
+    // ✅ JWT を発行
+    const token = jwt.sign({ id: userId, email }, JWT_Secret, { expiresIn: "1h" });
+
+    res.status(201).json({ message: "ユーザー登録が完了しました。", token }); // ✅ JWT を返す
   } catch (error) {
     // 重複エラーをハンドリング（※PostgreSQL用に修正が必要な場合あり）
     if (error.code === 'ER_DUP_ENTRY' && error.sqlMessage?.includes('Users.username')) {

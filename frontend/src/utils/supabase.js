@@ -7,4 +7,6 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   throw new Error("Supabase_URLまたはANON_KEYが設定されていません。環境変数を確認してください。");
 }
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+export { supabase };
