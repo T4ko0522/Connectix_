@@ -1,14 +1,14 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import db from "../config/db.js";
+import { generateToken } from "../utils/jwt.js"; // ✅ jwt.js を使用
 import dotenv from 'dotenv';
+import fetch from 'node-fetch';
 
 dotenv.config({ path: '../config/.env' });
 
 const router = express.Router();
 const saltRounds = 12;
-const JWT_Secret = process.env.JWT_Secret || "JWT_Secret";
 const SUPABASE_URL = process.env.SUPABASE_URL || "SUPABASE_URL";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY  || "SUPABASE_ANON_KEY";
 
@@ -27,7 +27,7 @@ router.post("/sign_up", async (req, res) => {
     }
 
     // パスワードのハッシュ化
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // データベースに保存
     const newUser = await db.query(
@@ -38,7 +38,7 @@ router.post("/sign_up", async (req, res) => {
     const userId = newUser.rows[0].id;
 
     // ✅ JWT を発行
-    const token = jwt.sign({ id: userId, email }, JWT_Secret, { expiresIn: "1h" });
+    const token = generateToken({ id: userId, email });
 
     res.status(201).json({ message: "ユーザー登録が完了しました。", token }); // ✅ JWT を返す
   } catch (error) {
@@ -83,11 +83,8 @@ router.post("/sign_in", async (req, res) => {
     }
 
     // JWT トークンを発行
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      JWT_Secret,
-      { expiresIn: "1h" }
-    );
+    const token = generateToken({ id: user.id, email: user.email });
+
     console.log("🔍 JWT トークン:", token);
 
     // サインイン成功
@@ -103,8 +100,11 @@ router.post("/google_auth", async (req, res) => {
   const { token } = req.body;
 
   if (!token) {
+    console.error("❌ Google Auth 失敗: トークンが提供されていません");
     return res.status(400).json({ message: "トークンが提供されていません。" });
   }
+
+  console.log("✅ 受け取ったトークン:", token);
 
   try {
     const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
@@ -115,18 +115,20 @@ router.post("/google_auth", async (req, res) => {
     });
 
     if (!userResponse.ok) {
+      console.error("❌ Supabase 認証エラー:", await userResponse.text());
       return res.status(401).json({ message: "Supabase 認証エラー" });
     }
 
     const user = await userResponse.json();
+    console.log("✅ Supabase ユーザー:", user);
 
     if (!user || !user.email) {
       return res.status(401).json({ message: "無効なユーザー情報" });
     }
 
+    let userId;
     const { rows: existingUser } = await db.query("SELECT * FROM users WHERE email = $1", [user.email]);
 
-    let userId;
     if (existingUser.length > 0) {
       userId = existingUser[0].id;
     } else {
@@ -137,11 +139,11 @@ router.post("/google_auth", async (req, res) => {
       userId = newUser.rows[0].id;
     }
 
-    const jwtToken = jwt.sign({ id: userId, email: user.email }, JWT_Secret, { expiresIn: "1h" });
+    const jwtToken = generateToken({ id: userId, email: user.email });
 
     res.json({ jwt: jwtToken });
   } catch (error) {
-    console.error("Google認証エラー:", error);
+    console.error("❌ Google認証エラー:", error);
     res.status(500).json({ message: "Google 認証に失敗しました。" });
   }
 });

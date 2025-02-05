@@ -1,4 +1,6 @@
-import { supabase } from "../utils/supabase";
+import { supabase } from "../utils/supabase.js";
+
+// const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
 export const handleGoogleSignIn = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
@@ -24,14 +26,17 @@ export const handleAuthCallback = async () => {
     return;
   }
 
-  localStorage.setItem("supabase_token", accessToken); // ✅ Supabase のトークンを保存
+  localStorage.setItem("supabase_token", accessToken);
 
   try {
-    const response = await fetch("https://connectix-server.vercel.app/api/auth/google_auth", { // ✅ 修正
+    // const response = await fetch("https://connectix-server.vercel.app/api/auth/google_auth", {
+    const response = await fetch("http://localhost:3522/api/auth/google_auth", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ token: accessToken }),
-    });
+    });    
 
     if (!response.ok) {
       throw new Error(`HTTPエラー: ${response.status}`);
@@ -41,7 +46,7 @@ export const handleAuthCallback = async () => {
 
     if (result.jwt) {
       localStorage.setItem("jwt_token", result.jwt);
-      window.location.replace("/"); // ✅ ホーム画面にリダイレクト
+      window.location.replace("/");
     } else {
       console.error("JWTの取得に失敗:", result);
     }
