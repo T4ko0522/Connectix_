@@ -4,12 +4,16 @@ import { supabase } from "../utils/supabase.js";
 
 export const handleGoogleSignIn = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
+    provider: 'google',
     options: {
-      redirectTo: window.location.origin + "/auth/callback", // ✅ 修正：リダイレクトURLを指定
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+        redirectTo: window.location.origin + "/auth/callback",
+      },
     },
   });
-
+  
   if (error) {
     console.error("Google Sign-In Error:", error.message);
     return;
