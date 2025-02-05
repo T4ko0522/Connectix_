@@ -5,15 +5,57 @@
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+.DS_Store
 .env
 
 # Node.js関連
 node_modules
 package-lock.json
 
-#Docker関連
-# .dockerignore
-docker-entrypoint-initdb.d/001_setup.sql
+# TypeScript
+*.tsbuildinfo
 
+# MarkDown
+Backend.md
 TODO.md
 *.log
+
+# Logs
+*.log
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# dotenv environment variables file
+.env.test
+.env.production
+
+# Parcel-bundler cache
+.cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build output
+.nuxt
+
+# Gatsby files
+.cache/
+
+# Vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
