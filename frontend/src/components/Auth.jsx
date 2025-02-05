@@ -29,8 +29,8 @@ export const handleAuthCallback = async () => {
   localStorage.setItem("supabase_token", accessToken);
 
   try {
-    // const response = await fetch("https://connectix-server.vercel.app/api/auth/google_auth", {
-    const response = await fetch("http://localhost:3522/api/auth/google_auth", {
+    const response = await fetch("https://connectix-server.vercel.app/api/auth/google_auth", {
+    // const response = await fetch("http://localhost:3522/api/auth/google_auth", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
