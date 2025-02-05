@@ -8,7 +8,10 @@ const { Pool } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, "./.env") });
+// ローカル
+// dotenv.config({ path: path.resolve(__dirname, "./.env") });
+// Vercel
+dotenv.config();
 
 log4js.configure(path.resolve(__dirname, "../log4js-config.json"));
 const logger = log4js.getLogger();

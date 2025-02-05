@@ -4,8 +4,10 @@ import db from "../config/db.js";
 import { generateToken } from "../utils/jwt.js"; // ✅ jwt.js を使用
 import dotenv from 'dotenv';
 import fetch from 'node-fetch';
-
-dotenv.config({ path: '../config/.env' });
+// ローカル
+// dotenv.config({ path: '../config/.env' });
+//Vercel
+dotenv.config();
 
 const router = express.Router();
 const saltRounds = 12;

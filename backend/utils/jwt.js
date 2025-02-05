@@ -6,7 +6,10 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, "../config/.env") });
+// ローカル
+// dotenv.config({ path: path.resolve(__dirname, "../config/.env") });
+//Vercel
+dotenv.config();
 
 const secretKey = process.env.JWT_Secret;
 

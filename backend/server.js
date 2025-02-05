@@ -13,8 +13,10 @@ import authRoutes from "./routes/auth.js"; // 認証
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
+// ローカル
+// dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
+// Vercel
+dotenv.config();
 
 console.log("🔍 POSTGRES_URL:", process.env.POSTGRES_URL);
 
