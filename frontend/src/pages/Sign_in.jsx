@@ -19,12 +19,7 @@ import ForgotPassword from './ForgotPassword.jsx';
 import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
 import AppTheme from '../shared/AppTheme.jsx';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  'https://dqpxxswwezftomhngyfz.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxcHh4c3d3ZXpmdG9taG5neWZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyMTMyMjIsImV4cCI6MjA1Mzc4OTIyMn0._GOM3vuithAeRy0kS29mg-KBlezAq0IOql5bEMXlttU'
-);
+import { handleGoogleSignIn } from '../components/Auth.jsx';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -77,25 +72,6 @@ export default function SignIn(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [err, setError] = useState('');
   const [open, setOpen] = useState(false);
-  const handleGoogleSignUp = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
-
-      if (error) {
-        throw err;
-      }
-    }
-    catch (error) {
-      setError('Google認証に失敗しました');
-      console.error('Google認証エラー:', error.message);
-    }
-  };
-
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -254,7 +230,7 @@ export default function SignIn(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={handleGoogleSignUp}
+              onClick={handleGoogleSignIn}
               startIcon={<GoogleIcon />}
             >
               Googleでサインイン

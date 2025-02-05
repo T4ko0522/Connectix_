@@ -12,6 +12,9 @@ const saltRounds = 12;
 const SUPABASE_URL = process.env.SUPABASE_URL || "SUPABASE_URL";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY  || "SUPABASE_ANON_KEY";
 
+console.log("🔍Supabase_Anon_Key :", SUPABASE_ANON_KEY)
+console.log("🔍Supabase_URL :", SUPABASE_URL)
+
 // Sign Up
 router.post("/sign_up", async (req, res) => {
   const { name, email, password } = req.body;
