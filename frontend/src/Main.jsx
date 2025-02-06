@@ -4,6 +4,8 @@ import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import SignIn from './pages/Sign_in.jsx';
 import SignUp from './pages/Sign_up.jsx';
+import Home from './pages/Home.jsx';
+import VerifyEmail from './pages/verifyEmail.jsx';
 import { handleAuthCallback } from "./components/Auth.jsx";
 import AnimatedAlert from './shared/AnimatedAlert.jsx'; 
 import { ToastContainer } from 'react-toastify';
@@ -73,8 +75,9 @@ const Main = () => {
         message={alert.message}
       />
       <Routes>
+        <Route path="/verify-email" element={<VerifyEmail triggerAlert={triggerAlert} />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<SignIn triggerAlert={triggerAlert} />} />
         <Route path="/sign-up" element={<SignUp triggerAlert={triggerAlert} />} />
       </Routes>

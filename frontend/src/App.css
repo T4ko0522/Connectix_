@@ -58,6 +58,20 @@
   font-style: normal; /* スタイルを指定 */
 }
 
+@font-face {
+  font-family: 'RobotoCondensed-Italic';
+  src: url('../public/assets/fonts/RobotoCondensed-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400; /* ウェイトを指定 */
+  font-style: normal; /* スタイルを指定 */
+}
+
+@font-face {
+  font-family: 'RobotoCondensed';
+  src: url('../public/assets/fonts/RobotoCondensed-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400; /* ウェイトを指定 */
+  font-style: normal; /* スタイルを指定 */
+}
+
 html, body {
   margin: 0;
   padding: 0;

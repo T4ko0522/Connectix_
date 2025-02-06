@@ -23,7 +23,7 @@ const Footer = () => {
           mr: 8,
           ml: 0,
           display: { xs: 'none', md: 'flex' },
-          fontFamily: 'NotoSansJP, Arial, sans-serif',
+          fontFamily: 'RobotoCondensed-Italic, RobotoCondensed, NotoSansJP, Arial, sans-serif',
           fontSize: '15px',
           fontWeight: 700,
           letterSpacing: '.1rem',
