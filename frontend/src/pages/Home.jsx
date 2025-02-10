@@ -17,7 +17,7 @@ export default function Home() {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #9575cd 0%, #7986cb 100%)",
+        background: "linear-gradient(135deg, #1e202c 0%, #6e729d 100%)",
         pt: 8,
       }}
     >
@@ -44,7 +44,7 @@ export default function Home() {
                 fontSize: { xs: "2.5rem", md: "3.5rem" },
               }}
             >
-              好きなリンク名、<br/>
+              好きなリンク名<br/>
               直感的なUI
             </Typography>
 
@@ -76,18 +76,19 @@ export default function Home() {
                   />
                   <Button
                     variant="contained"
+                    multiline={false}
                     onClick={() =>
                       navigate('/sign-up')
                     }
                     sx={{
+                      whiteSpace: "nowrap",
                       backgroundColor: "#1e202c",
                       "&:hover": {
                         backgroundColor: "#2a2d3d",
                       },
                     }}
                   >
-                    今すぐ<br/>
-                    始める
+                    今すぐ始める
                   </Button>
                 </Box>
               </CardContent>
@@ -122,9 +123,10 @@ export default function Home() {
                 <Button
                   fullWidth
                   variant="outlined"
-                  startIcon={<InstagramIcon />}
                   sx={{
-                    display: "inline",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center", // アイコンとテキストを左揃え
                     textTransform: "none",
                     color: "#1e202c",
                     borderColor: "#1e202c",
@@ -134,14 +136,15 @@ export default function Home() {
                     },
                   }}
                 >
-                  Instagram
+                  <InstagramIcon sx={{ mr: 1 }} /> Instagram
                 </Button>
                 <Button
                   fullWidth
                   variant="outlined"
-                  startIcon={<YouTube />}
                   sx={{
-                    display: "inline",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     textTransform: "none",
                     color: "#1e202c",
                     borderColor: "#1e202c",
@@ -151,14 +154,15 @@ export default function Home() {
                     },
                   }}
                 >
-                  YouTube
+                  <YouTube sx={{ mr: 1 }} /> YouTube
                 </Button>
                 <Button
                   fullWidth
                   variant="outlined"
-                  startIcon={<Twitter />}
                   sx={{
-                    display: "inline",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     textTransform: "none",
                     color: "#1e202c",
                     borderColor: "#1e202c",
@@ -168,7 +172,7 @@ export default function Home() {
                     },
                   }}
                 >
-                  Twitter
+                  <Twitter sx={{ mr: 1 }} /> Twitter
                 </Button>
               </Box>
             </Card>

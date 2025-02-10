@@ -6,6 +6,7 @@ import SignIn from './pages/Sign_in.jsx';
 import SignUp from './pages/Sign_up.jsx';
 import Home from './pages/Home.jsx';
 import VerifyEmail from './pages/verifyEmail.jsx';
+import NotFound from './pages/404.jsx';
 import { handleAuthCallback } from "./components/Auth.jsx";
 import AnimatedAlert from './shared/AnimatedAlert.jsx'; 
 import { ToastContainer } from 'react-toastify';
@@ -75,6 +76,7 @@ const Main = () => {
         message={alert.message}
       />
       <Routes>
+        <Route path="*" element={<NotFound />} />
         <Route path="/verify-email" element={<VerifyEmail triggerAlert={triggerAlert} />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/" element={<Home />} />
