@@ -140,7 +140,7 @@ export default function SignUp(props) {
             setNameErrorMessage("このユーザー名は既に使用されています。");
           } else if (result.message === "このユーザー名は使用できません。") {
           setNameError(true);
-          setNameErrorMessage("ユーザー名に禁止ワードが含まれています。");
+          setNameErrorMessage("ユーザー名が3文字以下、または禁止ワードが含まれています。");
           }
           return;
         }
