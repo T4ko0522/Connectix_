@@ -113,32 +113,39 @@ export default function SignIn(props) {
 
     const data = new FormData(event.currentTarget);
     try {
-      // TODO 実装時
-      const response = await fetch('https://connectix-server.vercel.app/api/auth/sign_in', {
-      // const response = await fetch('http://localhost:3522/api/auth/sign_in', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: data.get('email'),
-          password: data.get('password'),
-        }),
-      });
+        // const response = await fetch('https://connectix-server.vercel.app/api/auth/sign_in', {
+        const response = await fetch("http://localhost:3522/api/auth/sign_in", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: data.get("email"),
+                password: data.get("password"),
+            }),
+        });
 
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.message || 'サインインに失敗しました');
-      }
-      triggerAlert('success', '成功', 'サインアップが完了しました！');
-      if (result.token) {
-        localStorage.setItem('jwt_token', result.token); // ✅ "jwt_token" に統一
-        navigate('/');
+        const result = await response.json();
+
+        if (!response.ok) {
+            if (result.message.includes("未認証")) {
+                triggerAlert('error','failed','メール認証が完了していません。認証メールを確認してください。');
+                return;
+            }
+            throw new Error(result.message || "サインインに失敗しました");
+        }
+
+        triggerAlert('success','成功','サインイン成功しました！');
+        if (result.token) {
+          localStorage.setItem("jwt_token", result.token);
+          triggerAlert('success', '成功', 'サインイン成功しました！');
+          navigate("/");
       } else {
-        console.error("JWT の取得に失敗しました:", result);
-      }
+          triggerAlert('error', '失敗', 'JWTの取得に失敗しました。');
+      }    
+        navigate("/");
     } catch (error) {
-      console.error('サーバーエラー:', error.message);
+        console.error("サーバーエラー:", error.message);
     }
-  };
+};
 
   return (
     <AppTheme {...props}>
@@ -219,7 +226,7 @@ export default function SignIn(props) {
               component="button"
               type="button"
               onClick={handleClickOpen}
-              variant="body2"
+              variant="body3"
               sx={{ alignSelf: 'center' }}
             >
               パスワードを忘れましたか？

@@ -118,41 +118,34 @@ export default function SignUp(props) {
 
     const data = new FormData(event.currentTarget);
     try {
-      // TODO 実装時
-      const response = await fetch ('https://connectix-server.vercel.app/api/auth/sign_up', {
-      // const response = await fetch('http://localhost:3522/api/auth/sign_up', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: data.get('name'),
-          email: data.get('email'),
-          password: data.get('password'),
-        }),
-      });
+        const response = await fetch("http://localhost:3522/api/auth/sign_up", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: data.get("name"),
+                email: data.get("email"),
+                password: data.get("password"),
+            }),
+        });
 
-      const result = await response.json();
+        const result = await response.json();
 
-      if (!response.ok) {
-        if (result.message === "このメールアドレスは既に登録されています。") {
-          setEmailError(true);
-          setEmailErrorMessage(result.message);
-        } else if (result.message === "このユーザー名は既に使用されています。") {
-          setNameError(true);
-          setNameErrorMessage(result.message);
+        if (!response.ok) {
+          if (result.message === "このメールアドレスは既に登録されています。") {
+            setEmailError(true);
+            setEmailErrorMessage(result.message);
+          } else if (result.message === "このユーザー名は既に使用されています。") {
+            setNameError(true);
+            setNameErrorMessage(result.message);
+          }
+          return;
         }
-        return;
-      }
-      triggerAlert('success', '成功', 'サインアップが完了しました！');
-      if (result.token) {
-        localStorage.setItem('jwt_token', result.token); // ✅ "jwt_token" に統一
-        navigate('/');
-      } else {
-        console.error("JWT の取得に失敗しました:", result);
-      }
+        triggerAlert('info','Verify','認証メールを送信しました。メールを確認してください。');
+        navigate("/sign-in"); // サインイン画面へリダイレクト
     } catch (error) {
-      console.error('サーバーエラー:', error.message);
+        console.error("サーバーエラー:", error);
     }
-  };
+};
 
   return (
     <AppTheme {...props}>
