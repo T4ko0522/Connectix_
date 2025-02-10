@@ -22,7 +22,6 @@ export default function Home() {
       }}
     >
       <Container maxWidth="lg">
-        {/* Hero Section */}
         <Box
           sx={{
             display: "flex",
@@ -32,7 +31,6 @@ export default function Home() {
             mb: 8,
           }}
         >
-          {/* Left Content */}
           <Box sx={{ flex: 1 }}>
             <Typography
               variant="h2"
@@ -47,8 +45,6 @@ export default function Home() {
               好きなリンク名<br/>
               直感的なUI
             </Typography>
-
-            {/* URL Input Section */}
             <Card
               sx={{
                 p: 2,
@@ -94,8 +90,6 @@ export default function Home() {
               </CardContent>
             </Card>
           </Box>
-
-          {/* Right Content */}
           <Box
             sx={{
               flex: 1,
@@ -104,7 +98,6 @@ export default function Home() {
               maxWidth: "600px",
             }}
           >
-            {/* Profile Section */}
             <Card
               sx={{
                 p: 3,
@@ -117,8 +110,6 @@ export default function Home() {
                 <Avatar src="/placeholder.svg" sx={{ width: 80, height: 80, mr: 2 }} />
                 <Typography variant="h6">@UserName</Typography>
               </Box>
-
-              {/* Social Links */}
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <Button
                   fullWidth
