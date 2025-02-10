@@ -35,12 +35,8 @@ router.post("/sign_up", async (req, res) => {
     const { name, email, password } = req.body;
 
     // 🚫 ワードチェック
-    if (isValidUsername(name)) {
+    if (!isValidUsername(name) || forbiddenWords.includes(name.toLowerCase())) {
       return res.status(400).json({ message: "このユーザー名は使用できません。" });
-  }
-
-  if (forbiddenWords.includes(name.toLowerCase())) {
-    return res.status(400).json({ message: "このユーザー名は使用できません。" });
     }
 
     try {
