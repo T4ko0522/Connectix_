@@ -6,6 +6,7 @@ import log4js from "log4js";
 import { fileURLToPath } from "url";
 import pool from "./config/db.js"; // db接続
 import authRoutes from "./routes/auth.js"; // 認証
+import verifyRoutes from "./routes/verify.js"; // メール認証
 
 // TODO 未実装
 // import profileRoutes from "./routes/profile.js"; // プロフィール
@@ -13,9 +14,10 @@ import authRoutes from "./routes/auth.js"; // 認証
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// ローカル
+
+// ローカル環境
 // dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
-// Vercel
+// Vercel環境
 dotenv.config();
 
 console.log("🔍 POSTGRES_URL:", process.env.POSTGRES_URL);
@@ -31,6 +33,7 @@ app.use(cors());
 
 // APIの登録
 app.use("/api/auth", authRoutes);
+app.use("/api/verify", verifyRoutes); // ✅ メール認証APIを統合
 // app.use("/api/profile", profileRoutes);
 // app.use("/api/links", linkRoutes);
 

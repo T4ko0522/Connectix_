@@ -1,9 +1,12 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import db from "../config/db.js";
-import { generateToken } from "../utils/jwt.js"; // ✅ jwt.js を使用
+import { generateToken } from "../utils/jwt.js";
 import dotenv from 'dotenv';
 import fetch from 'node-fetch';
+import crypto from "crypto";
+import { sendVerificationEmail } from "./verify.js"; 
+
 // ローカル
 // dotenv.config({ path: '../config/.env' });
 //Vercel
@@ -19,85 +22,76 @@ console.log("🔍Supabase_URL :", SUPABASE_URL)
 
 // Sign Up
 router.post("/sign_up", async (req, res) => {
-  const { name, email, password } = req.body;
+    const { name, email, password } = req.body;
 
-  try {
-    // メールが既に登録されているか確認
-    const { rows: existingUser } = await db.query(
-      "SELECT * FROM users WHERE email = $1",
-      [email]
-    );
-    if (existingUser.length > 0) {
-      return res.status(400).json({ message: "このメールアドレスは既に登録されています。" });
+    try {
+        // 既に登録済みかチェック
+        const { rows: existingUser } = await db.query(
+            "SELECT * FROM users WHERE email = $1",
+            [email]
+        );
+        if (existingUser.length > 0) {
+            return res.status(400).json({ message: "このメールアドレスは既に登録されています。" });
+        }
+
+        // 認証用トークン生成
+        const verificationToken = crypto.randomBytes(32).toString("hex");
+
+        // パスワードのハッシュ化
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // 仮登録（認証前）
+        await db.query(
+            "INSERT INTO users (username, email, password_hash, verification_token, is_verified) VALUES ($1, $2, $3, $4, $5)",
+            [name, email, hashedPassword, verificationToken, false]
+        );
+
+        // 認証メールを送信
+        await sendVerificationEmail(email, verificationToken);
+
+        res.status(200).json({ message: "認証メールを送信しました。" });
+
+    } catch (error) {
+        console.error("ユーザー登録エラー:", error);
+        res.status(500).json({ message: "サーバーエラー" });
     }
-
-    // パスワードのハッシュ化
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // データベースに保存
-    const newUser = await db.query(
-      "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
-      [name, email, hashedPassword]
-    );
-
-    const userId = newUser.rows[0].id;
-
-    // ✅ JWT を発行
-    const token = generateToken({ id: userId, email });
-
-    res.status(201).json({ message: "ユーザー登録が完了しました。", token }); // ✅ JWT を返す
-  } catch (error) {
-    // 重複エラーをハンドリング（※PostgreSQL用に修正が必要な場合あり）
-    if (error.code === 'ER_DUP_ENTRY' && error.sqlMessage?.includes('Users.username')) {
-      console.error("ユーザー名重複エラー:", error);
-      return res.status(400).json({ message: "このユーザー名は既に使用されています。" });
-    }
-
-    console.error("ユーザー登録エラー:", error);
-    res.status(500).json({ message: "サーバーエラー" });
-  }
 });
 
-// Sign In
+// 📌 認証済みのユーザーのみログインできるようにする
 router.post("/sign_in", async (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  try {
-    console.log("🔍 リクエスト内容:", req.body);
+    try {
+        const { rows: userResult } = await db.query(
+            "SELECT * FROM users WHERE email = $1",
+            [email]
+        );
 
-    // ユーザーをデータベースから取得 (PostgreSQL 形式)
-    const { rows: userResult } = await db.query(
-      "SELECT * FROM users WHERE email = $1",
-      [email]
-    );
-    console.log("🔍 データベース結果:", userResult);
+        if (userResult.length === 0) {
+            return res.status(401).json({ message: "メールアドレスまたはパスワードが間違っています。" });
+        }
 
-    // ユーザーが存在しない場合
-    if (userResult.length === 0) {
-      return res.status(401).json({ message: "メールアドレスまたはパスワードが間違っています。" });
+        const user = userResult[0];
+
+        // 認証チェック
+        if (!user.is_verified) {
+            return res.status(401).json({ message: "メールアドレスが未認証です。" });
+        }
+
+        // パスワード検証
+        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "メールアドレスまたはパスワードが間違っています。" });
+        }
+
+        // JWTトークンを発行
+        const token = generateToken({ id: user.id, email: user.email });
+
+        res.status(200).json({ message: "サインイン成功", token });
+    } catch (error) {
+        console.error("ログインエラー:", error);
+        res.status(500).json({ message: "サーバーエラー" });
     }
-
-    const user = userResult[0];
-
-    // パスワードを検証（bcrypt）
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-    console.log("🔍 パスワード一致:", isPasswordValid);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "メールアドレスまたはパスワードが間違っています。" });
-    }
-
-    // JWT トークンを発行
-    const token = generateToken({ id: user.id, email: user.email });
-
-    console.log("🔍 JWT トークン:", token);
-
-    // サインイン成功
-    res.status(200).json({ message: "サインイン成功", token });
-  } catch (error) {
-    console.error("ログインエラー:", error); // 詳細ログを出力
-    res.status(500).json({ message: "サーバーエラー" });
-  }
 });
 
 // Google Auth
