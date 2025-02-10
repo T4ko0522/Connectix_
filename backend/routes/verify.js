@@ -33,11 +33,16 @@ export const sendVerificationEmail = async (email, token) => {
     const verificationLink = `https://connectix-server.vercel.app/api/verify/verify_email?token=${token}`;
 
     await transporter.sendMail({
-        from: `"認証システム" <${process.env.SMTP_USER}>`,
+        from: `"Connectix Verify" <${process.env.SMTP_USER}>`,
         to: email,
-        subject: "メールアドレスの確認",
-        html: `<p>以下のリンクをクリックしてメールアドレスを確認してください:</p>
-               <a href="${verificationLink}">メール認証</a>`,
+        subject: "Connectix メール認証のご案内",
+        html: `
+            <p>以下のリンクをクリックして、メール認証を完了してください。</p>
+            <p><a href="${verificationLink}">メール認証</a></p>
+            <p>このメールに心当たりがない場合は、無視してください。</p>
+            <p>よろしくお願いします。</p>
+            <p>Connectix 運営チーム</p>
+            `,
     });
 };
 
