@@ -118,7 +118,8 @@ export default function SignUp(props) {
 
     const data = new FormData(event.currentTarget);
     try {
-        const response = await fetch("http://localhost:3522/api/auth/sign_up", {
+        // const response = await fetch("http://localhost:3522/api/auth/sign_up", {
+          const response = await fetch("https://connectix-server.vercel.app/api/auth/sign_up", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

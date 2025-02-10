@@ -18,7 +18,8 @@ export default function VerifyEmail(props) {
             }
 
             try {
-                const response = await fetch(`http://localhost:3522/verify/verify_email?token=${token}`);
+                // const response = await fetch(`http://localhost:3522/verify/verify_email?token=${token}`);
+                const response = await fetch(`https://connectix-server.vercel.app/verify/verify_email?token=${token}`);
 
                 const result = await response.json();
 

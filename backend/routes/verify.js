@@ -4,8 +4,10 @@ import nodemailer from "nodemailer";
 import db from "../config/db.js";
 import dotenv from "dotenv"
 
-// dotenv.config();
-dotenv.config({ path: '/usr/src/app/config/.env' });
+// Vercel用
+dotenv.config();
+// ローカル用
+// dotenv.config({ path: '/usr/src/app/config/.env' });
 
 console.log("📌 SMTP_HOST:", process.env.SMTP_HOST);
 console.log("📌 SMTP_PORT:", process.env.SMTP_PORT);
@@ -27,7 +29,8 @@ export const sendVerificationEmail = async (email, token) => {
         }
     });
 
-    const verificationLink = `http://localhost:3522/api/verify/verify_email?token=${token}`;
+    // const verificationLink = `http://localhost:3522/api/verify/verify_email?token=${token}`;
+    const verificationLink = `https://connectix-server.vercel.app/api/verify/verify_email?token=${token}`;
 
     await transporter.sendMail({
         from: `"認証システム" <${process.env.SMTP_USER}>`,
