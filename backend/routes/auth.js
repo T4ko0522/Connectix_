@@ -16,13 +16,32 @@ const router = express.Router();
 const saltRounds = 12;
 const SUPABASE_URL = process.env.SUPABASE_URL || "SUPABASE_URL";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY  || "SUPABASE_ANON_KEY";
+const forbiddenWords = [
+    "admin","staff","moderator","official",
+    "about","contact","dashboard","update","sign-in","sign-up","sign-out","settings","profile","account","user","auth","verify","reset","forgot","forgot-password","reset-password",
+]
 
 console.log("🔍Supabase_Anon_Key :", SUPABASE_ANON_KEY)
 console.log("🔍Supabase_URL :", SUPABASE_URL)
 
+const isValidUsername = (username) => {
+  if (username.length < 3 || username.length > 30) return false; // 長すぎる・短すぎる
+  if (!/^[a-zA-Z0-9ぁ-んァ-ヶー一-龠]+$/.test(username)) return false; // 記号含む場合
+  return true;
+};
+
 // Sign Up
 router.post("/sign_up", async (req, res) => {
     const { name, email, password } = req.body;
+
+    // 🚫 ワードチェック
+    if (isValidUsername(name)) {
+      return res.status(400).json({ message: "このユーザー名は使用できません。" });
+  }
+
+  if (forbiddenWords.includes(name.toLowerCase())) {
+    return res.status(400).json({ message: "このユーザー名は使用できません。" });
+    }
 
     try {
         // 既に登録済みかチェック

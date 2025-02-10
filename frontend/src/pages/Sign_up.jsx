@@ -137,7 +137,10 @@ export default function SignUp(props) {
             setEmailErrorMessage(result.message);
           } else if (result.message === "このユーザー名は既に使用されています。") {
             setNameError(true);
-            setNameErrorMessage(result.message);
+            setNameErrorMessage("このユーザー名は既に使用されています。");
+          } else if (result.message === "このユーザー名は使用できません。") {
+          setNameError(true);
+          setNameErrorMessage("ユーザー名に禁止ワードが含まれています。");
           }
           return;
         }
