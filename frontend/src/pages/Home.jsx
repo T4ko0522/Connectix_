@@ -10,6 +10,7 @@ import CardContent from '@mui/material/CardContent';
 import Avatar from "@mui/material/Avatar";
 import { YouTube, Twitter } from "@mui/icons-material";
 import InstagramIcon from '@mui/icons-material/Instagram';
+import Footer from "../components/Footer.jsx";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -170,6 +171,7 @@ export default function Home() {
           </Box>
         </Box>
       </Container>
+      <Footer />
     </Box>
   );
 }
