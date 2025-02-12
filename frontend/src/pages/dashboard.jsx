@@ -13,6 +13,14 @@ import Analytics from "../components/Analytics.jsx"
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("links")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const handleLogout = () => {
+    localStorage.removeItem('jwt_token');
+    setIsLoggedIn(false);
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -95,8 +103,8 @@ export default function Dashboard() {
             </Button>
           </Stack>
 
-          <Button startIcon={<LogoutIcon />} color="inherit" sx={{ mt: "auto", justifyContent: "flex-start", py: 1.5 }}>
-            ログアウト
+          <Button startIcon={<LogoutIcon />} onClick={handleLogout} color="inherit" sx={{ mt: "auto", justifyContent: "flex-start", py: 1.5 }}>
+            サインアウト
           </Button>
         </Stack>
       </Box>
