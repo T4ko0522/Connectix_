@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AnimatedAlert = ({ show, severity, title, message }) => {
+  const alertSeverity = severity || "info"; // デフォルト値を設定
+
   useEffect(() => {
     if (show) {
       const options = {
@@ -15,7 +17,7 @@ const AnimatedAlert = ({ show, severity, title, message }) => {
         draggable: true,
       };
 
-      switch (severity) {
+      switch (alertSeverity) { // ここで修正
         case 'success':
           toast.success(`${title}: ${message}`, options);
           break;
@@ -32,7 +34,8 @@ const AnimatedAlert = ({ show, severity, title, message }) => {
           toast(`${title}: ${message}`, options);
       }
     }
-  }, [show, severity, title, message]);
+  }, [show, alertSeverity, title, message]);
+
   return null; // ToastContainerはルートコンポーネントでレンダリング
 };
 
