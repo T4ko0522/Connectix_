@@ -9,6 +9,30 @@ import DialogTitle from '@mui/material/DialogTitle';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
 function ForgotPassword({ open, handleClose }) {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const email = document.getElementById("email")?.value;
+
+    if (!email) {
+        alert("メールアドレスを入力してください！");
+        return;
+    }
+
+    try {
+        const response = await fetch("http://localhost:3522/api/password-reset/request-reset", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+        });
+
+        const result = await response.json();
+        alert(result.message);
+    } catch (error) {
+        console.error("パスワードリセットエラー:", error);
+        alert("サーバーエラーが発生しました。");
+    }
+};
+
   return (
     <Dialog
       open={open}
@@ -43,7 +67,7 @@ function ForgotPassword({ open, handleClose }) {
       </DialogContent>
       <DialogActions sx={{ pb: 3, px: 3 }}>
         <Button onClick={handleClose}>キャンセル</Button>
-        <Button variant="contained" type="submit">
+        <Button onClick={handleSubmit} variant="contained" type="submit">
           リンクを送信
         </Button>
       </DialogActions>
