@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import pool from "./config/db.js"; // db接続
 import authRoutes from "./routes/auth.js"; // 認証
 import verifyRoutes from "./routes/verify.js"; // メール認証
+import passwordResetRoutes from "./routes/resetPassword.js"; // パスワードリセット
 
 // TODO 未実装
 // import profileRoutes from "./routes/profile.js"; // プロフィール
@@ -34,6 +35,7 @@ app.use(cors());
 // APIの登録
 app.use("/api/auth", authRoutes);
 app.use("/api/verify", verifyRoutes); // ✅ メール認証APIを統合
+app.use("/api/password-reset", passwordResetRoutes); // ✅ パスワードリセットAPIを統合
 // app.use("/api/profile", profileRoutes);
 // app.use("/api/links", linkRoutes);
 
