@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header.jsx';
-import Footer from './components/Footer.jsx';
 import SignIn from './pages/Sign_in.jsx';
 import SignUp from './pages/Sign_up.jsx';
 import Home from './pages/Home.jsx';
+import Dashboard from './pages/dashboard.jsx';
 import VerifyEmail from './pages/verifyEmail.jsx';
 import NotFound from './pages/404.jsx';
 import { handleAuthCallback } from "./components/Auth.jsx";
@@ -56,8 +56,7 @@ const Main = () => {
     }, 3000);
   };
 
-  const noHeaderFooterRoutes = ['/sign-in', '/sign-up'];
-  const showHeaderFooter = !noHeaderFooterRoutes.includes(location.pathname);
+  const showHeader = !['/sign-in', '/sign-up'].includes(location.pathname);
 
   return (
     <div
@@ -67,7 +66,7 @@ const Main = () => {
         position: 'relative',
       }}
     >
-      {showHeaderFooter && <Header />}
+      {showHeader && <Header />}
       <ToastContainer position="bottom-right" style={{ zIndex: 9999 }} />
       <AnimatedAlert
         show={alert.show}
@@ -79,11 +78,11 @@ const Main = () => {
         <Route path="*" element={<NotFound />} />
         <Route path="/verify-email" element={<VerifyEmail triggerAlert={triggerAlert} />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<SignIn triggerAlert={triggerAlert} />} />
         <Route path="/sign-up" element={<SignUp triggerAlert={triggerAlert} />} />
       </Routes>
-      {showHeaderFooter && <Footer />}
     </div>
   );
 };

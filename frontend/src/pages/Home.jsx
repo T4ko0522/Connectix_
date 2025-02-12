@@ -10,9 +10,12 @@ import CardContent from '@mui/material/CardContent';
 import Avatar from "@mui/material/Avatar";
 import { YouTube, Twitter } from "@mui/icons-material";
 import InstagramIcon from '@mui/icons-material/Instagram';
+import Footer from "../components/Footer.jsx";
 
 export default function Home() {
   const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem('jwt_token'); // ログイン状態を判定
+
   return (
     <Box
       sx={{
@@ -73,9 +76,7 @@ export default function Home() {
                   <Button
                     variant="contained"
                     multiline={false}
-                    onClick={() =>
-                      navigate('/sign-up')
-                    }
+                    onClick={() => navigate(isLoggedIn ? '/dashboard' : '/sign-up')} // ログイン状態によって遷移先を変更
                     sx={{
                       whiteSpace: "nowrap",
                       backgroundColor: "#1e202c",
@@ -170,6 +171,7 @@ export default function Home() {
           </Box>
         </Box>
       </Container>
+      <Footer />
     </Box>
   );
 }

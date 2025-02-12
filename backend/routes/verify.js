@@ -70,11 +70,11 @@ router.get("/verify_email", async (req, res) => {
             [rows[0].id]
         );
 
-        res.json({ message: "メール認証が完了しました！数秒後に元のサイトにリダイレクトされます。" });
+        // json レスポンスを削除、リダイレクトに。
         return res.redirect("https://connectix.vercel.app/sign-in");
     } catch (error) {
         console.error("メール認証エラー:", error);
-        res.status(500).json({ message: "認証に失敗しました。" });
+        return res.status(500).json({ message: "認証に失敗しました。" });
     }
 });
 
