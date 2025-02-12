@@ -8,13 +8,22 @@ import Button from "@mui/material/Button";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Avatar from "@mui/material/Avatar";
+import GitHubIcon from '@mui/icons-material/GitHub';
 import { YouTube, Twitter } from "@mui/icons-material";
-import InstagramIcon from '@mui/icons-material/Instagram';
 import Footer from "../components/Footer.jsx";
 
 export default function Home() {
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('jwt_token'); // ログイン状態を判定
+  const handleTwitterClick = () => {
+    window.location.href = 'https://x.com/Tako_0522';
+  };
+  const handleYouTubeClick = () => {
+    window.location.href = 'https://www.youtube.com/@%E3%82%BF%E3%82%B3%E3%81%95%E3%82%93%E3%81%A7%E3%81%99';
+  };
+  const handleGithubClick = () => {
+    window.location.href = 'https://github.com/T4ko0522';
+  };
 
   return (
     <Box
@@ -109,7 +118,7 @@ export default function Home() {
             >
               <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
                 <Avatar src="/placeholder.svg" sx={{ width: 80, height: 80, mr: 2 }} />
-                <Typography variant="h6">@UserName</Typography>
+                <Typography variant="h6">@SampleUser</Typography>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <Button
@@ -128,7 +137,7 @@ export default function Home() {
                     },
                   }}
                 >
-                  <InstagramIcon sx={{ mr: 1 }} /> Instagram
+                  <GitHubIcon onClick={handleGithubClick} sx={{ mr: 1 }} /> GitHub
                 </Button>
                 <Button
                   fullWidth
@@ -146,7 +155,7 @@ export default function Home() {
                     },
                   }}
                 >
-                  <YouTube sx={{ mr: 1 }} /> YouTube
+                  <YouTube onClick={handleYouTubeClick} sx={{ mr: 1 }} /> YouTube
                 </Button>
                 <Button
                   fullWidth
@@ -164,7 +173,7 @@ export default function Home() {
                     },
                   }}
                 >
-                  <Twitter sx={{ mr: 1 }} /> Twitter
+                  <Twitter onclick={handleTwitterClick} sx={{ mr: 1 }} /> Twitter
                 </Button>
               </Box>
             </Card>
