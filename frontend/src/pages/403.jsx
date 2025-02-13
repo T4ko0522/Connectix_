@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Container, Typography, Button } from "@mui/material";
 import { Home as HomeIcon } from "@mui/icons-material";
 
-export default function NotFound() {
+export default function Forbidden() {
   const navigate = useNavigate()
 
   return (
@@ -19,13 +19,13 @@ export default function NotFound() {
       <Container maxWidth="md">
         <Box textAlign="center">
           <Typography variant="h1" component="h1" gutterBottom sx={{ color: "#fff" }}>
-            404 NotFound
+            403 Forbidden
           </Typography>
           <Typography variant="h4" component="h2" gutterBottom sx={{ color: "#fff" }}>
-            ページが見つかりません
+            ページにアクセスできません
           </Typography>
           <Typography variant="body1" gutterBottom sx={{ color: "#fff" }}>
-            お探しのページは存在しないか、移動または削除された可能性があります。
+            お探しのページにアクセスするにはサインインしてください。
           </Typography>
           <Button
             variant="contained"
