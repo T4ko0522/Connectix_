@@ -12,6 +12,8 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AnimatedAlert from '../shared/AnimatedAlert.jsx';
+import Input from './Serchbox.jsx';
+// import Setting from './setting.jsx';
 
 const pages = ['機能', 'アップデート', 'お問い合わせ'];
 
@@ -20,12 +22,13 @@ function Header() {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('jwt_token')); // ✅ 修正
   const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   const settings = ['プロフィール', 'アカウント', '詳細設定', 'サインアウト'];
 
   useEffect(() => {
     const checkAuth = (event) => {
-      if (event && event.key !== 'jwt_token') return; // ✅ `jwt_token` の変更のみ監視
+      if (event && event.key !== 'jwt_token') return; // ✅ jwt_token の変更のみ監視
       const token = localStorage.getItem('jwt_token');
       setIsLoggedIn(!!token);
     };    
@@ -49,7 +52,7 @@ function Header() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('jwt_token'); // ✅ 'token' ではなく 'jwt_token' を削除
+    localStorage.removeItem("jwt_token");
     setIsLoggedIn(false);
     setShowAlert(true);
     setTimeout(() => {
@@ -65,6 +68,13 @@ function Header() {
     }
   };
 
+  const handleTrollPagesClick = () => {
+    setShowErrorAlert(true);
+    setTimeout(() => {
+      setShowErrorAlert(false);
+    }, 3000);
+  };
+
   return (
     <>
       <AnimatedAlert
@@ -72,6 +82,13 @@ function Header() {
         severity="success"
         title="Success"
         message="ログアウトしました。"
+      />
+
+      <AnimatedAlert
+        show={showErrorAlert}
+        severity="error"
+        title="エラー"
+        message="実装間に合わなかった；；"
       />
       <AppBar
         position="static"
@@ -86,6 +103,7 @@ function Header() {
               <img
                 src="/assets/image/logo192.png"
                 alt="LOGO"
+                onClick={() => navigate("/")}
                 style={{
                   height: '80px',
                   width: 'auto',
@@ -113,10 +131,11 @@ function Header() {
             >
               Connectix
             </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}> {/* ✅ alignItems: 'center' を追加 */}
               {pages.map((page) => (
                 <Button
                   key={page}
+                  onClick={handleTrollPagesClick}
                   sx={{
                     my: 2,
                     color: 'white',
@@ -128,6 +147,9 @@ function Header() {
                   {page}
                 </Button>
               ))}
+              <Box sx={{ ml: 5, display: 'flex', alignItems: 'center' }}>
+              <Input />
+              </Box>
             </Box>
             <Box sx={{ flexGrow: 0 }}>
               {!isLoggedIn && (
