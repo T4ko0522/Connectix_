@@ -7,6 +7,7 @@ import Home from './pages/Home.jsx';
 import Dashboard from './pages/dashboard.jsx';
 import VerifyEmail from './pages/verifyEmail.jsx';
 import NotFound from './pages/404.jsx';
+import Forbidden from './pages/403.jsx';
 import { handleAuthCallback } from "./components/Auth.jsx";
 import AnimatedAlert from './shared/AnimatedAlert.jsx'; 
 import { ToastContainer } from 'react-toastify';
@@ -37,7 +38,7 @@ const Main = () => {
   // アラートの状態を管理
   const [alert, setAlert] = useState({
     show: false,
-    severity: '', // 'success', 'error', 'info', 'warning'
+    severity: 'info', // 'success', 'error', 'info', 'warning'
     title: '',
     message: '',
   });
@@ -75,13 +76,14 @@ const Main = () => {
         message={alert.message}
       />
       <Routes>
-        <Route path="*" element={<NotFound />} />
-        <Route path="/verify-email" element={<VerifyEmail triggerAlert={triggerAlert} />} />
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/" element={<Home />} />
+        <Route path="/forbidden" element={<Forbidden />} />
+        <Route path="*" element={<NotFound />} />
+        <Route path="/dashboard" element={<Dashboard triggerAlert={triggerAlert} />} />
         <Route path="/sign-in" element={<SignIn triggerAlert={triggerAlert} />} />
         <Route path="/sign-up" element={<SignUp triggerAlert={triggerAlert} />} />
+        <Route path="/verify-email" element={<VerifyEmail triggerAlert={triggerAlert} />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
       </Routes>
     </div>
   );
