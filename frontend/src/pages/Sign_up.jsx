@@ -17,6 +17,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
 import AppTheme from '../shared/AppTheme.jsx';
 import { handleGoogleSignIn } from '../components/Auth.jsx';
+import Setting from '../components/setting.jsx';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -246,7 +247,7 @@ export default function SignUp(props) {
             <Typography sx={{ textAlign: 'center' }}>
               既にアカウントをお持ちの場合は{' '}
               <Link
-                href="/sign-in"
+                navigate="/sign-in"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
