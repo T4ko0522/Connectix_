@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -11,6 +11,7 @@ import Avatar from "@mui/material/Avatar";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { YouTube, Twitter } from "@mui/icons-material";
 import Footer from "../components/Footer.jsx";
+import ReactButton from "../components/Button.jsx";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -23,6 +24,15 @@ export default function Home() {
   };
   const handleGithubClick = () => {
     window.location.href = 'https://github.com/T4ko0522';
+  };
+  const prefix = 'connectix-xi.vercel.app/';
+  const [customURL, setCustomURL] = useState("");
+
+  const handleChange = (e) => {
+    const inputValue = e.target.value;
+    if (inputValue.startsWith(prefix)) {
+      setCustomURL(inputValue.slice(prefix.length));
+    }
   };
 
   return (
@@ -71,31 +81,21 @@ export default function Home() {
                   Original URL for free
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    placeholder="connectix-xi.vercel.app/"
-                    size="small"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        backgroundColor: "white",
-                      },
-                    }}
-                  />
-                  <Button
-                    variant="contained"
-                    multiline={false}
-                    onClick={() => navigate(isLoggedIn ? '/dashboard' : '/sign-up')} // ログイン状態によって遷移先を変更
-                    sx={{
-                      whiteSpace: "nowrap",
-                      backgroundColor: "#1e202c",
-                      "&:hover": {
-                        backgroundColor: "#2a2d3d",
-                      },
-                    }}
-                  >
-                    今すぐ始める
-                  </Button>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  value={prefix + customURL}
+                  onChange={handleChange}
+                  size="small"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "white",
+                    },
+                  }}
+                />
+                  <ReactButton onClick={() => navigate(isLoggedIn ? '/dashboard' : '/sign-up')} >
+                    始める
+                  </ReactButton>
                 </Box>
               </CardContent>
             </Card>
@@ -118,10 +118,49 @@ export default function Home() {
             >
               <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
                 <Avatar src="/placeholder.svg" sx={{ width: 80, height: 80, mr: 2 }} />
-                <Typography variant="h6">@SampleUser</Typography>
+                <Typography variant="h6">@SampleUser(製作者)</Typography>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Button
+                  onClick={handleTwitterClick}
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textTransform: "none",
+                    color: "#1e202c",
+                    borderColor: "#1e202c",
+                    "&:hover": {
+                      borderColor: "#1e202c",
+                      backgroundColor: "rgba(30, 32, 44, 0.04)",
+                    },
+                  }}
+                >
+                  <Twitter sx={{ mr: 1 }} /> Twitter
+                </Button>
                 <Button
+                  onClick={handleYouTubeClick}
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textTransform: "none",
+                    color: "#1e202c",
+                    borderColor: "#1e202c",
+                    "&:hover": {
+                      borderColor: "#1e202c",
+                      backgroundColor: "rgba(30, 32, 44, 0.04)",
+                    },
+                  }}
+                >
+                  <YouTube sx={{ mr: 1 }} /> YouTube
+                </Button>
+                <Button
+                  onClick={handleGithubClick}
                   fullWidth
                   variant="outlined"
                   sx={{
@@ -137,43 +176,7 @@ export default function Home() {
                     },
                   }}
                 >
-                  <GitHubIcon onClick={handleGithubClick} sx={{ mr: 1 }} /> GitHub
-                </Button>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textTransform: "none",
-                    color: "#1e202c",
-                    borderColor: "#1e202c",
-                    "&:hover": {
-                      borderColor: "#1e202c",
-                      backgroundColor: "rgba(30, 32, 44, 0.04)",
-                    },
-                  }}
-                >
-                  <YouTube onClick={handleYouTubeClick} sx={{ mr: 1 }} /> YouTube
-                </Button>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textTransform: "none",
-                    color: "#1e202c",
-                    borderColor: "#1e202c",
-                    "&:hover": {
-                      borderColor: "#1e202c",
-                      backgroundColor: "rgba(30, 32, 44, 0.04)",
-                    },
-                  }}
-                >
-                  <Twitter onclick={handleTwitterClick} sx={{ mr: 1 }} /> Twitter
+                  <GitHubIcon sx={{ mr: 1 }} /> GitHub
                 </Button>
               </Box>
             </Card>
