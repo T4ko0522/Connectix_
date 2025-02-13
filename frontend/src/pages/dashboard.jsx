@@ -1,24 +1,52 @@
-import React, { useState } from "react"
-import { Box, Stack, IconButton, Typography, Button, Avatar } from "@mui/material"
-import MenuIcon from "@mui/icons-material/Menu"
-import AddIcon from "@mui/icons-material/Add"
-import BarChartIcon from "@mui/icons-material/BarChart"
-import PaletteIcon from "@mui/icons-material/Palette"
-import SettingsIcon from "@mui/icons-material/Settings"
-import LogoutIcon from "@mui/icons-material/Logout"
-import LinkList from "../components/LinkList.jsx"
-import ThemeCustomizer from "../components/ThemeCustomizer.jsx"
-import Analytics from "../components/Analytics.jsx"
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Box, Stack, IconButton, Typography, Button, Avatar } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import AddIcon from "@mui/icons-material/Add";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import PaletteIcon from "@mui/icons-material/Palette";
+import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
+import LinkList from "../components/LinkList.jsx";
+import ThemeCustomizer from "../components/ThemeCustomizer.jsx";
+import Analytics from "../components/Analytics.jsx";
+// import preview from "..components/preview.jsx";
+import AnimatedAlert from "../shared/AnimatedAlert.jsx";
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState("links")
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState("links");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("jwt_token"));
+  const [showAlert, setShowAlert] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwt_token");
+    if (!token) {
+      navigate("/forbidden");
+    }
+  }, []);
+
+  // ✅ localStorage の変更を監視し、リアルタイムでログイン状態を更新
+  useEffect(() => {
+    const checkAuth = () => {
+      setIsLoggedIn(!!localStorage.getItem("jwt_token"));
+    };
+
+    window.addEventListener("storage", checkAuth);
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
+  }, []);
+
+  // ✅ ログアウト処理
   const handleLogout = () => {
     localStorage.removeItem('jwt_token');
     setIsLoggedIn(false);
     setShowAlert(true);
     setTimeout(() => {
       setShowAlert(false);
+      navigate("/"); // ✅ ログアウト後に `sign-in` へリダイレクト
     }, 3000);
   };
 
@@ -37,6 +65,14 @@ export default function Dashboard() {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f5f5f5" }}>
+      {/* ✅ ログアウト通知 */}
+      <AnimatedAlert
+        show={showAlert}
+        severity="success"
+        title="Success"
+        message="ログアウトしました。"
+      />
+
       {/* サイドバー */}
       <Box
         sx={{
@@ -103,9 +139,12 @@ export default function Dashboard() {
             </Button>
           </Stack>
 
-          <Button startIcon={<LogoutIcon />} onClick={handleLogout} color="inherit" sx={{ mt: "auto", justifyContent: "flex-start", py: 1.5 }}>
-            サインアウト
-          </Button>
+          {/* ✅ ログアウトボタン */}
+          {isLoggedIn && (
+            <Button startIcon={<LogoutIcon />} onClick={handleLogout} color="inherit" sx={{ mt: "auto", justifyContent: "flex-start", py: 1.5 }}>
+              サインアウト
+            </Button>
+          )}
         </Stack>
       </Box>
 
