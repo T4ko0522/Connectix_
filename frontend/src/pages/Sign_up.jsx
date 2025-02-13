@@ -17,7 +17,6 @@ import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
 import AppTheme from '../shared/AppTheme.jsx';
 import { handleGoogleSignIn } from '../components/Auth.jsx';
-import Setting from '../components/setting.jsx';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
