@@ -1,6 +1,6 @@
-import React from "react"
-import { Stack, Paper, Typography, Box } from "@mui/material"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import React from "react";
+import { Stack, Paper, Typography, Box } from "@mui/material";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const data = [
   { name: "月", value: 400 },

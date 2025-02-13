@@ -1,7 +1,7 @@
-import React from "react"
-import { useNavigate } from "react-router-dom"
-import { Box, Container, Typography, Button } from "@mui/material"
-import { Home as HomeIcon } from "@mui/icons-material"
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Box, Container, Typography, Button } from "@mui/material";
+import { Home as HomeIcon } from "@mui/icons-material";
 
 export default function NotFound() {
   const navigate = useNavigate()

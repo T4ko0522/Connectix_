@@ -2,7 +2,7 @@ import express from "express";
 import nodemailer from "nodemailer";
 // import crypto from "crypto";
 import db from "../config/db.js";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
 // Vercel用
 dotenv.config();
