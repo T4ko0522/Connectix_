@@ -5,7 +5,9 @@ import MobileHeader from './components/MobileHeader.jsx';
 import Footer from './components/Footer.jsx';
 import MobileFooter from './components/MobileFooter.jsx';
 import SignIn from './pages/Sign_in.jsx';
+import MobileSignIn from './pages/MobileSign_in.jsx';
 import SignUp from './pages/Sign_up.jsx';
+import MobileSignUp from './pages/MobileSign_up.jsx';
 import Home from './pages/Home.jsx';
 import MobileHome from './pages/MobileHome.jsx';
 import Dashboard from './pages/dashboard.jsx';
@@ -92,8 +94,8 @@ const Main = () => {
         <Route path="/forbidden" element={<Forbidden />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/dashboard" element={<Dashboard triggerAlert={triggerAlert} />} />
-        <Route path="/sign-in" element={<SignIn triggerAlert={triggerAlert} />} />
-        <Route path="/sign-up" element={<SignUp triggerAlert={triggerAlert} />} />
+        <Route path="/sign-in" element={isMobile ? <MobileSignIn triggerAlert={triggerAlert} /> : <SignIn triggerAlert={triggerAlert} />} />
+        <Route path="/sign-up" element={isMobile ? <MobileSignUp triggerAlert={triggerAlert} /> : <SignUp triggerAlert={triggerAlert} />} />
         <Route path="/verify-email" element={<VerifyEmail triggerAlert={triggerAlert} />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
       </Routes>
@@ -102,4 +104,4 @@ const Main = () => {
   );
 };
 
-export default Main
+export default Main;
