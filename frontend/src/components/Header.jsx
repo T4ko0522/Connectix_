@@ -13,6 +13,9 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AnimatedAlert from '../shared/AnimatedAlert.jsx';
 import Input from './Serchbox.jsx';
+import MenuIcon from '@mui/icons-material/Menu';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 // import Setting from './setting.jsx';
 
 const pages = ['機能', 'アップデート', 'お問い合わせ'];
@@ -23,8 +26,16 @@ function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('jwt_token')); // ✅ 修正
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
-
   const settings = ['プロフィール', 'アカウント', '詳細設定', 'サインアウト'];
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
 
   useEffect(() => {
     const checkAuth = (event) => {
@@ -32,12 +43,8 @@ function Header() {
       const token = localStorage.getItem('jwt_token');
       setIsLoggedIn(!!token);
     };    
-
     checkAuth(); // 初回実行
-
-    // ✅ localStorage の変更を監視
     window.addEventListener('storage', checkAuth);
-
     return () => {
       window.removeEventListener('storage', checkAuth);
     };
@@ -46,11 +53,9 @@ function Header() {
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
   const handleLogout = () => {
     localStorage.removeItem("jwt_token");
     setIsLoggedIn(false);
@@ -59,7 +64,6 @@ function Header() {
       setShowAlert(false);
     }, 3000); // 3秒後に非表示
   };
-
   const handleProtectedOption = (setting) => {
     if (!isLoggedIn) {
       navigate('/sign-in');
@@ -67,7 +71,6 @@ function Header() {
       console.log(`${setting} を選択しました`);
     }
   };
-
   const handleTrollPagesClick = () => {
     setShowErrorAlert(true);
     setTimeout(() => {
@@ -214,6 +217,64 @@ function Header() {
           </Toolbar>
         </Container>
       </AppBar>
+      {isMobile && (
+        <AppBar
+          position="static"
+          sx={{
+            backgroundImage: 'linear-gradient(to right, #60519b, #31323e)',
+            color: 'white',
+          }}
+        >
+          <Container maxWidth="xl">
+            <Toolbar disableGutters>
+              <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+                <img
+                  src="/assets/image/logo192.png"
+                  alt="LOGO"
+                  onClick={() => navigate("/")}
+                  style={{
+                    height: '50px',
+                    width: 'auto',
+                    marginRight: '16px',
+                    display: 'block',
+                  }}
+                />
+              </Box>
+              <IconButton
+                size="large"
+                aria-label="menu"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+              >
+                {pages.map((page) => (
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Toolbar>
+          </Container>
+        </AppBar>
+      )}
     </>
   );
 }
