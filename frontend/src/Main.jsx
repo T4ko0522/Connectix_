@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import MobileHeader from './components/MobileHeader.jsx';
+import Footer from './components/Footer.jsx';
+import MobileFooter from './components/MobileFooter.jsx';
 import SignIn from './pages/Sign_in.jsx';
 import SignUp from './pages/Sign_up.jsx';
 import Home from './pages/Home.jsx';
+import MobileHome from './pages/MobileHome.jsx';
 import Dashboard from './pages/dashboard.jsx';
 import VerifyEmail from './pages/verifyEmail.jsx';
 import NotFound from './pages/404.jsx';
@@ -94,8 +97,9 @@ const Main = () => {
         <Route path="/verify-email" element={<VerifyEmail triggerAlert={triggerAlert} />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
       </Routes>
+      {isMobile ? <MobileFooter /> : <Footer />}
     </div>
   );
 };
 
-export default Main;
+export default Main
