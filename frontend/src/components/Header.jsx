@@ -12,8 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AnimatedAlert from '../shared/AnimatedAlert.jsx';
-import Input from './Serchbox.jsx';
-// import Setting from './setting.jsx';
+import Input from './Searchbox.jsx';
 
 const pages = ['機能', 'アップデート', 'お問い合わせ'];
 
