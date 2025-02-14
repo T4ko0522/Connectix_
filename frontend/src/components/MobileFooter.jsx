@@ -1,7 +1,7 @@
 import react from "react"
 import { Box, Typography } from "@mui/material"
 
-const MobileFooter = () => {
+function MobileFooter() {
   return (
     <Box
       component="footer"
@@ -27,7 +27,7 @@ const MobileFooter = () => {
           textAlign: "center",
         }}
       >
-        © 2025 Connectix. All Rights Reserved.
+        Copyright (C) 2025 Connectix. All Rights Reserved.
       </Typography>
     </Box>
   )
