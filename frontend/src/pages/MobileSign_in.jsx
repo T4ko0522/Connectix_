@@ -217,7 +217,7 @@ export default function MobileSignIn(props) {
             </Button>
             <Typography sx={{ textAlign: "center", fontSize: "0.875rem" }}>
               アカウントをお持ちでない場合は{" "}
-              <Link href="/sign-up" variant="body2" sx={{ alignSelf: "center" }}>
+              <Link navigate="/sign-up" variant="body2" sx={{ alignSelf: "center" }}>
                 Connectixに登録する
               </Link>
             </Typography>
