@@ -215,7 +215,7 @@ export default function MobileSignUp(props) {
             </Button>
             <Typography sx={{ textAlign: "center", fontSize: "0.875rem" }}>
               既にアカウントをお持ちの場合は{" "}
-              <Link navigate="/sign-in" variant="body2" sx={{ alignSelf: "center" }}>
+              <Link href="/sign-in" variant="body2" sx={{ alignSelf: "center" }}>
                 こちらから。
               </Link>
             </Typography>
