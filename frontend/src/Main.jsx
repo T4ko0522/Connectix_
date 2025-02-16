@@ -90,10 +90,10 @@ const Main = () => {
         message={alert.message}
       />
       <Routes>
-        <Route path="/" element={isMobile ? <MobileHome /> : <Home />} />
-        <Route path="/home" element={isMobile ? <MobileHome /> : <Home />} />
         <Route path="/forbidden" element={<Forbidden />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/" element={isMobile ? <MobileHome /> : <Home />} />
+        <Route path="/home" element={isMobile ? <MobileHome /> : <Home />} />
         <Route path="/dashboard" element={<Dashboard triggerAlert={triggerAlert} />} />
         <Route path="/sign-in" element={isMobile ? <MobileSignIn triggerAlert={triggerAlert} /> : <SignIn triggerAlert={triggerAlert} />} />
         <Route path="/sign-up" element={isMobile ? <MobileSignUp triggerAlert={triggerAlert} /> : <SignUp triggerAlert={triggerAlert} />} />
