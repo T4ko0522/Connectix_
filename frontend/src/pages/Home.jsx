@@ -79,7 +79,7 @@ export default function Home() {
                   「connectix-xi.vercel.app/」<br/>
                   Original URL for free
                 </Typography>
-                <Box sx={{ display: "flex", gap: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: -1 }}>
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -101,7 +101,10 @@ export default function Home() {
                     },
                   }}
                 />
-                  <ReactButton onClick={() => navigate(isLoggedIn ? '/dashboard' : '/sign-up')} >
+                  <ReactButton
+                    onClick={() => navigate(isLoggedIn ? '/dashboard' : '/sign-up')}
+                    sx={{ mt: -1 }}
+                  >
                     始める
                   </ReactButton>
                 </Box>
