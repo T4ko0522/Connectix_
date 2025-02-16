@@ -25,24 +25,18 @@ function Header() {
 
   useEffect(() => {
     const checkAuth = (event) => {
-      if (event && event.key !== 'jwt_token') return; // ✅ jwt_token の変更のみ監視
+      if (event && event.key !== 'jwt_token') return;
       const token = localStorage.getItem('jwt_token');
       setIsLoggedIn(!!token);
-  
-      if (!token) {
-        navigate("/"); // JWTが削除されたらトップページにリダイレクト
-      }
     };
   
-    checkAuth(); // 初回実行
-  
-    // ✅ localStorage の変更を監視
+    checkAuth();
     window.addEventListener('storage', checkAuth);
   
     return () => {
       window.removeEventListener('storage', checkAuth);
     };
-  }, [navigate]);  
+  }, []);  
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);

@@ -30,10 +30,6 @@ function MobileHeader() {
       if (event && event.key !== "jwt_token") return;
       const token = localStorage.getItem("jwt_token");
       setIsLoggedIn(!!token);
-  
-      if (!token) {
-        navigate("/"); // JWTが削除されたらトップページにリダイレクト
-      }
     };
   
     checkAuth();
@@ -42,7 +38,7 @@ function MobileHeader() {
     return () => {
       window.removeEventListener("storage", checkAuth);
     };
-  }, [navigate]);
+  }, []);  
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
