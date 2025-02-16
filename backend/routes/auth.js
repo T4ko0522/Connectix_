@@ -9,9 +9,9 @@ import { sendVerificationEmail } from "./verify.js";
 import { authenticateToken } from "../utils/jwt.js"; // 追加
 
 // ローカル
-// dotenv.config({ path: '../config/.env' });
+dotenv.config({ path: '../config/.env' });
 //Vercel
-dotenv.config();
+// dotenv.config();
 
 const router = express.Router();
 const saltRounds = 12;
@@ -163,15 +163,25 @@ router.post("/google_auth", async (req, res) => {
   }
 });
 
-router.get("/usersname", authenticateToken, async (req, res) => {
+router.get("/username", authenticateToken, async (req, res) => {
   try {
-    const user = await pool.query("SELECT username FROM Users WHERE id = $1", [req.user.id]);
-    if (user.rows.length === 0) {
+    console.log("✅ /username エンドポイントにリクエストが来ました");
+    console.log("🔍 認証されたユーザー:", req.user);
+
+    if (!req.user || !req.user.id) {
+      return res.status(400).json({ message: "認証情報が不正です" });
+    }
+
+    const { rows } = await db.query("SELECT username FROM Users WHERE id = $1", [req.user.id]);
+    console.log("📌 クエリ結果:", rows);
+
+    if (rows.length === 0) {
       return res.status(404).json({ message: "ユーザーが見つかりません。" });
     }
-    res.json({ username: user.rows[0].username });
+
+    res.json({ username: rows[0].username });
   } catch (error) {
-    console.error(error);
+    console.error("❌ ユーザー名取得エラー:", error);
     res.status(500).json({ message: "サーバーエラー" });
   }
 });

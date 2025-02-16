@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import MobileHeader from './components/MobileHeader.jsx';
-import Footer from './components/Footer.jsx';
-import MobileFooter from './components/MobileFooter.jsx';
 import SignIn from './pages/Sign_in.jsx';
 import MobileSignIn from './pages/MobileSign_in.jsx';
 import SignUp from './pages/Sign_up.jsx';
@@ -100,7 +98,6 @@ const Main = () => {
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {isMobile ? <MobileFooter /> : <Footer />}
     </div>
   );
 };

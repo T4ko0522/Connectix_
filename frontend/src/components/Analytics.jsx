@@ -17,7 +17,7 @@ export default function Analytics() {
     <Stack spacing={4}>
       <Paper elevation={0} sx={{ p: 3 }}>
         <Typography variant="h6" gutterBottom>
-          訪問者数
+          訪問者数(この機能は未完成です)
         </Typography>
         <Box sx={{ height: 300 }}>
           <ResponsiveContainer width="100%" height="100%">
@@ -49,7 +49,7 @@ export default function Analytics() {
               <Typography variant="body2" color="text.secondary">
                 {index + 1}.
               </Typography>
-              <Typography sx={{ flexGrow: 1 }}>Instagram</Typography>
+              <Typography sx={{ flexGrow: 1 }}>ExampleService</Typography>
               <Typography variant="body2" color="text.secondary">
                 {item.value} クリック
               </Typography>
