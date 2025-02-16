@@ -6,11 +6,12 @@ import dotenv from 'dotenv';
 import fetch from 'node-fetch';
 import crypto from "crypto";
 import { sendVerificationEmail } from "./verify.js"; 
+import { authenticateToken } from "../utils/jwt.js"; // 追加
 
 // ローカル
-// dotenv.config({ path: '../config/.env' });
+dotenv.config({ path: '../config/.env' });
 //Vercel
-dotenv.config();
+// dotenv.config();
 
 const router = express.Router();
 const saltRounds = 12;
@@ -18,7 +19,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL || "SUPABASE_URL";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY  || "SUPABASE_ANON_KEY";
 const forbiddenWords = [
     "admin","staff","moderator","official",
-    "about","contact","dashboard","update","sign-in","sign-up","sign-out","settings","profile","account","user","auth","verify","reset","forgot","forgot-password","reset-password",
+    "home","about","contact","dashboard","update","sign-in","sign-up","sign-out","settings","profile","account","user","auth","verify","reset","forgot","forgot-password","reset-password",
 ]
 
 console.log("🔍Supabase_Anon_Key :", SUPABASE_ANON_KEY)
@@ -159,6 +160,29 @@ router.post("/google_auth", async (req, res) => {
   } catch (error) {
     console.error("❌ Google認証エラー:", error);
     res.status(500).json({ message: "Google 認証に失敗しました。" });
+  }
+});
+
+router.get("/username", authenticateToken, async (req, res) => {
+  try {
+    console.log("✅ /username エンドポイントにリクエストが来ました");
+    console.log("🔍 認証されたユーザー:", req.user);
+
+    if (!req.user || !req.user.id) {
+      return res.status(400).json({ message: "認証情報が不正です" });
+    }
+
+    const { rows } = await db.query("SELECT username FROM Users WHERE id = $1", [req.user.id]);
+    console.log("📌 クエリ結果:", rows);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "ユーザーが見つかりません。" });
+    }
+
+    res.json({ username: rows[0].username });
+  } catch (error) {
+    console.error("❌ ユーザー名取得エラー:", error);
+    res.status(500).json({ message: "サーバーエラー" });
   }
 });
 

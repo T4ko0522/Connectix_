@@ -5,9 +5,9 @@ import db from "../config/db.js";
 import dotenv from "dotenv";
 
 // Vercel用
-dotenv.config();
+// dotenv.config();
 // ローカル用
-// dotenv.config({ path: '/usr/src/app/config/.env' });
+dotenv.config({ path: '/usr/src/app/config/.env' });
 
 console.log("📌 SMTP_HOST:", process.env.SMTP_HOST);
 console.log("📌 SMTP_PORT:", process.env.SMTP_PORT);

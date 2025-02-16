@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import MobileHeader from './components/MobileHeader.jsx';
-import Footer from './components/Footer.jsx';
-import MobileFooter from './components/MobileFooter.jsx';
 import SignIn from './pages/Sign_in.jsx';
 import MobileSignIn from './pages/MobileSign_in.jsx';
 import SignUp from './pages/Sign_up.jsx';
@@ -91,15 +89,15 @@ const Main = () => {
       />
       <Routes>
         <Route path="/" element={isMobile ? <MobileHome /> : <Home />} />
+        <Route path="/home" element={isMobile ? <MobileHome /> : <Home />} />
         <Route path="/forbidden" element={<Forbidden />} />
-        <Route path="*" element={<NotFound />} />
         <Route path="/dashboard" element={<Dashboard triggerAlert={triggerAlert} />} />
         <Route path="/sign-in" element={isMobile ? <MobileSignIn triggerAlert={triggerAlert} /> : <SignIn triggerAlert={triggerAlert} />} />
         <Route path="/sign-up" element={isMobile ? <MobileSignUp triggerAlert={triggerAlert} /> : <SignUp triggerAlert={triggerAlert} />} />
         <Route path="/verify-email" element={<VerifyEmail triggerAlert={triggerAlert} />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
-      {isMobile ? <MobileFooter /> : <Footer />}
     </div>
   );
 };

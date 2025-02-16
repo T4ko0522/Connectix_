@@ -17,9 +17,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ローカル環境
-// dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
+dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
 // Vercel環境
-dotenv.config();
+// dotenv.config();
 
 console.log("🔍 POSTGRES_URL:", process.env.POSTGRES_URL);
 
@@ -38,6 +38,11 @@ app.use("/api/verify", verifyRoutes); // ✅ メール認証APIを統合
 app.use("/api/password-reset", passwordResetRoutes); // ✅ パスワードリセットAPIを統合
 // app.use("/api/profile", profileRoutes);
 // app.use("/api/links", linkRoutes);
+
+app.use(cors({
+  origin: ["http://localhost:3232", "https://connectix-server.vercel.app"], //TODO localhost:3232を本番時削除
+  credentials: true
+}));
 
 // サーバー起動
 const PORT = process.env.PORT || 3522;

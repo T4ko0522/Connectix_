@@ -10,10 +10,9 @@ import Container from '@mui/material/Container';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
 import AnimatedAlert from '../shared/AnimatedAlert.jsx';
-import Input from './Serchbox.jsx';
-// import Setting from './setting.jsx';
+import Input from './Searchbox.jsx';
+import Radio from './Setting.jsx';
 
 const pages = ['機能', 'アップデート', 'お問い合わせ'];
 
@@ -21,27 +20,23 @@ function Header() {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('jwt_token')); // ✅ 修正
-  const [showAlert, setShowAlert] = useState(false);
+  const [showAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
-
-  const settings = ['プロフィール', 'アカウント', '詳細設定', 'サインアウト'];
 
   useEffect(() => {
     const checkAuth = (event) => {
-      if (event && event.key !== 'jwt_token') return; // ✅ jwt_token の変更のみ監視
+      if (event && event.key !== 'jwt_token') return;
       const token = localStorage.getItem('jwt_token');
       setIsLoggedIn(!!token);
-    };    
-
-    checkAuth(); // 初回実行
-
-    // ✅ localStorage の変更を監視
+    };
+  
+    checkAuth();
     window.addEventListener('storage', checkAuth);
-
+  
     return () => {
       window.removeEventListener('storage', checkAuth);
     };
-  }, []);
+  }, []);  
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -49,23 +44,6 @@ function Header() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("jwt_token");
-    setIsLoggedIn(false);
-    setShowAlert(true);
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000); // 3秒後に非表示
-  };
-
-  const handleProtectedOption = (setting) => {
-    if (!isLoggedIn) {
-      navigate('/sign-in');
-    } else {
-      console.log(`${setting} を選択しました`);
-    }
   };
 
   const handleTrollPagesClick = () => {
@@ -116,7 +94,7 @@ function Header() {
               variant="h6"
               noWrap
               component="a"
-              href="/"
+              navigate="/"
               sx={{
                 mr: 8,
                 ml: 0,
@@ -179,7 +157,6 @@ function Header() {
                 </Tooltip>
               )}
               <Menu
-                sx={{ mt: '45px' }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
@@ -193,22 +170,17 @@ function Header() {
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
+                PaperProps={{
+                  sx: {
+                    p: 0,
+                    m: 0,
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                    overflow: 'hidden',
+                  }
+                }}
               >
-                {settings.map((setting) => (
-                  <MenuItem
-                    key={setting}
-                    onClick={() => {
-                      if (setting === 'サインアウト') {
-                        handleLogout();
-                      } else {
-                        handleProtectedOption(setting);
-                      }
-                      handleCloseUserMenu();
-                    }}
-                  >
-                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                  </MenuItem>
-                ))}
+                <Radio />
               </Menu>
             </Box>
           </Toolbar>

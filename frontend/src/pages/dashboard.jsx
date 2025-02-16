@@ -5,12 +5,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import PaletteIcon from "@mui/icons-material/Palette";
-import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LinkList from "../components/LinkList.jsx";
 import ThemeCustomizer from "../components/ThemeCustomizer.jsx";
 import Analytics from "../components/Analytics.jsx";
-// import preview from "..components/preview.jsx";
 import AnimatedAlert from "../shared/AnimatedAlert.jsx";
 
 export default function Dashboard() {
@@ -18,12 +16,16 @@ export default function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("jwt_token"));
   const [showAlert, setShowAlert] = useState(false);
+  const [username, setUsername] = useState(""); // ✅ ユーザー名を管理する state
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("jwt_token");
     if (!token) {
       navigate("/forbidden");
+    } else {
+      // ✅ ユーザー名を取得
+      fetchUsername(token);
     }
   }, []);
 
@@ -39,9 +41,32 @@ export default function Dashboard() {
     };
   }, []);
 
+  // ✅ ユーザー名を取得する関数
+  const fetchUsername = async (token) => {
+    try {
+      // TODO
+      const response = await fetch("http://localhost:3522/api/auth/usersname", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("ユーザー名の取得に失敗しました");
+      }
+
+      const data = await response.json();
+      setUsername(data.username); // ✅ 取得したユーザー名を state に保存
+    } catch (error) {
+      console.error("ユーザー名取得エラー:", error);
+    }
+  };
+
   // ✅ ログアウト処理
   const handleLogout = () => {
-    localStorage.removeItem('jwt_token');
+    localStorage.removeItem("jwt_token");
     setIsLoggedIn(false);
     setShowAlert(true);
     setTimeout(() => {
@@ -53,15 +78,15 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (activeTab) {
       case "links":
-        return <LinkList />
+        return <LinkList />;
       case "theme":
-        return <ThemeCustomizer />
+        return <ThemeCustomizer />;
       case "analytics":
-        return <Analytics />
+        return <Analytics />;
       default:
-        return <LinkList />
+        return <LinkList />;
     }
-  }
+  };
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f5f5f5" }}>
@@ -92,10 +117,10 @@ export default function Dashboard() {
             <Avatar sx={{ width: 40, height: 40 }} />
             <Box>
               <Typography variant="subtitle1" fontWeight="bold">
-                @username
+                @{username}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                lit.link/username
+              connectix-xi.vercel.app/{username}
               </Typography>
             </Box>
           </Stack>
@@ -128,15 +153,6 @@ export default function Dashboard() {
             >
               アナリティクス
             </Button>
-            <Button
-              startIcon={<SettingsIcon />}
-              variant={activeTab === "settings" ? "contained" : "text"}
-              onClick={() => setActiveTab("settings")}
-              fullWidth
-              sx={{ justifyContent: "flex-start", py: 1.5 }}
-            >
-              設定
-            </Button>
           </Stack>
 
           {/* ✅ ログアウトボタン */}
@@ -168,11 +184,10 @@ export default function Dashboard() {
             {activeTab === "links" && "リンク管理"}
             {activeTab === "theme" && "テーマ設定"}
             {activeTab === "analytics" && "アナリティクス"}
-            {activeTab === "settings" && "設定"}
           </Typography>
         </Box>
         <Box sx={{ p: 3 }}>{renderContent()}</Box>
       </Box>
     </Box>
-  )
+  );
 }

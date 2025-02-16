@@ -246,7 +246,7 @@ export default function SignUp(props) {
             <Typography sx={{ textAlign: 'center' }}>
               既にアカウントをお持ちの場合は{' '}
               <Link
-                navigate="/sign-in"
+                href="/sign-in"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
