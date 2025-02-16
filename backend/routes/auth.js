@@ -18,7 +18,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL || "SUPABASE_URL";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY  || "SUPABASE_ANON_KEY";
 const forbiddenWords = [
     "admin","staff","moderator","official",
-    "about","contact","dashboard","update","sign-in","sign-up","sign-out","settings","profile","account","user","auth","verify","reset","forgot","forgot-password","reset-password",
+    "home","about","contact","dashboard","update","sign-in","sign-up","sign-out","settings","profile","account","user","auth","verify","reset","forgot","forgot-password","reset-password",
 ]
 
 console.log("🔍Supabase_Anon_Key :", SUPABASE_ANON_KEY)
