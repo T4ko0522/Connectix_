@@ -15,7 +15,7 @@ import MenuItem from "@mui/material/MenuItem"
 import AnimatedAlert from "../shared/AnimatedAlert.jsx"
 
 const pages = ["機能", "アップデート", "お問い合わせ"]
-const settings = ["プロフィール", "アカウント", "詳細設定", "サインアウト"]
+const settings = ["プロフィール", "テーマ", "設定", "通知","アクセシビリティ", "サインアウト"]
 
 function MobileHeader() {
   const navigate = useNavigate()
@@ -27,18 +27,22 @@ function MobileHeader() {
 
   useEffect(() => {
     const checkAuth = (event) => {
-      if (event && event.key !== "jwt_token") return
-      const token = localStorage.getItem("jwt_token")
-      setIsLoggedIn(!!token)
-    }
+      if (event && event.key !== "jwt_token") return;
+      const token = localStorage.getItem("jwt_token");
+      setIsLoggedIn(!!token);
 
-    checkAuth()
-    window.addEventListener("storage", checkAuth)
+      if (!token) {
+        navigate("/"); // JWTが削除されたらトップページにリダイレクト
+      }
+    };
+
+    checkAuth();
+    window.addEventListener("storage", checkAuth);
 
     return () => {
-      window.removeEventListener("storage", checkAuth)
-    }
-  }, [])
+      window.removeEventListener("storage", checkAuth);
+    };
+  }, [navigate]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
@@ -59,6 +63,7 @@ function MobileHeader() {
     localStorage.removeItem("jwt_token")
     setIsLoggedIn(false)
     setShowAlert(true)
+    navigate("/")
     setTimeout(() => {
       setShowAlert(false)
     }, 3000)
@@ -66,11 +71,18 @@ function MobileHeader() {
 
   const handleProtectedOption = (setting) => {
     if (!isLoggedIn) {
-      navigate("/sign-in")
+      navigate("/sign-in");
     } else {
-      console.log(`${setting} を選択しました`)
+      if (setting === "プロフィール") {
+        navigate("/dashboard");
+      } else {
+        setShowErrorAlert(true);
+        setTimeout(() => {
+          setShowErrorAlert(false);
+        }, 3000);
+      }
     }
-  }
+  };  
 
   const handleTrollPagesClick = () => {
     setShowErrorAlert(true)
@@ -108,7 +120,7 @@ function MobileHeader() {
                 variant="h6"
                 noWrap
                 component="a"
-                href="/"
+                navigate="/"
                 sx={{
                   ml: 1,
                   fontFamily: "NotoSansJP, Arial, sans-serif",
