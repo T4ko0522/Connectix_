@@ -91,6 +91,7 @@ const Main = () => {
       />
       <Routes>
         <Route path="/" element={isMobile ? <MobileHome /> : <Home />} />
+        <Route path="/home" element={isMobile ? <MobileHome /> : <Home />} />
         <Route path="/forbidden" element={<Forbidden />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/dashboard" element={<Dashboard triggerAlert={triggerAlert} />} />
