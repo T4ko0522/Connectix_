@@ -1,17 +1,18 @@
-import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import Box from "@mui/material/Box"
-import Container from "@mui/material/Container"
-import Typography from "@mui/material/Typography"
-import TextField from "@mui/material/TextField"
-import Button from "@mui/material/Button"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
-import Avatar from "@mui/material/Avatar"
-import GitHubIcon from "@mui/icons-material/GitHub"
-import { YouTube, Twitter } from "@mui/icons-material"
-import Footer from "../components/Footer.jsx"
-import ReactButton from "../components/Button.jsx"
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Avatar from "@mui/material/Avatar";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import { YouTube, Twitter } from "@mui/icons-material";
+import Footer from "../components/Footer.jsx";
+import ReactButton from "../components/Button.jsx";
 
 export default function MobileHome() {
   const navigate = useNavigate()
@@ -29,11 +30,9 @@ export default function MobileHome() {
   const [customURL, setCustomURL] = useState("")
 
   const handleChange = (e) => {
-    const inputValue = e.target.value
-    if (inputValue.startsWith(prefix)) {
-      setCustomURL(inputValue.slice(prefix.length))
-    }
-  }
+    const inputValue = e.target.value.replace(prefix, "");
+    setCustomURL(inputValue);
+  };  
 
   return (
     <Box
@@ -85,18 +84,27 @@ export default function MobileHome() {
                 Original URL for free
               </Typography>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  value={prefix + customURL}
-                  onChange={handleChange}
-                  size="small"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: "white",
-                    },
-                  }}
-                />
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={customURL}
+                onChange={handleChange}
+                size="small"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Typography sx={{ color: "gray", fontWeight: "bold" }}>
+                        {prefix}
+                      </Typography>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "white",
+                  },
+                }}
+              />
                 <ReactButton onClick={() => navigate(isLoggedIn ? "/dashboard" : "/sign-up")} />
               </Box>
             </CardContent>
