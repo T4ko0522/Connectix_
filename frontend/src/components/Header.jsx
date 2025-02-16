@@ -22,28 +22,27 @@ function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('jwt_token')); // ✅ 修正
   const [showAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
-  // const   = ['プロフィール', 'アカウント', '詳細設定', 'サインアウト'];
 
   useEffect(() => {
     const checkAuth = (event) => {
       if (event && event.key !== 'jwt_token') return; // ✅ jwt_token の変更のみ監視
       const token = localStorage.getItem('jwt_token');
       setIsLoggedIn(!!token);
-
+  
       if (!token) {
         navigate("/"); // JWTが削除されたらトップページにリダイレクト
       }
     };
-
+  
     checkAuth(); // 初回実行
-
+  
     // ✅ localStorage の変更を監視
     window.addEventListener('storage', checkAuth);
-
+  
     return () => {
       window.removeEventListener('storage', checkAuth);
     };
-  }, [navigate]);
+  }, [navigate]);  
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);

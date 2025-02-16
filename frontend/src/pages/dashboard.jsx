@@ -21,10 +21,15 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isMounted = true;
     const token = localStorage.getItem("jwt_token");
-    if (!token) {
+    if (!token && isMounted) {
       navigate("/forbidden");
     }
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // ✅ localStorage の変更を監視し、リアルタイムでログイン状態を更新
