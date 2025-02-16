@@ -105,7 +105,9 @@ export default function MobileHome() {
                   },
                 }}
               />
-                <ReactButton onClick={() => navigate(isLoggedIn ? "/dashboard" : "/sign-up")} />
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                  <ReactButton onClick={() => navigate(isLoggedIn ? "/dashboard" : "/sign-up")} />
+                </Box>
               </Box>
             </CardContent>
           </Card>
