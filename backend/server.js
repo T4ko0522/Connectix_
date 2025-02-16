@@ -39,6 +39,11 @@ app.use("/api/password-reset", passwordResetRoutes); // ✅ パスワードリ�
 // app.use("/api/profile", profileRoutes);
 // app.use("/api/links", linkRoutes);
 
+app.use(cors({
+  origin: ["http://localhost:3232", "https://connectix-server.vercel.app"], //TODO localhost:3232を本番時削除
+  credentials: true
+}));
+
 // サーバー起動
 const PORT = process.env.PORT || 3522;
 app.listen(PORT, async () => {
