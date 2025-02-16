@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import fetch from 'node-fetch';
 import crypto from "crypto";
 import { sendVerificationEmail } from "./verify.js"; 
+import { authenticateToken } from "../utils/jwt.js"; // 追加
 
 // ローカル
 // dotenv.config({ path: '../config/.env' });
@@ -159,6 +160,19 @@ router.post("/google_auth", async (req, res) => {
   } catch (error) {
     console.error("❌ Google認証エラー:", error);
     res.status(500).json({ message: "Google 認証に失敗しました。" });
+  }
+});
+
+router.get("/usersname", authenticateToken, async (req, res) => {
+  try {
+    const user = await pool.query("SELECT username FROM Users WHERE id = $1", [req.user.id]);
+    if (user.rows.length === 0) {
+      return res.status(404).json({ message: "ユーザーが見つかりません。" });
+    }
+    res.json({ username: user.rows[0].username });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "サーバーエラー" });
   }
 });
 
