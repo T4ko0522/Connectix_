@@ -12,6 +12,7 @@ import Dashboard from './pages/dashboard.jsx';
 import VerifyEmail from './pages/verifyEmail.jsx';
 import NotFound from './pages/404.jsx';
 import Forbidden from './pages/403.jsx';
+import PublicProfile from "./components/PublicProfile.jsx";
 import { handleAuthCallback } from "./components/Auth.jsx";
 import AnimatedAlert from './shared/AnimatedAlert.jsx'; 
 import { ToastContainer } from 'react-toastify';
@@ -90,6 +91,7 @@ const Main = () => {
       <Routes>
         <Route path="/" element={isMobile ? <MobileHome /> : <Home />} />
         <Route path="/home" element={isMobile ? <MobileHome /> : <Home />} />
+        <Route path="/:username" element={<PublicProfile />} />
         <Route path="/forbidden" element={<Forbidden />} />
         <Route path="/dashboard" element={<Dashboard triggerAlert={triggerAlert} />} />
         <Route path="/sign-in" element={isMobile ? <MobileSignIn triggerAlert={triggerAlert} /> : <SignIn triggerAlert={triggerAlert} />} />

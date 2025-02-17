@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { styled } from 'styled-components';
-import { useNavigate } from "react-router-dom";
 
 const Input = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
 
   const handleSearch = () => {
     const trimmedTerm = searchTerm.trim();
     if (trimmedTerm) {
-      navigate(`/${encodeURIComponent(trimmedTerm)}`);
+      // URLエンコードして現在のwindow.location.hrefに代入
+      window.location.href = `/${encodeURIComponent(trimmedTerm)}`;
     }
   };
 

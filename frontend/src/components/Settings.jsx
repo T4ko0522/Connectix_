@@ -37,16 +37,34 @@ export function Settings() {
   }
 
   const handlePublish = async () => {
-    setIsPublishing(true)
+    setIsPublishing(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      setSnackbar({ open: true, message: "プロフィールが正常に公開されました！", severity: "success" })
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        throw new Error("認証トークンが存在しません。ログインしてください。");
+      }
+      // auth/username からユーザー名を取得
+      const usernameResponse = await fetch("https://connectix-server.vercel.app/api/auth/username", {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      if (!usernameResponse.ok) {
+        throw new Error("ユーザー名の取得に失敗しました");
+      }
+      const { username } = await usernameResponse.json();
+      if (!username) {
+        throw new Error("取得したユーザー名が不正です");
+      }
+
+      window.location.href = `https://connectix-xi.vercel.app/${username}`;
     } catch (err) {
-      setSnackbar({ open: true, message: "プロフィール公開に失敗しました。", severity: "error" })
+      setSnackbar({ open: true, message: "プロフィール公開に失敗しました。", severity: "error" });
     } finally {
-      setIsPublishing(false)
+      setIsPublishing(false);
     }
-  }
+  };  
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
