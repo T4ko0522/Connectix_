@@ -12,10 +12,6 @@ import themeSettingsRoutes from "./routes/themeSettings.js";
 import linksRoutes from "./routes/links.js";
 import publicProfileRoutes from "./routes/publicProfile.js";
 
-// TODO 未実装
-// import profileRoutes from "./routes/profile.js"; // プロフィール
-// import linkRoutes from "./routes/links.js"; // リンク管理
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
