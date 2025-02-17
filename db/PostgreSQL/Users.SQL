@@ -1,8 +1,1 @@
-CREATE TABLE Users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE users ( id int4 PRIMARY KEY, username varchar(255) NOT NULL UNIQUE, email varchar(255) NOT NULL, password_hash text NOT NULL, created_at timestamp NOT NULL DEFAULT now(), updated_at timestamp NOT NULL DEFAULT now(), verification_token text, is_verified bool NOT NULL DEFAULT false, reset_token text, reset_token_expiry timestamp );

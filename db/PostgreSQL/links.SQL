@@ -1,0 +1,1 @@
+CREATE TABLE links ( id TEXT PRIMARY KEY, username varchar(255) NOT NULL, title TEXT NOT NULL, url TEXT NOT NULL, type TEXT NOT NULL, custom_icon TEXT, CONSTRAINT fk_links_user FOREIGN KEY (username) REFERENCES users(username) );
