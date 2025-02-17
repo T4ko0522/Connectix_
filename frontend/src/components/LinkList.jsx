@@ -17,11 +17,30 @@ export default function LinkList() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   useEffect(() => {
-    const savedLinks = localStorage.getItem("savedLinks")
-    if (savedLinks) {
-      setLinks(JSON.parse(savedLinks))
-    }
-  }, [])
+    const fetchLinks = async () => {
+      try {
+        const token = localStorage.getItem("jwt_token");
+        if (!token) {
+          throw new Error("認証トークンが存在しません。ログインしてください。");
+        }
+        const response = await fetch("https://connectix-server.vercel.app/api/links", {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("リンクの取得に失敗しました");
+        }
+        const data = await response.json();
+        setLinks(data.links);
+      } catch (error) {
+        console.error("リンクの取得エラー:", error);
+      }
+    };
+
+    fetchLinks();
+  }, []);
 
   const handleDragEnd = useCallback((result) => {
     if (!result.destination) return
@@ -111,13 +130,40 @@ export default function LinkList() {
     }
   }
 
-  // リンクを保存する関数
-  const saveLinks = () => {
-    localStorage.setItem("savedLinks", JSON.stringify(links))
-    setHasUnsavedChanges(false)
-    alert("リンクが正常に保存されました！")
-  }
-
+  //ANCHOR - リンクを保存する関数
+  const saveLinks = async () => {
+    try {
+      const token = localStorage.getItem("jwt_token");
+      const usernameResponse = await fetch("https://connectix-server.vercel.app/api/auth/username", {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      if (!usernameResponse.ok) {
+        throw new Error("ユーザー名の取得に失敗しました");
+      }
+      const { username } = await usernameResponse.json();
+  
+      // 取得した username とともにリンク情報を保存するリクエストを送信
+      const response = await fetch("https://connectix-server.vercel.app/api/links", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ username, links }),
+      });
+      if (!response.ok) {
+        throw new Error("リンクの保存に失敗しました");
+      }
+      setHasUnsavedChanges(false);
+      alert("リンクが正常に保存されました！");
+    } catch (error) {
+      alert("エラーが発生しました: " + error.message);
+    }
+  };  
+  
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Stack spacing={3}>

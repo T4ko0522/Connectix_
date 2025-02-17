@@ -25,14 +25,17 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
   const [hasUnsavedChangesLocal, setHasUnsavedChangesLocal] = useState(false)
   const [links, setLinks] = useState([]);
   const VRChatIcon = () => <img src="assets/image/VRChat.png" alt="VRChat Icon" style={{ width: 24, height: 24 }} />;
-  
+  const handleChange = () => {
+    setHasUnsavedChangesLocal(true);
+    setHasUnsavedChanges(true);
+  };  
+
   useEffect(() => {
     const savedLinks = localStorage.getItem("savedLinks");
     if (savedLinks) {
       setLinks(JSON.parse(savedLinks));
     }
 
-    // ストレージの変更を監視
     const handleStorageChange = () => {
       const updatedLinks = localStorage.getItem("savedLinks");
       if (updatedLinks) {
@@ -47,23 +50,65 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
   }, []);
 
   useEffect(() => {
-    const savedSettings = localStorage.getItem("themeCustomizerSettings")
-    if (savedSettings) {
-      const parsedSettings = JSON.parse(savedSettings)
-      setIsGradient(parsedSettings.isGradient)
-      setPrimaryColor(parsedSettings.primaryColor)
-      setSecondaryColor(parsedSettings.secondaryColor)
-      setUsernameFontColor(parsedSettings.usernameFontColor)
-      setUrlFontColor(parsedSettings.urlFontColor)
-      setProfileImage(parsedSettings.profileImage)
-      setBackgroundImage(parsedSettings.backgroundImage)
-      setIsLinkBackgroundTransparent(parsedSettings.isLinkBackgroundTransparent)
-      setLinkBackgroundColor(parsedSettings.linkBackgroundColor)
-      setLinkBackgroundSecondaryColor(parsedSettings.linkBackgroundSecondaryColor)
-      setIsLinkBackgroundGradient(parsedSettings.isLinkBackgroundGradient)
-      setUsername(parsedSettings.username)
-    }
-  }, [])
+    const fetchThemeSettings = async () => {
+      try {
+        const token = localStorage.getItem("jwt_token");
+        if (!token) {
+          throw new Error("認証トークンが存在しません。ログインしてください。");
+        }
+        const response = await fetch("https://connectix-server.vercel.app/api/theme-settings", {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("テーマ設定の取得に失敗しました");
+        }
+        const data = await response.json();
+        if (data.settings) {
+          setIsGradient(data.settings.is_gradient);
+          setPrimaryColor(data.settings.primary_color);
+          setSecondaryColor(data.settings.secondary_color);
+          setUsernameFontColor(data.settings.username_font_color);
+          setUrlFontColor(data.settings.url_font_color);
+          setProfileImage(data.settings.profile_image);
+          setBackgroundImage(data.settings.background_image);
+          setIsLinkBackgroundTransparent(data.settings.is_link_background_transparent);
+          setLinkBackgroundColor(data.settings.link_background_color);
+          setLinkBackgroundSecondaryColor(data.settings.link_background_secondary_color);
+          setIsLinkBackgroundGradient(data.settings.is_link_background_gradient);
+          setUsername(data.settings.display_username);
+        }
+      } catch (error) {
+        console.error("テーマ設定取得エラー:", error);
+      }
+    };
+
+    fetchThemeSettings();
+  }, []);
+
+  useEffect(() => {
+    const fetchLinks = async () => {
+      try {
+        const token = localStorage.getItem("jwt_token");
+        if (!token) throw new Error("認証トークンが存在しません。ログインしてください。");
+        const response = await fetch("https://connectix-server.vercel.app/api/links", {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) throw new Error("リンクの取得に失敗しました");
+        const data = await response.json();
+        setLinks(data.links);
+      } catch (error) {
+        console.error("リンク取得エラー:", error);
+      }
+    };
+
+    fetchLinks();
+  }, []);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -80,32 +125,43 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
     }
   }, [hasUnsavedChangesLocal])
 
-  const saveSettings = () => {
+  //ANCHOR - テーマを保存する関数
+  const saveSettings = async () => {
     const settings = {
-      isGradient,
-      primaryColor,
-      secondaryColor,
-      usernameFontColor,
-      urlFontColor,
-      profileImage,
-      backgroundImage,
-      isLinkBackgroundTransparent,
-      linkBackgroundColor,
-      linkBackgroundSecondaryColor,
-      isLinkBackgroundGradient,
-      username,
+      displayUsername: username, // ここはユーザーが入力した表示用の名前（例えば username 状態変数を displayUsername に変更するなど）
+      is_gradient: isGradient ?? false,
+      primary_color: primaryColor ?? "#ffffff",
+      secondary_color: secondaryColor ?? "#E91E63",
+      username_font_color: usernameFontColor ?? "#000000",
+      url_font_color: urlFontColor ?? "#000000",
+      profile_image: profileImage,
+      background_image: backgroundImage,
+      is_link_background_transparent: isLinkBackgroundTransparent ?? false,
+      link_background_color: linkBackgroundColor ?? "#FFFFFF",
+      link_background_secondary_color: linkBackgroundSecondaryColor ?? "#FFFFFF",
+      is_link_background_gradient: isLinkBackgroundGradient ?? false,
+    };
+  
+    try {
+      const token = localStorage.getItem("jwt_token");
+      const response = await fetch("https://connectix-server.vercel.app/api/theme-settings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(settings),
+      });
+      if (!response.ok) {
+        throw new Error("保存に失敗しました");
+      }
+      setHasUnsavedChanges(false);
+      setHasUnsavedChangesLocal(false);
+      alert("設定が保存されました");
+    } catch (error) {
+      alert("エラーが発生しました: " + error.message);
     }
-    localStorage.setItem("themeCustomizerSettings", JSON.stringify(settings))
-    setHasUnsavedChanges(false)
-    setHasUnsavedChangesLocal(false)
-    alert("設定が保存されました")
-  }
-
-  // 変更を検知して hasUnsavedChanges を true に設定する関数
-  const handleChange = () => {
-    setHasUnsavedChangesLocal(true)
-    setHasUnsavedChanges(true)
-  }
+  };  
 
   // 現在の背景を取得（画像、グラデーション、または単色）
   const getCurrentBackground = () => {
