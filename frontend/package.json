@@ -25,6 +25,7 @@
     "@supabase/supabase-js": "^2.48.1",
     "axios": "^1.7.9",
     "i": "^0.3.7",
+    "mui-color-input": "^5.0.1",
     "npm": "^11.0.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
