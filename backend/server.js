@@ -8,6 +8,9 @@ import pool from "./config/db.js"; // db接続
 import authRoutes from "./routes/auth.js"; // 認証
 import verifyRoutes from "./routes/verify.js"; // メール認証
 import passwordResetRoutes from "./routes/resetPassword.js"; // パスワードリセット
+import themeSettingsRoutes from "./routes/themeSettings.js";
+import linksRoutes from "./routes/links.js";
+import publicProfileRoutes from "./routes/publicProfile.js";
 
 // TODO 未実装
 // import profileRoutes from "./routes/profile.js"; // プロフィール
@@ -29,15 +32,16 @@ const logger = log4js.getLogger();
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cors());
 
 // APIの登録
 app.use("/api/auth", authRoutes);
 app.use("/api/verify", verifyRoutes); // ✅ メール認証APIを統合
 app.use("/api/password-reset", passwordResetRoutes); // ✅ パスワードリセットAPIを統合
-// app.use("/api/profile", profileRoutes);
-// app.use("/api/links", linkRoutes);
+app.use("/api/theme-settings", themeSettingsRoutes);
+app.use("/api/links", linksRoutes);
+app.use("/api/public-profile", publicProfileRoutes);
 
 app.use(cors({
   origin: ["https://connectix-server.vercel.app"],
