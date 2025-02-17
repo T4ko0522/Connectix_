@@ -4,16 +4,6 @@ import { authenticateToken } from "../utils/jwt.js";
 
 const router = express.Router();
 
-// POST /api/links
-// リクエストボディ例:
-// {
-//   "username": "exampleUser",
-//   "links": [
-//     { "id": "123", "title": "Link 1", "url": "https://example.com", "type": "link", "custom_icon": null },
-//     { "id": "456", "title": "Link 2", "url": "https://example.org", "type": "instagram", "custom_icon": "data:image/png;base64,..." }
-//   ]
-// }
-
 router.post("/", authenticateToken, async (req, res) => {
   const { username, links } = req.body;
   if (!username || !Array.isArray(links)) {
@@ -22,15 +12,29 @@ router.post("/", authenticateToken, async (req, res) => {
 
   try {
     await db.query("BEGIN");
-    // 既存のリンクを削除
-    await db.query("DELETE FROM links WHERE username = $1", [username]);
-    // 新規リンクを挿入
+
+    // 現在のリンク数を取得
+    const { rows: countRows } = await db.query(
+      "SELECT COUNT(*) FROM links WHERE username = $1",
+      [username]
+    );
+    const currentCount = parseInt(countRows[0].count, 10);
+
     for (const link of links) {
+      if (currentCount >= 10) {
+        await db.query(
+          "DELETE FROM links WHERE id = (SELECT id FROM links WHERE username = $1 ORDER BY id ASC LIMIT 1)",
+          [username]
+        );
+      }
+
+      // 新しいリンクを挿入
       await db.query(
         "INSERT INTO links (id, username, title, url, type, custom_icon) VALUES ($1, $2, $3, $4, $5, $6)",
         [link.id, username, link.title, link.url, link.type, link.custom_icon]
       );
     }
+
     await db.query("COMMIT");
     res.status(200).json({ message: "Links saved successfully." });
   } catch (error) {
@@ -42,14 +46,20 @@ router.post("/", authenticateToken, async (req, res) => {
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
-    // トークンからユーザーの id を取得して、ユーザーの username を取得する
-    const { rows: userRows } = await db.query("SELECT username FROM users WHERE id = $1", [req.user.id]);
+    const { rows: userRows } = await db.query(
+      "SELECT username FROM users WHERE id = $1",
+      [req.user.id]
+    );
     if (userRows.length === 0) {
       return res.status(404).json({ message: "ユーザーが見つかりません" });
     }
     const username = userRows[0].username;
-    // その username に紐づくリンク情報を取得する
-    const { rows } = await db.query("SELECT * FROM links WHERE username = $1", [username]);
+
+    const { rows } = await db.query(
+      "SELECT * FROM links WHERE username = $1 ORDER BY id DESC",
+      [username]
+    );
+
     return res.status(200).json({ links: rows });
   } catch (error) {
     console.error("リンク取得エラー:", error);
