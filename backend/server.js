@@ -28,7 +28,7 @@ const logger = log4js.getLogger();
 
 const app = express();
 
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "3mb" }));
 app.use(cors());
 
 // APIの登録
