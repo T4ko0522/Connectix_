@@ -8,10 +8,10 @@ import crypto from "crypto";
 import { sendVerificationEmail } from "./verify.js"; 
 import { authenticateToken } from "../utils/jwt.js"; // 追加
 
-// ローカル
-dotenv.config({ path: '../config/.env' });
+//LINK - Local
+// dotenv.config({ path: '../config/.env' });
 //Vercel
-// dotenv.config();
+dotenv.config();
 
 const router = express.Router();
 const saltRounds = 12;

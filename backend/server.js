@@ -16,10 +16,10 @@ import passwordResetRoutes from "./routes/resetPassword.js"; // パスワード�
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ローカル環境
-dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
+//LINK - Local
+// dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
 // Vercel環境
-// dotenv.config();
+dotenv.config();
 
 console.log("🔍 POSTGRES_URL:", process.env.POSTGRES_URL);
 
