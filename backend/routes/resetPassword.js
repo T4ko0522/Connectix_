@@ -48,7 +48,7 @@ router.post("/request-reset", async (req, res) => {
             },
         });
 
-        const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+        const resetLink = `https://connectix-xi.vercel.app/reset-password?token=${resetToken}`;
 
         await transporter.sendMail({
             from: `"サポート" <${process.env.SMTP_USER}>`,
