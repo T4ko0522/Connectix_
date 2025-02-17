@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Stack, IconButton, Typography, Button, Avatar } from "@mui/material";
+import { Box, Stack, IconButton, Typography, Button, Avatar, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AddIcon from "@mui/icons-material/Add";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import PaletteIcon from "@mui/icons-material/Palette";
 import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
 import LinkList from "../components/LinkList.jsx";
 import ThemeCustomizer from "../components/ThemeCustomizer.jsx";
 import Analytics from "../components/Analytics.jsx";
+import { Settings } from "../components/Settings.jsx";
 import AnimatedAlert from "../shared/AnimatedAlert.jsx";
 
 export default function Dashboard() {
@@ -16,7 +18,12 @@ export default function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("jwt_token"));
   const [showAlert, setShowAlert] = useState(false);
-  const [username, setUsername] = useState(""); // ✅ ユーザー名を管理する state
+  const [username, setUsername] = useState("");
+  const [links, setLinks] = useState([]);
+  const [themeSettings, setThemeSettings] = useState({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,12 +31,10 @@ export default function Dashboard() {
     if (!token) {
       navigate("/forbidden");
     } else {
-      // ✅ ユーザー名を取得
       fetchUsername(token);
     }
   }, []);
 
-  // ✅ localStorage の変更を監視し、リアルタイムでログイン状態を更新
   useEffect(() => {
     const checkAuth = () => {
       setIsLoggedIn(!!localStorage.getItem("jwt_token"));
@@ -41,7 +46,21 @@ export default function Dashboard() {
     };
   }, []);
 
-  // ✅ ユーザー名を取得する関数
+  // 🔹 ページを離れるときに警告を表示
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (hasUnsavedChanges) {
+        event.preventDefault();
+        event.returnValue = "変更が保存されていません。本当に離れますか？";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [hasUnsavedChanges]);
+
   const fetchUsername = async (token) => {
     try {
       // TODO
@@ -58,33 +77,75 @@ export default function Dashboard() {
       }
 
       const data = await response.json();
-      setUsername(data.username); // ✅ 取得したユーザー名を state に保存
+      setUsername(data.username);
     } catch (error) {
       console.error("ユーザー名取得エラー:", error);
     }
   };
 
-  // ✅ ログアウト処理
+  // 🔹 タブ変更時の確認ダイアログを表示
+  // const handleTabChange = (newTab) => {
+  //   if (hasUnsavedChanges) {
+  //     setPendingNavigation(() => () => setActiveTab(newTab));
+  //     setOpenConfirmDialog(true);
+  //     return;
+  //   }
+  //   setActiveTab(newTab);
+  // };
+
+  // 🔹 確認ダイアログで「変更を破棄」した場合の処理
+  const handleDiscardChanges = () => {
+    setHasUnsavedChanges(false);
+    setOpenConfirmDialog(false);
+    if (pendingNavigation) {
+      pendingNavigation();
+      setPendingNavigation(null);
+    }
+  };
+
+  // 🔹 ナビゲーション (外部ページへ移動) の警告処理
+  const handleNavigate = (path) => {
+    if (hasUnsavedChanges) {
+      setPendingNavigation(() => () => navigate(path));
+      setOpenConfirmDialog(true);
+      return;
+    }
+    navigate(path);
+  };
+
   const handleLogout = () => {
+    handleNavigate("/");
     localStorage.removeItem("jwt_token");
     setIsLoggedIn(false);
     setShowAlert(true);
     setTimeout(() => {
       setShowAlert(false);
-      navigate("/"); // ✅ ログアウト後に `sign-in` へリダイレクト
     }, 3000);
   };
 
   const renderContent = () => {
     switch (activeTab) {
       case "links":
-        return <LinkList />;
+        return <LinkList 
+                  links={links} 
+                  setLinks={setLinks}
+                  setHasUnsavedChanges={setHasUnsavedChanges}
+                />;
       case "theme":
-        return <ThemeCustomizer />;
+        return (
+          <ThemeCustomizer
+            setHasUnsavedChanges={setHasUnsavedChanges}
+            links={links}
+            themeSettings={themeSettings}
+            setThemeSettings={setThemeSettings}
+          />
+        );
       case "analytics":
         return <Analytics />;
+      case "settings":
+        return <Settings />
       default:
-        return <LinkList />;
+        return <LinkList links={links} setLinks={setLinks} />;
     }
   };
 
@@ -97,7 +158,18 @@ export default function Dashboard() {
         title="Success"
         message="ログアウトしました。"
       />
-
+      <Dialog open={openConfirmDialog} onClose={() => setOpenConfirmDialog(false)}>
+        <DialogTitle>未保存の変更があります</DialogTitle>
+        <DialogContent>
+          <Typography>変更を破棄して移動しますか？</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConfirmDialog(false)}>キャンセル</Button>
+          <Button onClick={handleDiscardChanges} color="error">
+            破棄する
+          </Button>
+        </DialogActions>
+      </Dialog>
       {/* サイドバー */}
       <Box
         sx={{
@@ -153,8 +225,16 @@ export default function Dashboard() {
             >
               アナリティクス
             </Button>
+            <Button
+              startIcon={<SettingsIcon />}
+              variant={activeTab === "settings" ? "contained" : "text"}
+              onClick={() => setActiveTab("settings")}
+              fullWidth
+              sx={{ justifyContent: "flex-start", py: 1.5 }}
+            >
+              設定
+            </Button>
           </Stack>
-
           {/* ✅ ログアウトボタン */}
           {isLoggedIn && (
             <Button startIcon={<LogoutIcon />} onClick={handleLogout} color="inherit" sx={{ mt: "auto", justifyContent: "flex-start", py: 1.5 }}>
@@ -184,6 +264,7 @@ export default function Dashboard() {
             {activeTab === "links" && "リンク管理"}
             {activeTab === "theme" && "テーマ設定"}
             {activeTab === "analytics" && "アナリティクス"}
+            {activeTab === "settings" && "設定"}
           </Typography>
         </Box>
         <Box sx={{ p: 3 }}>{renderContent()}</Box>

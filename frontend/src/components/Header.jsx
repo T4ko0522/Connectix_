@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -18,25 +18,16 @@ const pages = ['機能', 'アップデート', 'お問い合わせ'];
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation(); // ✅ 追加
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('jwt_token')); // ✅ 修正
   const [showAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   useEffect(() => {
-    const checkAuth = (event) => {
-      if (event && event.key !== 'jwt_token') return;
-      const token = localStorage.getItem('jwt_token');
-      setIsLoggedIn(!!token);
-    };
-  
-    checkAuth();
-    window.addEventListener('storage', checkAuth);
-  
-    return () => {
-      window.removeEventListener('storage', checkAuth);
-    };
-  }, []);  
+    const token = localStorage.getItem("jwt_token");
+    setIsLoggedIn(!!token);
+  }, [location]);
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -177,6 +168,7 @@ function Header() {
                     backgroundColor: 'transparent',
                     boxShadow: 'none',
                     overflow: 'hidden',
+                    mt: "40px",
                   }
                 }}
               >
