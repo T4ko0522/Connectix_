@@ -65,7 +65,7 @@ export default function Dashboard() {
     try {
       // TODO
       // const response = await fetch("http://localhost:3522/api/auth/usersname", {
-      const response = await fetch("https://connectix-server.vercel.app/api/auth/usersname", {
+      const response = await fetch("https://connectix-server.vercel.app/api/auth/username", {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
