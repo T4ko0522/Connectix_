@@ -40,7 +40,7 @@ app.use("/api/password-reset", passwordResetRoutes); // ✅ パスワードリ�
 // app.use("/api/links", linkRoutes);
 
 app.use(cors({
-  origin: ["http://localhost:3232", "https://connectix-server.vercel.app"], //TODO localhost:3232を本番時削除
+  origin: ["https://connectix-server.vercel.app"],
   credentials: true
 }));
 
