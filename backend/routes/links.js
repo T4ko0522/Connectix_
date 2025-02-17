@@ -4,6 +4,15 @@ import { authenticateToken } from "../utils/jwt.js";
 
 const router = express.Router();
 
+// POST /api/links
+// リクエストボディ例:
+// {
+//   "username": "exampleUser",
+//   "links": [
+//     { "id": "123", "title": "Link 1", "url": "https://example.com", "type": "link", "custom_icon": null },
+//     { "id": "456", "title": "Link 2", "url": "https://example.org", "type": "instagram", "custom_icon": "data:image/png;base64,..." }
+//   ]
+// }
 router.post("/", authenticateToken, async (req, res) => {
   const { username, links } = req.body;
   if (!username || !Array.isArray(links)) {
@@ -18,7 +27,7 @@ router.post("/", authenticateToken, async (req, res) => {
       "SELECT COUNT(*) FROM links WHERE username = $1",
       [username]
     );
-    const currentCount = parseInt(countRows[0].count, 10);
+    let currentCount = parseInt(countRows[0].count, 10);
 
     for (const link of links) {
       if (currentCount >= 10) {
@@ -26,6 +35,7 @@ router.post("/", authenticateToken, async (req, res) => {
           "DELETE FROM links WHERE id = (SELECT id FROM links WHERE username = $1 ORDER BY id ASC LIMIT 1)",
           [username]
         );
+        currentCount--;
       }
 
       // 新しいリンクを挿入
@@ -33,6 +43,7 @@ router.post("/", authenticateToken, async (req, res) => {
         "INSERT INTO links (id, username, title, url, type, custom_icon) VALUES ($1, $2, $3, $4, $5, $6)",
         [link.id, username, link.title, link.url, link.type, link.custom_icon]
       );
+      currentCount++;
     }
 
     await db.query("COMMIT");
@@ -54,12 +65,12 @@ router.get("/", authenticateToken, async (req, res) => {
       return res.status(404).json({ message: "ユーザーが見つかりません" });
     }
     const username = userRows[0].username;
-
+    
     const { rows } = await db.query(
       "SELECT * FROM links WHERE username = $1 ORDER BY id DESC",
       [username]
     );
-
+    
     return res.status(200).json({ links: rows });
   } catch (error) {
     console.error("リンク取得エラー:", error);
