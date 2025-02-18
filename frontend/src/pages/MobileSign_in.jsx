@@ -126,7 +126,7 @@ export default function MobileSignIn(props) {
         triggerAlert("error", "失敗", "JWTの取得に失敗しました。")
       }
     } catch (error) {
-      console.error("サーバーエラー:", error.message)
+      setError(error.message);
     }
   }
 

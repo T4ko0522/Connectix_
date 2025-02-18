@@ -134,7 +134,7 @@ export default function MobileSignUp(props) {
       triggerAlert("info", "Verify", "認証メールを送信しました。メールを確認してください。")
       navigate("/sign-in") // サインイン画面へリダイレクト
     } catch (error) {
-      console.error("サーバーエラー:", error)
+      setError(error.message);
     }
   }
 

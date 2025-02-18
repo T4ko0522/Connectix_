@@ -143,7 +143,7 @@ export default function SignIn(props) {
       }    
         navigate("/");
     } catch (error) {
-        console.error("サーバーエラー:", error.message);
+      setError(error.message);
     }
 };
 
