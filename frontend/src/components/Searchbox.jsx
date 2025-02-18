@@ -7,8 +7,9 @@ const Input = () => {
   const handleSearch = () => {
     const trimmedTerm = searchTerm.trim();
     if (trimmedTerm) {
-      // URLエンコードして現在のwindow.location.hrefに代入
-      window.location.href = `/${encodeURIComponent(trimmedTerm)}`;
+      // "@" をすべて削除してから URL エンコードしてリダイレクト
+      const termWithoutAt = trimmedTerm.replace(/@/g, "");
+      window.location.href = `/${encodeURIComponent(termWithoutAt)}`;
     }
   };
 
