@@ -61,6 +61,7 @@ export default function MobileSignIn(props) {
   const [open, setOpen] = useState(false)
   const handleClickOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+  const [setError] = useState("");
 
   const validateInputs = () => {
     const email = document.getElementById("email").value

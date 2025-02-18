@@ -69,7 +69,7 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [nameError, setNameError] = useState(false);
   const [nameErrorMessage, setNameErrorMessage] = useState('');
-  // const [err, setError] = useState('');
+  const [setError] = useState('');
 
   const validateInputs = () => {
     const email = document.getElementById('email').value;
