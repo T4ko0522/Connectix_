@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { Box, Typography, Button, Stack, Paper, CircularProgress, Snackbar, Alert } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import LinkIcon from "@mui/icons-material/Link";
 
-const Navigate = useNavigate();
 const VRChatIcon = () => (
   <img src="/assets/image/VRChat.png" alt="VRChat Icon" style={{ width: 24, height: 24 }} />
 );
