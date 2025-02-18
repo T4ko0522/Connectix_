@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Box, Typography, Button, Stack, Paper, CircularProgress, Snackbar, Alert } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
@@ -100,11 +100,7 @@ export default function PublicProfile() {
     );
   }
   if (!theme) {
-    return (
-      <Box sx={{ textAlign: "center", p: 4 }}>
-        <Typography variant="h5">プロフィールが見つかりません。</Typography>
-      </Box>
-    );
+    return <Navigate to="/404" />;
   }
 
   return (
