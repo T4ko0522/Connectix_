@@ -46,21 +46,6 @@ export default function Dashboard() {
     };
   }, []);
 
-  // 🔹 ページを離れるときに警告を表示
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      if (hasUnsavedChanges) {
-        event.preventDefault();
-        event.returnValue = "変更が保存されていません。本当に離れますか？";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [hasUnsavedChanges]);
-
   const fetchUsername = async (token) => {
     try {
       // TODO
@@ -84,17 +69,41 @@ export default function Dashboard() {
     }
   };
 
-  // 🔹 タブ変更時の確認ダイアログを表示
-  // const handleTabChange = (newTab) => {
-  //   if (hasUnsavedChanges) {
-  //     setPendingNavigation(() => () => setActiveTab(newTab));
-  //     setOpenConfirmDialog(true);
-  //     return;
-  //   }
-  //   setActiveTab(newTab);
-  // };
+  // ブラウザのリロードや閉じるときに警告を表示
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (hasUnsavedChanges) {
+        event.preventDefault();
+        event.returnValue = "変更が保存されていません。本当に離れますか？";
+      }
+    };
 
-  // 🔹 確認ダイアログで「変更を破棄」した場合の処理
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () =>
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  // 外部へのナビゲーション時の警告（例：ログアウト時）
+  const handleNavigate = (path) => {
+    if (hasUnsavedChanges) {
+      setPendingNavigation(() => () => navigate(path));
+      setOpenConfirmDialog(true);
+    } else {
+      navigate(path);
+    }
+  };
+
+  // タブ切替時の警告を追加するための関数
+  const handleTabChange = (newTab) => {
+    if (hasUnsavedChanges) {
+      setPendingNavigation(() => () => setActiveTab(newTab));
+      setOpenConfirmDialog(true);
+    } else {
+      setActiveTab(newTab);
+    }
+  };
+
+  // ユーザーが「変更を破棄」を選択した場合の処理
   const handleDiscardChanges = () => {
     setHasUnsavedChanges(false);
     setOpenConfirmDialog(false);
@@ -102,16 +111,6 @@ export default function Dashboard() {
       pendingNavigation();
       setPendingNavigation(null);
     }
-  };
-
-  // 🔹 ナビゲーション (外部ページへ移動) の警告処理
-  const handleNavigate = (path) => {
-    if (hasUnsavedChanges) {
-      setPendingNavigation(() => () => navigate(path));
-      setOpenConfirmDialog(true);
-      return;
-    }
-    navigate(path);
   };
 
   const handleLogout = () => {
@@ -202,7 +201,7 @@ export default function Dashboard() {
             <Button
               startIcon={<AddIcon />}
               variant={activeTab === "links" ? "contained" : "text"}
-              onClick={() => setActiveTab("links")}
+              onClick={() => handleTabChange("links")}
               fullWidth
               sx={{ justifyContent: "flex-start", py: 1.5 }}
             >
@@ -211,7 +210,7 @@ export default function Dashboard() {
             <Button
               startIcon={<PaletteIcon />}
               variant={activeTab === "theme" ? "contained" : "text"}
-              onClick={() => setActiveTab("theme")}
+              onClick={() => handleTabChange("theme")}
               fullWidth
               sx={{ justifyContent: "flex-start", py: 1.5 }}
             >
@@ -220,7 +219,7 @@ export default function Dashboard() {
             <Button
               startIcon={<BarChartIcon />}
               variant={activeTab === "analytics" ? "contained" : "text"}
-              onClick={() => setActiveTab("analytics")}
+              onClick={() => handleTabChange("analytics")}
               fullWidth
               sx={{ justifyContent: "flex-start", py: 1.5 }}
             >
@@ -229,7 +228,7 @@ export default function Dashboard() {
             <Button
               startIcon={<SettingsIcon />}
               variant={activeTab === "settings" ? "contained" : "text"}
-              onClick={() => setActiveTab("settings")}
+              onClick={() => handleTabChange("settings")}
               fullWidth
               sx={{ justifyContent: "flex-start", py: 1.5 }}
             >
