@@ -14,6 +14,7 @@ import NotFound from './pages/404.jsx';
 import Forbidden from './pages/403.jsx';
 import PublicProfile from "./components/PublicProfile.jsx";
 import { handleAuthCallback } from "./components/Auth.jsx";
+import ResetPassword from './pages/RestPassword.jsx';
 import AnimatedAlert from './shared/AnimatedAlert.jsx'; 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -96,9 +97,11 @@ const Main = () => {
         <Route path="/dashboard" element={<Dashboard triggerAlert={triggerAlert} />} />
         <Route path="/sign-in" element={isMobile ? <MobileSignIn triggerAlert={triggerAlert} /> : <SignIn triggerAlert={triggerAlert} />} />
         <Route path="/sign-up" element={isMobile ? <MobileSignUp triggerAlert={triggerAlert} /> : <SignUp triggerAlert={triggerAlert} />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-email" element={<VerifyEmail triggerAlert={triggerAlert} />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="404" element={<NotFound />} />
       </Routes>
     </div>
   );
