@@ -11,7 +11,8 @@ router.get("/:username", async (req, res) => {
   try {
     // usersテーブルから該当のユーザーを取得
     const { rows: userRows } = await db.query(
-      "SELECT id, username FROM users WHERE username = $1",
+      // 大文字小文字を区別しない検索（ILIKE）を利用
+      "SELECT id, username FROM users WHERE username ILIKE $1",
       [username]
     );
     if (userRows.length === 0) {
@@ -19,7 +20,7 @@ router.get("/:username", async (req, res) => {
     }
     const user = userRows[0];
 
-    // theme_settings テーブルは user_id に紐付けて保存しているので、user.id を使って取得
+    // theme_settings テーブルの取得（user_id ベース）
     const { rows: themeRows } = await db.query(
       "SELECT * FROM theme_settings WHERE user_id = $1",
       [user.id]
@@ -28,7 +29,8 @@ router.get("/:username", async (req, res) => {
     // links テーブルも同様に、ユーザーのアカウントusername（あるいは user.id で管理している場合はそれ）を利用
     // ここでは、links テーブルはユーザーのアカウントのusernameで保存している前提とする
     const { rows: linkRows } = await db.query(
-      "SELECT * FROM links WHERE username = $1 ORDER BY id",
+      // 大文字小文字を区別しない検索（ILIKE）を利用ß
+      "SELECT * FROM links WHERE username ILIKE $1 ORDER BY id",
       [user.username]
     );
 
