@@ -41,14 +41,21 @@ router.post("/sign_up", async (req, res) => {
     }
 
     try {
-        // 既に登録済みかチェック
-        const { rows: existingUser } = await db.query(
-            "SELECT * FROM users WHERE email = $1",
-            [email]
-        );
-        if (existingUser.length > 0) {
-            return res.status(400).json({ message: "このメールアドレスは既に登録されています。" });
-        }
+      // `email` と `username` の重複チェック（大文字小文字を区別しない）
+      const { rows: existingUser } = await db.query(
+          "SELECT * FROM users WHERE email = $1 OR LOWER(username) = LOWER($2)",
+          [email, name]
+      );
+
+      if (existingUser.length > 0) {
+          if (existingUser.some(user => user.email === email)) {
+              return res.status(400).json({ message: "このメールアドレスは既に登録されています。" });
+          }
+          // username は大文字小文字を区別せずに重複をチェック
+          if (existingUser.some(user => user.username.toLowerCase() === name.toLowerCase())) {
+              return res.status(400).json({ message: "このユーザー名は既に使用されています。" });
+          }
+      }
 
         // 認証用トークン生成
         const verificationToken = crypto.randomBytes(32).toString("hex");
