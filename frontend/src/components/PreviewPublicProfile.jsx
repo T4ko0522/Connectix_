@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
 import { Box, Typography, Button, Stack, Paper, CircularProgress, Snackbar, Alert } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
@@ -126,8 +125,17 @@ export default function PreviewPublicProfile() {
       </Box>
     );
   }
-  if (!theme) {
-    return <Navigate to="/404" />;
+  if (theme) {
+    return (
+      <Box sx={{ textAlign: "center", p: 5 }}>
+        <Typography variant="h4" color="text.secondary">
+          プロフィールはまだ公開されていません。
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+          {"プレビューを確認するために、一度設定から\"プロフィールを公開する\"をクリックしてください。"}
+        </Typography>
+      </Box>
+    );
   }
 
   return (
