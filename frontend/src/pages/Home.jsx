@@ -129,7 +129,7 @@ export default function Home() {
             >
               <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
                 <Avatar src="/placeholder.svg" sx={{ width: 80, height: 80, mr: 2 }} />
-                <Typography variant="h6">@Tako(製作者 検索boxで検索してみてね)</Typography>
+                <Typography variant="h6">@Tako(検索boxで検索してみてね)</Typography>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Button
