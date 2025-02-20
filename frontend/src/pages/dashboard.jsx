@@ -7,10 +7,12 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import PaletteIcon from "@mui/icons-material/Palette";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import LinkList from "../components/LinkList.jsx";
 import ThemeCustomizer from "../components/ThemeCustomizer.jsx";
 import Analytics from "../components/Analytics.jsx";
 import { Settings } from "../components/Settings.jsx";
+import PreviewPublicProfile from "../components/PreviewPublicProfile.jsx";
 import AnimatedAlert from "../shared/AnimatedAlert.jsx";
 
 export default function Dashboard() {
@@ -143,9 +145,11 @@ export default function Dashboard() {
       case "analytics":
         return <Analytics />;
       case "settings":
-        return <Settings />
+        return <Settings />;
+      case "preview":
+        return <PreviewPublicProfile />;
       default:
-        return <LinkList links={links} setLinks={setLinks} />;
+        return <LinkList linSks={links} setLinks={setLinks} />;
     }
   };
 
@@ -234,6 +238,15 @@ export default function Dashboard() {
             >
               設定
             </Button>
+            <Button 
+              startIcon={<VisibilityIcon />} 
+              variant={activeTab === "preview" ? "contained" : "text"}
+              onClick={() => handleTabChange("preview")} 
+              fullWidth 
+              sx={{ justifyContent: "flex-start", py: 1.5 }}
+            >
+              プレビュー
+            </Button>
           </Stack>
           {/* ✅ ログアウトボタン */}
           {isLoggedIn && (
@@ -265,6 +278,7 @@ export default function Dashboard() {
             {activeTab === "theme" && "テーマ設定"}
             {activeTab === "analytics" && "アナリティクス"}
             {activeTab === "settings" && "設定"}
+            {activeTab === "preview" && "プレビュー"}
           </Typography>
         </Box>
         <Box sx={{ p: 3 }}>{renderContent()}</Box>
