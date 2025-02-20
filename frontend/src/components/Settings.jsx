@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { Box, Typography, Button, CircularProgress, Snackbar, Alert } from "@mui/material"
-import SaveIcon from "@mui/icons-material/Save"
+// import SaveIcon from "@mui/icons-material/Save"
 import PublishIcon from "@mui/icons-material/Publish"
 
 export function Settings() {
   const [isLoading, setIsLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
+  // const [isSaving, setIsSaving] = useState(false)
   const [isPublishing, setIsPublishing] = useState(false)
   const [error, setError] = useState(null)
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
@@ -23,18 +23,6 @@ export function Settings() {
 
     fetchData()
   }, [])
-
-  const handleSave = async () => {
-    setIsSaving(true)
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      setSnackbar({ open: true, message: "設定の保存に成功しました！", severity: "success" })
-    } catch (err) {
-      setSnackbar({ open: true, message: "設定の保存に失敗しました。", severity: "error" })
-    } finally {
-      setIsSaving(false)
-    }
-  }
 
   const handlePublish = async () => {
     setIsPublishing(true);
@@ -93,13 +81,13 @@ export function Settings() {
 
       {/* ✅ 説明文の下に間隔を追加 */}
       <Typography variant="body1" sx={{ mt: 4, mb: 4 }}>
-        プロフィール設定、テーマのカスタマイズ、リンクをして、プロフィールを公開するには、下のボタンを使用してください。
+        プロフィール設定、テーマのカスタマイズ、リンクをしてプロフィールを公開するには、下のボタンを使用してください。
       </Typography>
 
       {/* ✅ ボタンの間隔を追加 */}
       <Box className="space-y-6">
         <Box className="flex flex-col sm:flex-row justify-between gap-4">
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             startIcon={<SaveIcon />}
@@ -109,7 +97,7 @@ export function Settings() {
             sx={{ height: 48, mt: 2 }}
           >
             {isSaving ? "保存中..." : "すべての設定を保存する"}
-          </Button>
+          </Button> */}
         </Box>
         <Box className="flex flex-col sm:flex-row justify-between gap-4">
           <Button
