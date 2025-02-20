@@ -38,10 +38,15 @@ router.post("/", authenticateToken, async (req, res) => {
         currentCount--;
       }
 
+      // Base64 をデコードして `bytea` 型に保存
+      const customIconBuffer = link.custom_icon 
+        ? Buffer.from(link.custom_icon, 'base64') 
+        : null;
+
       // 新しいリンクを挿入
       await db.query(
         "INSERT INTO links (id, username, title, url, type, custom_icon) VALUES ($1, $2, $3, $4, $5, $6)",
-        [link.id, username, link.title, link.url, link.type, link.custom_icon]
+        [link.id, username, link.title, link.url, link.type, customIconBuffer]
       );
       currentCount++;
     }
