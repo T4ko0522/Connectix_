@@ -125,7 +125,7 @@ export default function PreviewPublicProfile() {
       </Box>
     );
   }
-  if (theme) {
+  if (!theme) {
     return (
       <Box sx={{ textAlign: "center", p: 5 }}>
         <Typography variant="h4" color="text.secondary">
