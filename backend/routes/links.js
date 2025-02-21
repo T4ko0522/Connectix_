@@ -4,46 +4,41 @@ import { authenticateToken } from "../utils/jwt.js";
 
 const router = express.Router();
 
-// POST /api/links
-// リクエストボディ例:
-// {
-//   "username": "exampleUser",
-//   "links": [
-//     { "id": "123", "title": "Link 1", "url": "https://example.com", "type": "link", "custom_icon": null },
-//     { "id": "456", "title": "Link 2", "url": "https://example.org", "type": "instagram", "custom_icon": "data:image/png;base64,..." }
-//   ]
-// }
 router.post("/", authenticateToken, async (req, res) => {
-  const { username, links } = req.body;
-  if (!username || !Array.isArray(links)) {
+  const { links } = req.body;
+  if (!Array.isArray(links)) {
     return res.status(400).json({ message: "Invalid request data." });
   }
 
   try {
     await db.query("BEGIN");
 
-    // 現在のリンク数を取得
-    const { rows: countRows } = await db.query(
-      "SELECT COUNT(*) FROM links WHERE username = $1",
-      [username]
-    );
-    let currentCount = parseInt(countRows[0].count, 10);
-
+    // 送信されたリンクをすべて upsert する
     for (const link of links) {
-      if (currentCount >= 10) {
-        await db.query(
-          "DELETE FROM links WHERE id = (SELECT id FROM links WHERE username = $1 ORDER BY id ASC LIMIT 1)",
-          [username]
-        );
-        currentCount--;
-      }
-
-      // 新しいリンクを挿入
       await db.query(
-        "INSERT INTO links (id, username, title, url, type, custom_icon) VALUES ($1, $2, $3, $4, $5, $6)",
-        [link.id, username, link.title, link.url, link.type, link.custom_icon]
+        `INSERT INTO links (id, user_id, title, url, type, custom_icon)
+         VALUES ($1, $2, $3, $4, $5, $6)
+         ON CONFLICT (id) DO UPDATE 
+         SET title = EXCLUDED.title,
+             url = EXCLUDED.url,
+             type = EXCLUDED.type,
+             custom_icon = EXCLUDED.custom_icon`,
+        [link.id, req.user.id, link.title, link.url, link.type, link.custom_icon]
       );
-      currentCount++;
+    }
+
+    // DB にあるリンクの中で、送信されたリンク一覧に含まれていないものを削除する
+    if (links.length > 0) {
+      const ids = links.map(link => link.id);
+      // プレースホルダを動的に作成。例: "$2, $3, ..." （最初のパラメータは user_id）
+      const placeholders = ids.map((_, i) => `$${i + 2}`).join(", ");
+      await db.query(
+        `DELETE FROM links WHERE user_id = $1 AND id NOT IN (${placeholders})`,
+        [req.user.id, ...ids]
+      );
+    } else {
+      // もし送信されたリンクが空なら、ユーザーの全リンクを削除
+      await db.query("DELETE FROM links WHERE user_id = $1", [req.user.id]);
     }
 
     await db.query("COMMIT");
@@ -55,22 +50,14 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 });
 
+// GET /api/links
 router.get("/", authenticateToken, async (req, res) => {
   try {
-    const { rows: userRows } = await db.query(
-      "SELECT username FROM users WHERE id = $1",
+    // ユーザーIDを元にリンクを取得
+    const { rows } = await db.query(
+      "SELECT * FROM links WHERE user_id = $1 ORDER BY id DESC",
       [req.user.id]
     );
-    if (userRows.length === 0) {
-      return res.status(404).json({ message: "ユーザーが見つかりません" });
-    }
-    const username = userRows[0].username;
-    
-    const { rows } = await db.query(
-      "SELECT * FROM links WHERE username = $1 ORDER BY id DESC",
-      [username]
-    );
-    
     return res.status(200).json({ links: rows });
   } catch (error) {
     console.error("リンク取得エラー:", error);

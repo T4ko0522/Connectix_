@@ -26,12 +26,9 @@ router.get("/:username", async (req, res) => {
       [user.id]
     );
 
-    // links テーブルも同様に、ユーザーのアカウントusername（あるいは user.id で管理している場合はそれ）を利用
-    // ここでは、links テーブルはユーザーのアカウントのusernameで保存している前提とする
     const { rows: linkRows } = await db.query(
-      // 大文字小文字を区別しない検索（ILIKE）を利用ß
-      "SELECT * FROM links WHERE username ILIKE $1 ORDER BY id",
-      [user.username]
+      "SELECT * FROM links WHERE user_id = $1 ORDER BY id",
+      [user.id]
     );
 
     res.status(200).json({
