@@ -37,6 +37,17 @@ const getIcon = (type, customIcon) => {
   }
 };
 
+const hexToRgba = (hex, opacity) => {
+  let cleaned = hex.replace("#", "");
+  if (cleaned.length === 3) {
+    cleaned = cleaned.split("").map(ch => ch + ch).join("");
+  }
+  const r = parseInt(cleaned.substring(0, 2), 16);
+  const g = parseInt(cleaned.substring(2, 4), 16);
+  const b = parseInt(cleaned.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
 export default function PreviewPublicProfile() {
   const [theme, setTheme] = useState(null);
   const [links, setLinks] = useState([]);
@@ -64,6 +75,8 @@ export default function PreviewPublicProfile() {
 
         // まずユーザー名を取得
         const usernameResponse = await fetch(
+          //LINK - Local
+          // "http://localhost:3522/api/auth/username",
           "https://connectix-server.vercel.app/api/auth/username",
           {
             headers: {
@@ -79,6 +92,8 @@ export default function PreviewPublicProfile() {
 
         // 次にそのユーザーのプロフィールを取得
         const response = await fetch(
+          //LINK - Local
+          // `http://localhost:3522/api/public-profile/${username}`,
           `https://connectix-server.vercel.app/api/public-profile/${username}`
         );
         if (!response.ok) {
@@ -193,7 +208,7 @@ export default function PreviewPublicProfile() {
               onClick={() => (window.location.href = link.url)}
               sx={{
                 background: theme.is_link_background_transparent
-                  ? "transparent"
+                  ? hexToRgba(theme.link_background_color, theme.link_background_opacity)
                   : theme.is_link_background_gradient
                   ? `linear-gradient(45deg, ${theme.link_background_color}, ${theme.link_background_secondary_color})`
                   : theme.link_background_color,

@@ -5,7 +5,6 @@ import { authenticateToken } from "../utils/jwt.js";
 const router = express.Router();
 
 // POST /api/theme-settings
-// クライアントからは、表示用ユーザー名（displayUsername）と各種設定が送られる
 router.post("/", authenticateToken, async (req, res) => {
   const {
     displayUsername,  // ユーザーが入力した表示用の名前
@@ -19,6 +18,7 @@ router.post("/", authenticateToken, async (req, res) => {
     is_link_background_transparent,
     link_background_color,
     link_background_secondary_color,
+    link_background_opacity,
     is_link_background_gradient,
   } = req.body;
 
@@ -31,11 +31,11 @@ router.post("/", authenticateToken, async (req, res) => {
     // 既存のテーマ設定を削除（user_idで紐づけ）
     await db.query("DELETE FROM theme_settings WHERE user_id = $1", [userId]);
 
-    // 新しいテーマ設定を挿入（user_id と display_username を保存）
+    // INSERT文に背景透明度を追加
     const insertQuery = `
       INSERT INTO theme_settings 
-        (user_id, display_username, is_gradient, primary_color, secondary_color, username_font_color, url_font_color, profile_image, background_image, is_link_background_transparent, link_background_color, link_background_secondary_color, is_link_background_gradient)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        (user_id, display_username, is_gradient, primary_color, secondary_color, username_font_color, url_font_color, profile_image, background_image, is_link_background_transparent, link_background_color, link_background_secondary_color, link_background_opacity, is_link_background_gradient)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
     `;
     await db.query(insertQuery, [
       userId,
@@ -50,6 +50,7 @@ router.post("/", authenticateToken, async (req, res) => {
       is_link_background_transparent,
       link_background_color,
       link_background_secondary_color,
+      link_background_opacity,
       is_link_background_gradient,
     ]);
     res.status(200).json({ message: "Theme settings updated successfully." });

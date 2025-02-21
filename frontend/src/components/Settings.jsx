@@ -32,6 +32,8 @@ export function Settings() {
         throw new Error("認証トークンが存在しません。ログインしてください。");
       }
       // auth/username からユーザー名を取得
+      //LINK - Local
+      // const usernameResponse = await fetch("http://localhost:3522/api/auth/username", {
       const usernameResponse = await fetch("https://connectix-server.vercel.app/api/auth/username", {
         headers: {
           "Content-Type": "application/json",
