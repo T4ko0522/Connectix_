@@ -1,1 +1,20 @@
-CREATE TABLE theme_settings ( id SERIAL PRIMARY KEY, username varchar(255) NOT NULL, is_gradient BOOLEAN NOT NULL, primary_color TEXT NOT NULL, secondary_color TEXT NOT NULL, username_font_color TEXT NOT NULL, url_font_color TEXT NOT NULL, profile_image TEXT, background_image TEXT, is_link_background_transparent BOOLEAN NOT NULL, link_background_color TEXT NOT NULL, link_background_secondary_color TEXT NOT NULL, is_link_background_gradient BOOLEAN NOT NULL, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, CONSTRAINT fk_theme_user FOREIGN KEY (username) REFERENCES users(username) );
+create table public.theme_settings (
+  id serial not null,
+  display_username character varying(255) not null,
+  is_gradient boolean not null,
+  primary_color text not null,
+  secondary_color text not null,
+  username_font_color text not null,
+  url_font_color text not null,
+  profile_image text null,
+  background_image text null,
+  is_link_background_transparent boolean not null,
+  link_background_color text not null,
+  link_background_secondary_color text not null,
+  is_link_background_gradient boolean not null,
+  updated_at timestamp without time zone null default CURRENT_TIMESTAMP,
+  user_id integer null,
+  link_background_opacity numeric(3, 2) not null default 0.50,
+  constraint theme_settings_pkey primary key (id),
+  constraint fk_theme_user_id foreign KEY (user_id) references users (id)
+) TABLESPACE pg_default;
