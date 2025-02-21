@@ -61,6 +61,8 @@ function ResetPassword() {
     }
 
     try {
+      //LINK - Local
+      // const response = await fetch("http://localhost:3522/api/password-reset/reset", {
       const response = await fetch("https://connectix-server.vercel.app/api/password-reset/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -19,6 +19,7 @@ function ForgotPassword({ open, handleClose }) {
     }
 
     try {
+        //LINK - Local
         // const response = await fetch("http://localhost:3522/api/password-reset/request-reset", {
         const response = await fetch("https://connectix-server.vercel.app/api/password-reset/request-reset", {
             method: "POST",
