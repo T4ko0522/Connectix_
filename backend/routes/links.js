@@ -26,7 +26,7 @@ router.post("/", authenticateToken, async (req, res) => {
         [link.id, req.user.id, link.title, link.url, link.type, link.custom_icon]
       );
     }
-
+    
     // DB にあるリンクの中で、送信されたリンク一覧に含まれていないものを削除する
     if (links.length > 0) {
       const ids = links.map(link => link.id);
