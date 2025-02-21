@@ -66,8 +66,8 @@ export default function PublicProfile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch(`http://localhost:3522/api/public-profile/${urlUsername}`);
-        // const response = await fetch(`https://connectix-server.vercel.app/api/public-profile/${urlUsername}`);
+        // const response = await fetch(`http://localhost:3522/api/public-profile/${urlUsername}`);
+        const response = await fetch(`https://connectix-server.vercel.app/api/public-profile/${urlUsername}`);
         if (!response.ok) {
           throw new Error("プロフィールの取得に失敗しました");
         }

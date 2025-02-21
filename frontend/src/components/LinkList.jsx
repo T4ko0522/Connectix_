@@ -23,7 +23,8 @@ export default function LinkList() {
         if (!token) {
           throw new Error("認証トークンが存在しません。ログインしてください。");
         }
-        const response = await fetch("http://localhost:3522/api/links", {
+        const response = await fetch("https://connectix-server.vercel.app/api/links", {
+        // const response = await fetch("http://localhost:3522/api/links", {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
@@ -148,8 +149,9 @@ export default function LinkList() {
         type: link.type,
         custom_icon: link.customIcon, // ここで変換
       }));
-  
-      const response = await fetch("http://localhost:3522/api/links", {
+
+      const response = await fetch("https://connectix-server.vercel.app/api/links", {
+      // const response = await fetch("http://localhost:3522/api/links", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

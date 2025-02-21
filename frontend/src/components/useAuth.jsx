@@ -13,7 +13,6 @@ const useAuth = () => {
             }
 
             try {
-                // const response = await fetch('http://localhost:3522/auth/user', {
                 //LINK - Local
                 // const response = await fetch('http://localhost:3522/auth/user', {
                 const response = await fetch('https://connectix-server.vercel.app/auth/user', {

@@ -99,7 +99,8 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
         if (!token) {
           throw new Error("認証トークンが存在しません。ログインしてください。");
         }
-        const response = await fetch("http://localhost:3522/api/links", {
+        const response = await fetch("https://connectix-server.vercel.app/api/links", {
+        // const response = await fetch("http://localhost:3522/api/links", {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
