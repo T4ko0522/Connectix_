@@ -34,6 +34,17 @@ const getIcon = (type, customIcon) => {
   }
 };
 
+const hexToRgba = (hex, opacity) => {
+  let cleaned = hex.replace("#", "");
+  if (cleaned.length === 3) {
+    cleaned = cleaned.split("").map(ch => ch + ch).join("");
+  }
+  const r = parseInt(cleaned.substring(0, 2), 16);
+  const g = parseInt(cleaned.substring(2, 4), 16);
+  const b = parseInt(cleaned.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
 export default function PublicProfile() {
   const { username: urlUsername } = useParams();
   const [theme, setTheme] = useState(null);
@@ -55,8 +66,8 @@ export default function PublicProfile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        // const response = await fetch(`http://localhost:3522/api/public-profile/${urlUsername}`);
-        const response = await fetch(`https://connectix-server.vercel.app/api/public-profile/${urlUsername}`);
+        const response = await fetch(`http://localhost:3522/api/public-profile/${urlUsername}`);
+        // const response = await fetch(`https://connectix-server.vercel.app/api/public-profile/${urlUsername}`);
         if (!response.ok) {
           throw new Error("プロフィールの取得に失敗しました");
         }
@@ -153,7 +164,7 @@ export default function PublicProfile() {
               onClick={() => (window.location.href = link.url)}
               sx={{
                 background: theme.is_link_background_transparent
-                  ? "transparent"
+                  ? hexToRgba(theme.link_background_color, theme.link_background_opacity)
                   : theme.is_link_background_gradient
                   ? `linear-gradient(45deg, ${theme.link_background_color}, ${theme.link_background_secondary_color})`
                   : theme.link_background_color,
@@ -169,6 +180,7 @@ export default function PublicProfile() {
             </Button>
           ))}
         </Stack>
+
         {/* プロフィールをシェアするボタン */}
         <Button variant="outlined" sx={{ mt: 3 }} onClick={handleShareProfile}>
           プロフィールをシェアする

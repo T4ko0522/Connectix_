@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Stack, Paper, Typography, Box, Grid, Button, Switch, FormControlLabel } from "@mui/material"
+import { Stack, Paper, Typography, Box, Grid, Button, Switch, FormControlLabel, Slider } from "@mui/material"
 import { MuiColorInput } from "mui-color-input"
 import InstagramIcon from "@mui/icons-material/Instagram"
 import TwitterIcon from "@mui/icons-material/Twitter"
@@ -24,6 +24,7 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
   const [username, setUsername] = useState("@username")
   const [hasUnsavedChangesLocal, setHasUnsavedChangesLocal] = useState(false)
   const [links, setLinks] = useState([]);
+  const [linkBackgroundOpacity, setLinkBackgroundOpacity] = useState(0.5);
   const VRChatIcon = () => <img src="assets/image/VRChat.png" alt="VRChat Icon" style={{ width: 24, height: 24 }} />;
   const handleChange = () => {
     setHasUnsavedChangesLocal(true);
@@ -56,15 +57,14 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
         if (!token) {
           throw new Error("認証トークンが存在しません。ログインしてください。");
         }
+        //LINK - Local
+        // const response = await fetch("http://localhost:3522/api/theme-settings", {
         const response = await fetch("https://connectix-server.vercel.app/api/theme-settings", {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
           },
         });
-        if (!response.ok) {
-          throw new Error("テーマ設定の取得に失敗しました");
-        }
         const data = await response.json();
         if (data.settings) {
           setIsGradient(data.settings.is_gradient);
@@ -79,6 +79,10 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
           setLinkBackgroundSecondaryColor(data.settings.link_background_secondary_color);
           setIsLinkBackgroundGradient(data.settings.is_link_background_gradient);
           setUsername(data.settings.display_username);
+          // ここから透過度設定の反映
+          if (data.settings.link_background_opacity !== undefined) {
+            setLinkBackgroundOpacity(data.settings.link_background_opacity);
+          }
         }
       } catch (error) {
         console.error("テーマ設定取得エラー:", error);
@@ -92,23 +96,32 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
     const fetchLinks = async () => {
       try {
         const token = localStorage.getItem("jwt_token");
-        if (!token) throw new Error("認証トークンが存在しません。ログインしてください。");
-        const response = await fetch("https://connectix-server.vercel.app/api/links", {
+        if (!token) {
+          throw new Error("認証トークンが存在しません。ログインしてください。");
+        }
+        const response = await fetch("http://localhost:3522/api/links", {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
           },
         });
-        if (!response.ok) throw new Error("リンクの取得に失敗しました");
+        if (!response.ok) {
+          throw new Error("リンクの取得に失敗しました");
+        }
         const data = await response.json();
-        setLinks(data.links);
+        // API からのレスポンスの custom_icon を customIcon に変換
+        const transformed = data.links.map(link => ({
+          ...link,
+          customIcon: link.custom_icon,
+        }));
+        setLinks(transformed);
       } catch (error) {
-        console.error("リンク取得エラー:", error);
+        console.error("リンクの取得エラー:", error);
       }
     };
-
+  
     fetchLinks();
-  }, []);
+  }, []);  
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -139,11 +152,14 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
       is_link_background_transparent: isLinkBackgroundTransparent ?? false,
       link_background_color: linkBackgroundColor ?? "#FFFFFF",
       link_background_secondary_color: linkBackgroundSecondaryColor ?? "#FFFFFF",
+      link_background_opacity: linkBackgroundOpacity,
       is_link_background_gradient: isLinkBackgroundGradient ?? false,
     };
   
     try {
       const token = localStorage.getItem("jwt_token");
+      //LINK - Local
+      // const response = await fetch("http://localhost:3522/api/theme-settings", {
       const response = await fetch("https://connectix-server.vercel.app/api/theme-settings", {
         method: "POST",
         headers: {
@@ -163,6 +179,17 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
     }
   };  
 
+  const hexToRgba = (hex, opacity) => {
+    let cleaned = hex.replace("#", "");
+    if (cleaned.length === 3) {
+      cleaned = cleaned.split("").map(ch => ch + ch).join("");
+    }
+    const r = parseInt(cleaned.substring(0, 2), 16);
+    const g = parseInt(cleaned.substring(2, 4), 16);
+    const b = parseInt(cleaned.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  };
+
   // 現在の背景を取得（画像、グラデーション、または単色）
   const getCurrentBackground = () => {
     if (backgroundImage) {
@@ -173,13 +200,6 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
     }
     return primaryColor
   }
-
-  // プレビュー用のダミーリンク
-  // const previewLinks = [
-  //   { id: "1", title: "Instagram", url: "https://instagram.com/username", type: "instagram" },
-  //   { id: "2", title: "Twitter", url: "https://twitter.com/username", type: "twitter" },
-  //   { id: "3", title: "YouTube", url: "https://youtube.com/@username", type: "youtube" },
-  // ]
 
   const getIcon = (type, customIcon) => {
     if (customIcon) {
@@ -214,6 +234,14 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
       handleChange()
     }
   }
+
+  const handleShareProfile = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+    } catch (error) {
+      console.error("プロフィールURLのコピーに失敗しました:", error);
+    }
+  };
 
   // よく使用される色のプリセット
   const presetColors = ["#9C27B0", "#2196F3", "#4CAF50", "#FF9800", "#F44336", "#E91E63", "#009688", "#673AB7"]
@@ -293,8 +321,8 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
   }
 
   return (
-    <Grid container spacing={0}>
-      <Grid item xs={12} md={7} sx={{ height: "100vh", overflowY: "auto", pr: 2 }}>
+    <Grid container spacing={2} sx={{ minHeight: "100vh" }}>
+      <Grid item xs={12} md={4} sx={{ maxHeight: "100vh", overflowY: "auto" }}>
         <Stack spacing={4}>
           <Paper elevation={0} sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
@@ -393,7 +421,7 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
                   >
                     背景画像を削除
                   </Button>
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     control={
                       <Switch
                         checked={!!isLinkBackgroundTransparent}
@@ -404,7 +432,7 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
                       />
                     }
                     label="リンクの背景を透過する"
-                  />
+                  /> */}
                 </>
               )}
               {!backgroundImage && (
@@ -558,6 +586,30 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
                 }
                 label="背景を透過する"
               />
+              <Typography variant="subtitle2">背景色</Typography>
+              <MuiColorInput
+                value={linkBackgroundColor}
+                onChange={handleLinkBackgroundColorChange}
+                format="hex"
+                isAlphaHidden
+                sx={{ width: "100%" }}
+              />
+              {isLinkBackgroundTransparent && (
+                <>
+                  <Typography variant="subtitle2">透過度</Typography>
+                  <Slider
+                    value={linkBackgroundOpacity * 100}
+                    onChange={(e, newValue) => {
+                      const opacity = newValue / 100;
+                      setLinkBackgroundOpacity(opacity);
+                      handleChange();
+                    }}
+                    min={0}
+                    max={100}
+                    valueLabelDisplay="auto"
+                  />
+                </>
+              )}
               {!isLinkBackgroundTransparent && (
                 <>
                   <FormControlLabel
@@ -571,14 +623,6 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
                       />
                     }
                     label="グラデーション"
-                  />
-                  <Typography variant="subtitle2">背景色</Typography>
-                  <MuiColorInput
-                    value={linkBackgroundColor}
-                    onChange={handleLinkBackgroundColorChange}
-                    format="hex"
-                    isAlphaHidden
-                    sx={{ width: "100%" }}
                   />
                   {isLinkBackgroundGradient && (
                     <>
@@ -640,100 +684,81 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
           </Button>
         </Stack>
       </Grid>
-
-      {/* プレビュー部分 */}
-      <Grid item xs={12} md={5} sx={{ position: "relative" }}>
-        <Box sx={{ position: "fixed", width: "calc(41.67% - 32px)", maxWidth: "600px" }}>
-          <Paper
-            elevation={0}
+        <Grid
+          item
+          xs={12}
+          md={8}
+          sx={{
+            background: getCurrentBackground(),
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            p: 3,
+            minHeight: "100vh",
+          }}
+        >
+          <Box
             sx={{
+              width: "100%",
+              maxWidth: 380,
               p: 3,
-              height: "calc(100vh - 32px)",
-              bgcolor: "grey.100",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              overflow: "hidden",
+              textAlign: "center",
+              bgcolor: "transparent",
             }}
           >
-            <Typography variant="h6" gutterBottom sx={{ alignSelf: "flex-start" }}>
-              プレビュー
-            </Typography>
-
             <Box
               sx={{
-                width: "100%",
-                maxWidth: 380,
-                mt: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 3,
-                p: 3,
-                borderRadius: 2,
-                background: getCurrentBackground(),
+                width: 120,
+                height: 120,
+                borderRadius: "50%",
+                bgcolor: "#eee",
+                backgroundImage: profileImage ? `url(${profileImage})` : "none",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                overflow: "auto",
-                maxHeight: "calc(100% - 60px)",
+                mx: "auto",
+                border: `3px solid ${usernameFontColor}`,
               }}
-            >
-              {/* プロフィール画像 */}
-              <Box
-                sx={{
-                  width: 120,
-                  height: 120,
-                  borderRadius: "50%",
-                  bgcolor: "#eee",
-                  backgroundImage: profileImage ? `url(${profileImage})` : "none",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  border: `3px solid ${usernameFontColor}`,
-                }}
-              />
-
-              {/* ユーザー名 */}
-              <Typography variant="h5" fontWeight="bold" sx={{ color: usernameFontColor }}>
-                {username}
-              </Typography>
-
-              {/* リンクボタン */}
-              <Stack spacing={2} sx={{ width: "100%" }}>
-                {links.map((link) => (
-                  <Button
-                    key={link.id}
-                    variant="contained"
-                    startIcon={getIcon(link.type, link.customIcon)}
-                    fullWidth
-                    sx={{
-                      background: isLinkBackgroundTransparent
-                        ? "transparent"
-                        : isLinkBackgroundGradient
-                        ? `linear-gradient(45deg, ${linkBackgroundColor}, ${linkBackgroundSecondaryColor})`
-                        : linkBackgroundColor,
-                      color: urlFontColor,
-                      "&:hover": {
-                        background: isLinkBackgroundTransparent
-                          ? "rgba(255, 255, 255, 0.1)"
-                          : isLinkBackgroundGradient
-                          ? `linear-gradient(45deg, ${linkBackgroundColor}, ${linkBackgroundSecondaryColor})`
-                          : linkBackgroundColor,
-                        opacity: 0.8,
-                      },
-                      textTransform: "none",
-                      py: 1.5,
-                      border: isLinkBackgroundTransparent ? `1px solid ${urlFontColor}` : "none",
-                    }}
-                  >
-                    {link.title}
-                  </Button>
-                ))}
-              </Stack>
-            </Box>
-          </Paper>
-        </Box>
+            />
+            {/* ユーザー名 */}
+            <Typography variant="h5" fontWeight="bold" sx={{ color: usernameFontColor, mt: 2 }}>
+              {username}
+            </Typography>
+            {/* リンク一覧 */}
+            <Stack spacing={2} sx={{ width: "100%", mt: 3 }}>
+              {links.map((link) => (
+                <Button
+                  key={link.id}
+                  variant="contained"
+                  startIcon={getIcon(link.type, link.customIcon)}
+                  fullWidth
+                  onClick={() => (window.location.href = link.url)}
+                  sx={{
+                    background: isLinkBackgroundTransparent
+                      ? hexToRgba(linkBackgroundColor, linkBackgroundOpacity)
+                      : isLinkBackgroundGradient
+                      ? `linear-gradient(45deg, ${linkBackgroundColor}, ${linkBackgroundSecondaryColor})`
+                      : linkBackgroundColor,
+                    color: urlFontColor,
+                    textTransform: "none",
+                    py: 1.5,
+                    "&:hover": {
+                      opacity: 0.8,
+                    },
+                  }}
+                >
+                  {link.title}
+                </Button>
+              ))}
+            </Stack>
+            <Button variant="outlined" sx={{ mt: 3 }} onClick={handleShareProfile}>
+              プロフィールをシェアする
+            </Button>
+          </Box>
+        </Grid>
       </Grid>
-    </Grid>
   )
 }
 
