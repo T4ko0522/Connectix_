@@ -7,6 +7,7 @@ import AddIcon from "@mui/icons-material/Add"
 import InstagramIcon from "@mui/icons-material/Instagram"
 import TwitterIcon from "@mui/icons-material/Twitter"
 import YouTubeIcon from "@mui/icons-material/YouTube"
+import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkIcon from "@mui/icons-material/Link"
 import SaveIcon from "@mui/icons-material/Save"
 
@@ -50,16 +51,23 @@ export default function LinkList() {
   
 
   const handleDragEnd = useCallback((result) => {
-    if (!result.destination) return
-
+    if (!result.destination) return;
+  
     setLinks((prevLinks) => {
-      const items = Array.from(prevLinks)
-      const [reorderedItem] = items.splice(result.source.index, 1)
-      items.splice(result.destination.index, 0, reorderedItem)
-      return items
-    })
-    setHasUnsavedChanges(true)
-  }, [])
+      const items = Array.from(prevLinks);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+  
+      // 順番を order フィールドに保存
+      const updatedLinks = items.map((link, index) => ({
+        ...link,
+        order: index + 1 // 1から始まる連番にする
+      }));
+      setLinks(updatedLinks);
+      setHasUnsavedChanges(true);
+      return updatedLinks;
+    });
+  }, []);
 
   const getIcon = (type, customIcon) => {
     if (customIcon) {
@@ -74,6 +82,8 @@ export default function LinkList() {
         return <YouTubeIcon />
       case "vrchat":
         return <VRChatIcon />
+      case "github":
+        return <GitHubIcon />
       default:
         return <LinkIcon />
     }
@@ -100,13 +110,24 @@ export default function LinkList() {
     if (field === "type") {
       switch (value) {
         case "instagram":
-          updates.url = "https://www.instagram.com/sampleuser/"
+          updates.url = "https://www.instagram.com/sampleuser/";
+          updates.title = "Instagram";
           break
         case "twitter":
-          updates.url = "https://twitter.com/sampleuser"
+          updates.url = "https://twitter.com/sampleuser";
+          updates.title = "Twitter";
           break
         case "youtube":
-          updates.url = "https://www.youtube.com/@sampleuser"
+          updates.url = "https://www.youtube.com/@sampleuser";
+          updates.title = "YouTube";
+          break
+        case "vrchat":
+          updates.url = "https://vrchat.com/home/user/usr-sample";
+          updates.title = "VRChat";
+          break
+        case "github":
+          updates.url = "https://github.com/sampleuser";
+          updates.title = "GitHub"
           break
         default:
           break
@@ -147,7 +168,8 @@ export default function LinkList() {
         title: link.title,
         url: link.url,
         type: link.type,
-        custom_icon: link.customIcon, // ここで変換
+        custom_icon: link.customIcon,
+        order_num: link.order // order を order_num として送信
       }));
 
       const response = await fetch("https://connectix-server.vercel.app/api/links", {
@@ -168,7 +190,7 @@ export default function LinkList() {
     } catch (error) {
       alert("エラーが発生しました: " + error.message);
     }
-  };  
+  };
   
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -233,6 +255,7 @@ export default function LinkList() {
                                   <MenuItem value="twitter">Twitter</MenuItem>
                                   <MenuItem value="youtube">YouTube</MenuItem>
                                   <MenuItem value="vrchat">VRChat</MenuItem>
+                                  <MenuItem value="github">GitHub</MenuItem>
                                   <MenuItem value="link">カスタムリンク</MenuItem>
                                 </TextField>
                                 <input

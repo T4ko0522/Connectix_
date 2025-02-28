@@ -101,7 +101,8 @@ export default function PreviewPublicProfile() {
         }
         const data = await response.json();
         setTheme(data.themeSettings);
-        setLinks(data.links);
+        // リンクを逆順に並べ替えてからセット
+        setLinks(data.links.reverse());
       } catch (error) {
         console.error("Error fetching public profile:", error);
       } finally {
