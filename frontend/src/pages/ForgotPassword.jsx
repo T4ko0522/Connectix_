@@ -9,9 +9,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
 function ForgotPassword({ open, handleClose }) {
+  const emailRef = React.useRef(null);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const email = document.getElementById("email")?.value;
+    const email = emailRef.current?.value;
 
     if (!email) {
         alert("メールアドレスを入力してください！");
@@ -59,9 +61,8 @@ function ForgotPassword({ open, handleClose }) {
           autoFocus
           required
           margin="dense"
-          id="email"
+          inputRef={emailRef}  // ← 修正点
           name="email"
-          label="メールアドレス"
           placeholder="メールアドレス"
           type="email"
           fullWidth
