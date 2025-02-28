@@ -26,6 +26,7 @@ export default function Dashboard() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState(null);
+  const [isRedirected, setIsRedirected] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,7 +60,16 @@ export default function Dashboard() {
           "Content-Type": "application/json"
         }
       });
-
+      if (response.status === 401 || response.status === 403) {
+        if (!isRedirected) {
+          alert("セッションの有効期限が切れたか、不正な認証情報です。再度サインインしてください。");
+          localStorage.removeItem("jwt_token");
+          setIsRedirected(true);
+          navigate("/sign-in");
+        }
+        return;
+      }
+  
       if (!response.ok) {
         throw new Error("ユーザー名の取得に失敗しました");
       }
@@ -68,6 +78,13 @@ export default function Dashboard() {
       setUsername(data.username);
     } catch (error) {
       console.error("ユーザー名取得エラー:", error);
+      // 401や403でのリダイレクト後はアラートを表示しない
+      if (!isRedirected && error.message !== "Failed to fetch") {
+        alert("セッションが無効です。再度サインインが必要です。");
+        localStorage.removeItem("jwt_token");
+        setIsRedirected(true);
+        navigate("/sign-in");
+      }
     }
   };
 
