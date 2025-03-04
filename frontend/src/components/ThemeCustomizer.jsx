@@ -8,21 +8,25 @@ import LinkIcon from "@mui/icons-material/Link"
 import ImageIcon from "@mui/icons-material/Image"
 import SaveIcon from "@mui/icons-material/Save"
 import PropTypes from "prop-types"
+import AnimatedAlert from "../shared/AnimatedAlert.jsx"
 
 export default function ThemeCustomizer({ setHasUnsavedChanges }) {
-  const [isGradient, setIsGradient] = useState(false)
-  const [primaryColor, setPrimaryColor] = useState("#ffffff")
-  const [secondaryColor, setSecondaryColor] = useState("#E91E63")
-  const [usernameFontColor, setUsernameFontColor] = useState("#000000")
-  const [urlFontColor, setUrlFontColor] = useState("#000000")
-  const [profileImage, setProfileImage] = useState(null)
-  const [backgroundImage, setBackgroundImage] = useState(null)
-  const [isLinkBackgroundTransparent, setIsLinkBackgroundTransparent] = useState(false)
-  const [linkBackgroundColor, setLinkBackgroundColor] = useState("#FFFFFF")
-  const [linkBackgroundSecondaryColor, setLinkBackgroundSecondaryColor] = useState("#FFFFFF")
-  const [isLinkBackgroundGradient, setIsLinkBackgroundGradient] = useState(false)
-  const [username, setUsername] = useState("@username")
-  const [hasUnsavedChangesLocal, setHasUnsavedChangesLocal] = useState(false)
+  const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isGradient, setIsGradient] = useState(false);
+  const [primaryColor, setPrimaryColor] = useState("#ffffff");
+  const [secondaryColor, setSecondaryColor] = useState("#E91E63");
+  const [usernameFontColor, setUsernameFontColor] = useState("#000000");
+  const [urlFontColor, setUrlFontColor] = useState("#000000");
+  const [profileImage, setProfileImage] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState(null);
+  const [isLinkBackgroundTransparent, setIsLinkBackgroundTransparent] = useState(false);
+  const [linkBackgroundColor, setLinkBackgroundColor] = useState("#FFFFFF");
+  const [linkBackgroundSecondaryColor, setLinkBackgroundSecondaryColor] = useState("#FFFFFF");
+  const [isLinkBackgroundGradient, setIsLinkBackgroundGradient] = useState(false);
+  const [username, setUsername] = useState("@username");
+  const [hasUnsavedChangesLocal, setHasUnsavedChangesLocal] = useState(false);
   const [links, setLinks] = useState([]);
   const [linkBackgroundOpacity, setLinkBackgroundOpacity] = useState(0.5);
   const VRChatIcon = () => <img src="assets/image/VRChat.png" alt="VRChat Icon" style={{ width: 24, height: 24 }} />;
@@ -174,9 +178,10 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
       }
       setHasUnsavedChanges(false);
       setHasUnsavedChangesLocal(false);
-      alert("設定が保存されました");
+      setShowAlert(true);
     } catch (error) {
-      alert("エラーが発生しました: " + error.message);
+      setErrorMessage(error.message);
+      setShowErrorAlert(true);
     }
   };  
 
@@ -323,6 +328,18 @@ export default function ThemeCustomizer({ setHasUnsavedChanges }) {
 
   return (
     <Grid container spacing={2} sx={{ minHeight: "100vh" }}>
+      <AnimatedAlert
+        show={showAlert}
+        severity="success"
+        title="Success!"
+        message="設定を保存しました！"
+      />
+      <AnimatedAlert
+        show={showErrorAlert}
+        severity="error"
+        title="Error!"
+        message={"保存に失敗しました。"  + errorMessage}
+      />
       <Grid item xs={12} md={4} sx={{ maxHeight: "100vh", overflowY: "auto" }}>
         <Stack spacing={4}>
           <Paper elevation={0} sx={{ p: 3 }}>
