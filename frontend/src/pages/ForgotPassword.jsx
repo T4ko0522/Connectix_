@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -7,33 +7,38 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import AnimatedAlert from '../shared/AnimatedAlert.jsx';
 
 function ForgotPassword({ open, handleClose }) {
   const emailRef = React.useRef(null);
+  const [showAlert, setShowAlert] = useState(true);
+  const [showEmailErrorAlert, setShowEmailErrorAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const email = emailRef.current?.value;
 
     if (!email) {
-        alert("メールアドレスを入力してください！");
+        setShowEmailErrorAlert(true);
+        setTimeout(() => setShowEmailErrorAlert(false), 3000);
         return;
     }
 
     try {
         //LINK - Local
-        // const response = await fetch("http://localhost:3522/api/password-reset/request-reset", {
-        const response = await fetch("https://connectix-server.vercel.app/api/password-reset/request-reset", {
+          // await fetch("http://localhost:3522/api/password-reset/request-reset", {
+          await fetch("https://connectix-server.vercel.app/api/password-reset/request-reset", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email }),
         });
-
-        const result = await response.json();
-        alert(result.message);
+        setShowAlert(true);
     } catch (error) {
-        console.error("パスワードリセットエラー:", error);
-        alert("サーバーエラーが発生しました。");
+        setErrorMessage(error.message);
+        setShowErrorAlert(true);
+        setTimeout(() => setShowErrorAlert(false), 3000);
     }
 };
 
@@ -50,6 +55,24 @@ function ForgotPassword({ open, handleClose }) {
         sx: { backgroundImage: 'none' },
       }}
     >
+      <AnimatedAlert
+        show={showEmailErrorAlert}
+        severity="error"
+        title="Error"
+        message="Emailを入力してください。"
+      />
+      <AnimatedAlert
+        show={showAlert}
+        severity="info"
+        title="info"
+        message="メールを送信しました。"
+      />
+      <AnimatedAlert
+        show={showErrorAlert}
+        severity="error"
+        title="Error!"
+        message={"APIサーバーのエラー" + errorMessage}
+      />
       <DialogTitle>パスワードリセット</DialogTitle>
       <DialogContent
         sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react"
-import { Box, Typography, Button, CircularProgress, Snackbar, Alert } from "@mui/material"
-// import SaveIcon from "@mui/icons-material/Save"
+import { Box, Typography, Button, CircularProgress  } from "@mui/material"
 import PublishIcon from "@mui/icons-material/Publish"
+import AnimatedAlert from "../shared/AnimatedAlert.jsx"
 
 export function Settings() {
   const [isLoading, setIsLoading] = useState(true)
-  // const [isSaving, setIsSaving] = useState(false)
   const [isPublishing, setIsPublishing] = useState(false)
-  const [error, setError] = useState(null)
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
+  const [error, setError] = useState("")
+  // const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,21 +48,16 @@ export function Settings() {
       if (!username) {
         throw new Error("取得したユーザー名が不正です");
       }
-
+      // setShowAlert(true); // hrefだからalert等の全てが読み込み直されるため表示されない
       window.location.href = `https://connectix-xi.vercel.app/${username}`;
     } catch (err) {
-      setSnackbar({ open: true, message: "プロフィール公開に失敗しました。", severity: "error" });
+      setErrorMessage(error.message);
+      setShowErrorAlert(true);
+      setTimeout(() => setShowErrorAlert(false), 3000);
     } finally {
       setIsPublishing(false);
     }
   };  
-
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") {
-      return
-    }
-    setSnackbar({ ...snackbar, open: false })
-  }
 
   if (isLoading) {
     return (
@@ -77,6 +73,18 @@ export function Settings() {
 
   return (
     <Box className="container mx-auto px-4 py-8">
+      <AnimatedAlert
+        show={showErrorAlert}
+        severity="error"
+        title="Error!"
+        message={errorMessage}
+      />
+      {/* <AnimatedAlert
+        show={showAlert}
+        severity="success"
+        title="Success!"
+        message="プロフィールを公開しました！"
+      /> */}
       <Typography variant="h4" className="mb-6">
         プロフィール設定
       </Typography>
@@ -89,17 +97,6 @@ export function Settings() {
       {/* ✅ ボタンの間隔を追加 */}
       <Box className="space-y-6">
         <Box className="flex flex-col sm:flex-row justify-between gap-4">
-          {/* <Button
-            variant="contained"
-            color="primary"
-            startIcon={<SaveIcon />}
-            onClick={handleSave}
-            disabled={isSaving}
-            fullWidth
-            sx={{ height: 48, mt: 2 }}
-          >
-            {isSaving ? "保存中..." : "すべての設定を保存する"}
-          </Button> */}
         </Box>
         <Box className="flex flex-col sm:flex-row justify-between gap-4">
           <Button
@@ -115,16 +112,6 @@ export function Settings() {
           </Button>
         </Box>
       </Box>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000} // ✅ ここを3秒に設定
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Box>
   )
 }

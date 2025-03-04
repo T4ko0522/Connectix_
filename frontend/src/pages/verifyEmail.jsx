@@ -25,7 +25,7 @@ export default function VerifyEmail(props) {
                 const result = await response.json();
 
                 if (!response.ok) {
-                    alert(result.message || "メール認証に失敗しました。");
+                    triggerAlert(result.message || "メール認証に失敗しました。");
                     navigate("/sign-in");
                     return;
                 }

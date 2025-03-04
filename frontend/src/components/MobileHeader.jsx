@@ -60,9 +60,7 @@ function MobileHeader() {
     setIsLoggedIn(false)
     setShowAlert(true)
     navigate("/")
-    setTimeout(() => {
-      setShowAlert(false)
-    }, 3000)
+    setTimeout(() => setShowAlert(false), 3000);
   }
 
   const handleProtectedOption = (setting) => {
@@ -91,7 +89,7 @@ function MobileHeader() {
     <>
       <AnimatedAlert show={showAlert} severity="success" title="Success" message="ログアウトしました。" />
 
-      <AnimatedAlert show={showErrorAlert} severity="error" title="エラー" message="実装間に合わなかった；；" />
+      <AnimatedAlert show={showErrorAlert} severity="error" title="Error" message="実装間に合わなかった；；" />
       <AppBar position="static" sx={{ backgroundImage: "linear-gradient(to right, #60519b, #31323e)" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>

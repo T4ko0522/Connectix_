@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button, Stack, Paper, CircularProgress, Snackbar, Alert } from "@mui/material";
+import { Box, Typography, Button, Stack, Paper, CircularProgress } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import LinkIcon from "@mui/icons-material/Link";
+import AnimatedAlert from "../shared/AnimatedAlert.jsx";
 
 const VRChatIcon = () => (
   <img
@@ -52,7 +53,9 @@ export default function PreviewPublicProfile() {
   const [theme, setTheme] = useState(null);
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // 背景の決定：背景画像があればそれ、なければグラデーション or 単色
   const getCurrentBackground = () => {
@@ -116,15 +119,13 @@ export default function PreviewPublicProfile() {
   const handleShareProfile = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      setSnackbarOpen(true);
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 3000);
     } catch (error) {
-      console.error("プロフィールURLのコピーに失敗しました:", error);
+      setErrorMessage(error.message);
+      setShowErrorAlert(true);
+      setTimeout(() => setShowErrorAlert(false), 3000);
     }
-  };
-
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") return;
-    setSnackbarOpen(false);
   };
 
   if (loading) {
@@ -165,6 +166,18 @@ export default function PreviewPublicProfile() {
         p: 3,
       }}
     >
+      <AnimatedAlert
+        show={showAlert}
+        severity="info"
+        title="info"
+        message="プロフィールURLをコピーしました！"
+      />
+      <AnimatedAlert
+        show={showErrorAlert}
+        severity="error"
+        title="Error"
+        message={"プロフィールのURLのコピーに失敗しました。" + errorMessage}
+      />
       <Paper
         sx={{
           maxWidth: 380,
@@ -230,20 +243,6 @@ export default function PreviewPublicProfile() {
           プロフィールをシェアする
         </Button>
       </Paper>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          プロフィールURLをコピーしました！
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

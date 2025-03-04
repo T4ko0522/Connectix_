@@ -10,12 +10,16 @@ import YouTubeIcon from "@mui/icons-material/YouTube"
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkIcon from "@mui/icons-material/Link"
 import SaveIcon from "@mui/icons-material/Save"
+import AnimatedAlert from "../shared/AnimatedAlert.jsx"
 
 const VRChatIcon = () => <img src="assets/image/VRChat.png" alt="VRChat Icon" style={{ width: 24, height: 24 }} />;
 
 export default function LinkList() {
-  const [links, setLinks] = useState([])
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const [links, setLinks] = useState([]);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -186,14 +190,29 @@ export default function LinkList() {
         throw new Error("リンクの保存に失敗しました");
       }
       setHasUnsavedChanges(false);
-      alert("リンクが正常に保存されました！");
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 3000);
     } catch (error) {
-      alert("エラーが発生しました: " + error.message);
+      setErrorMessage(error.message);
+      setShowErrorAlert(true);
+      setTimeout(() => setShowErrorAlert(false), 3000);
     }
   };
   
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
+      <AnimatedAlert
+        show={showAlert}
+        severity="success"
+        title="Success!"
+        message="リンクを保存しました！"
+      />
+      <AnimatedAlert
+        show={showErrorAlert}
+        severity="error"
+        title="Error!"
+        message={"リンクの保存に失敗しました。" + errorMessage}
+      />
       <Stack spacing={3}>
         <Stack direction="row" spacing={2}>
           <Button variant="contained" startIcon={<AddIcon />} onClick={addNewLink}>

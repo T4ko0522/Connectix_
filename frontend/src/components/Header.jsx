@@ -20,8 +20,7 @@ function Header() {
   const navigate = useNavigate();
   const location = useLocation(); // ✅ 追加
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('jwt_token')); // ✅ 修正
-  const [showAlert] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('jwt_token'));
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   useEffect(() => {
@@ -47,16 +46,9 @@ function Header() {
   return (
     <>
       <AnimatedAlert
-        show={showAlert}
-        severity="success"
-        title="Success"
-        message="ログアウトしました。"
-      />
-
-      <AnimatedAlert
         show={showErrorAlert}
         severity="error"
-        title="エラー"
+        title="Error"
         message="実装間に合わなかった；；"
       />
       <AppBar
